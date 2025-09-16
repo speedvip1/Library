@@ -370,54 +370,76 @@ local Containers = SetConfigs(Create("Frame", "Containers", Menu), {
   BackgroundTransparency = 1
 })
 
-function NewTab(Configs)
-  local TabColorText = Configs_HUB.TextColor
-  local ContainerVisible = true
-  local DefaultSize = 16
-  
-  for i,v in pairs(ScrollTab:GetChildren()) do
-    if v:IsA("TextButton") then
-      TabColorText = Configs_HUB.DarkText
-      DefaultSize = 15
+local function NewTab(Configs)
+    local TabColorText = Configs_HUB.TextColor
+    local ContainerVisible = true
+    local DefaultSize = 16
+
+    for i,v in pairs(ScrollTab:GetChildren()) do
+        if v:IsA("TextButton") then
+            TabColorText = Configs_HUB.DarkText
+            DefaultSize = 15
+        end
     end
-  end
-  
-  for i,v in pairs(Containers:GetChildren()) do
-    if v:IsA("ScrollingFrame") then
-      ContainerVisible = false
+
+    for i,v in pairs(Containers:GetChildren()) do
+        if v:IsA("ScrollingFrame") then
+            ContainerVisible = false
+        end
     end
-  end
-  
-  local TextButton = SetConfigs(Create("TextButton", "Tab", ScrollTab), {
-    Size = UDim2.new(1, 0, 0, 25),
-    BackgroundTransparency = 1,
-    Text = "",
-    AutoButtonColor = false,
-  })Corner(TextButton)Stroke(TextButton)
-  
-  ScrollTab.CanvasSize = ScrollTab.CanvasSize + UDim2.new(0, 0, 0, 35)
-  
-  local TabName = SetConfigs(Create("TextLabel", "TabName", TextButton), {
-    TextColor3 = TabColorText,
-    Size = UDim2.new(1, 0, 1, 0),
-    Text = Configs.Name,
-    TextSize = DefaultSize,
-    Font = Enum.Font.SourceSansBold,
-    BackgroundTransparency = 1
-  })
-  
-  local Container = SetConfigs(Create("ScrollingFrame", Configs.Name, Containers), {
-    Size = UDim2.new(1, 0, 1, -10),
-    Position = UDim2.new(0, 0, 0, 0),
-    BackgroundTransparency = 1,
-    CanvasSize = UDim2.new(0, 0, 0, 10),
-    ScrollingDirection = "Y",
-    ScrollBarThickness = 0,
-    AutomaticCanvasSize = "Y",
-    Visible = ContainerVisible
-  })
-  
-  local Selector = SetConfigs(Create("Frame", "Selector", TabButton), {
+
+    local TextButton = SetConfigs(Create("TextButton", "Tab", ScrollTab), {
+        Size = UDim2.new(1, 0, 0, 25),
+        BackgroundTransparency = 1,
+        Text = "",
+        AutoButtonColor = false,
+    })
+    Corner(TextButton)
+    Stroke(TextButton)
+
+    ScrollTab.CanvasSize = ScrollTab.CanvasSize + UDim2.new(0, 0, 0, 35)
+
+    local TabContent = Create("Frame", "TabContent", TextButton)
+    SetConfigs(TabContent, {
+        Size = UDim2.new(1, 0, 1, 0),
+        BackgroundTransparency = 1
+    })
+
+    local IconImage
+    if Configs.Icon then
+        IconImage = SetConfigs(Create("ImageLabel", "Icon", TabContent), {
+            Size = UDim2.new(0, 20, 0, 20),
+            Position = UDim2.new(0, 5, 0.5, 0),
+            AnchorPoint = Vector2.new(0, 0.5),
+            BackgroundTransparency = 1,
+            Image = Configs.Icon, 
+            ScaleType = Enum.ScaleType.Fit
+        })
+    end
+
+    local TabName = SetConfigs(Create("TextLabel", "TabName", TabContent), {
+        TextColor3 = TabColorText,
+        Size = UDim2.new(1, -30, 1, 0),
+        Position = UDim2.new(0, Configs.Icon and 30 or 5, 0, 0),
+        Text = Configs.Name,
+        TextSize = DefaultSize,
+        Font = Enum.Font.SourceSansBold,
+        BackgroundTransparency = 1,
+        TextXAlignment = Enum.TextXAlignment.Left
+    })
+
+    local Container = SetConfigs(Create("ScrollingFrame", Configs.Name, Containers), {
+        Size = UDim2.new(1, 0, 1, -10),
+        Position = UDim2.new(0, 0, 0, 0),
+        BackgroundTransparency = 1,
+        CanvasSize = UDim2.new(0, 0, 0, 10),
+        ScrollingDirection = "Y",
+        ScrollBarThickness = 0,
+        AutomaticCanvasSize = "Y",
+        Visible = ContainerVisible
+    })
+
+    local Selector = SetConfigs(Create("Frame", "Selector", TabButton), {
         Size = isFirstTab and UDim2.new(0, 4, 1, -10) or UDim2.new(0, 4, 0, 4),
         Position = UDim2.new(0, 0, 0.5, 0),
         AnchorPoint = Vector2.new(0, 0.5),
@@ -425,36 +447,45 @@ function NewTab(Configs)
         BackgroundTransparency = isFirstTab and 0 or 1
     })
     Corner(Selector, UDim.new(0.5, 0))
+
+    local Padding = SetConfigs(Create("UIPadding", "Padding", Container), {
+        PaddingLeft = UDim.new(0, 10),
+        PaddingRight = UDim.new(0, 10),
+        PaddingTop = UDim.new(0, 10),
+        PaddingBottom = UDim.new(0, 10)
+    })
+
+    local ListLayout = SetConfigs(Create("UIListLayout", "ListLayout", Container), {
+        Padding = UDim.new(0, 5)
+    })
+
+    TextButton.MouseButton1Click:Connect(function()
+        for _,v in pairs(Containers:GetChildren()) do
+            if v:IsA("ScrollingFrame") then
+                v.Visible = false
+            end
+        end
+        Container.Visible = true
+        
+        for _,v in pairs(ScrollTab:GetChildren()) do
+            if v.Name == TextButton.Name and v:FindFirstChild("TabContent") then
+                local content = v.TabContent
+                if content:FindFirstChild("TabName") then
+                    content.TabName.TextSize = 15
+                    TweenService:Create(content.TabName, TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {
+                        TextColor3 = Configs_HUB.DarkText
+                    }):Play()
+                end
+            end
+        end
+        
+        TabName.TextSize = 16
+        TweenService:Create(TabName, TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {
+            TextColor3 = Configs_HUB.TextColor
+        }):Play()
+    end)
     
-  local Padding = SetConfigs(Create("UIPadding", "Padding", Container), {
-    PaddingLeft = UDim.new(0, 10),
-    PaddingRight = UDim.new(0, 10),
-    PaddingTop = UDim.new(0, 10),
-    PaddingBottom = UDim.new(0, 10)
-  })
-  
-  local ListLayout = SetConfigs(Create("UIListLayout", "ListLayout", Container), {
-    Padding = UDim.new(0, 5)
-  })
-  
-  TextButton.MouseButton1Click:Connect(function()
-    for _,v in pairs(Containers:GetChildren()) do
-      if v:IsA("ScrollingFrame") then
-        v.Visible = false
-      end
-    end
-    Container.Visible = true
-    for _,v in pairs(ScrollTab:GetChildren()) do
-      if v.Name == TextButton.Name and v:FindFirstChild(TabName.Name) then
-        v[TabName.Name].TextSize = 15
-        TweenService:Create(v[TabName.Name],TweenInfo.new(0.5,Enum.EasingStyle.Linear,Enum.EasingDirection.InOut),
-        {TextColor3 = Configs_HUB.DarkText}):Play()
-      end
-    end
-    TabName.TextSize = 16
-    TweenService:Create(TabName,TweenInfo.new(0.5,Enum.EasingStyle.Linear,Enum.EasingDirection.InOut), {TextColor3 = Configs_HUB.TextColor}):Play()
-  end)
-  return Container
+    return Container
 end
 
 function AddToggle(parent, Configs)
