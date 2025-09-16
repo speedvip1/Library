@@ -738,7 +738,7 @@ function AddSlider(parent, Configs)
   end
   
   local Frame1 = SetConfigs(Create("Frame", "Frame", parent), {
-    Size = UDim2.new(1, 0, 0, 25),
+    Size = UDim2.new(1, 0, 0, 55),
     BackgroundColor3 = Configs_HUB.Hub
   })Corner(Frame1)Stroke(Frame1)
   
