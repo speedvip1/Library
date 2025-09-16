@@ -1,53 +1,45 @@
--- Services
-local MarketplaceService = game:GetService("MarketplaceService")
-local UserInputService = game:GetService("UserInputService")
+-- Advanced UI Library for Roblox
+-- By: [Your Name]
+
 local TweenService = game:GetService("TweenService")
-local HttpService = game:GetService("HttpService")
+local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
-local VirtualUser = game:GetService("VirtualUser")
-local CoreGui = game:GetService("CoreGui") or gethui()
+local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 
--- Variables
 local LocalPlayer = Players.LocalPlayer
-local ViewportSize = workspace.CurrentCamera.ViewportSize
-local Scale = ViewportSize.Y / 450
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
--- Anti-AFK
-LocalPlayer.Idled:Connect(function()
-    VirtualUser:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
-    wait(1)
-    VirtualUser:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
-end)
-
--- Library Configuration
-local SpeedHubX = {
+-- المكتبة الرئيسية
+local NeoUI = {
     Themes = {
-        DarkerRed = {
-            ["Color Hub 1"] = ColorSequence.new({
-                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(10, 10, 10)),
-                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(20, 20, 20)),
-                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(10, 10, 10))
-            }),
-            ["Color Hub 2"] = Color3.fromRGB(30, 30, 30),
-            ["Color Stroke"] = Color3.fromRGB(40, 40, 40),
-            ["Color Theme"] = Color3.fromRGB(200, 0, 0),
-            ["Color Text"] = Color3.fromRGB(255, 255, 255),
-            ["Color Dark Text"] = Color3.fromRGB(150, 150, 150)
+        Dark = {
+            Main = Color3.fromRGB(25, 25, 25),
+            Secondary = Color3.fromRGB(35, 35, 35),
+            Accent = Color3.fromRGB(0, 170, 255),
+            Text = Color3.fromRGB(255, 255, 255),
+            SubText = Color3.fromRGB(180, 180, 180),
+            Stroke = Color3.fromRGB(60, 60, 60)
+        },
+        Light = {
+            Main = Color3.fromRGB(240, 240, 240),
+            Secondary = Color3.fromRGB(220, 220, 220),
+            Accent = Color3.fromRGB(0, 120, 215),
+            Text = Color3.fromRGB(30, 30, 30),
+            SubText = Color3.fromRGB(100, 100, 100),
+            Stroke = Color3.fromRGB(200, 200, 200)
         }
     },
-    Info = {Version = ""},
-    Save = {UISize = {550, 350}, TabSize = 160, Theme = "DarkerRed"},
-    Instances = {},
+    Windows = {},
     Elements = {},
-    Options = {},
-    Flags = {},
-    Tabs = {},
-    Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Main/main/Icons.lua"))()
+    Settings = {
+        Theme = "Dark",
+        AnimationSpeed = 0.25
+    }
 }
 
--- Helper Functions
-local function CreateInstance(instanceType, properties, children)
+-- وظائف مساعدة
+function NeoUI:Create(instanceType, properties, children)
     local instance = Instance.new(instanceType)
     
     if properties then
@@ -65,205 +57,489 @@ local function CreateInstance(instanceType, properties, children)
     return instance
 end
 
-local function ApplyProperties(instance, properties)
-    if properties then
-        for property, value in pairs(properties) do
-            instance[property] = value
+function NeoUI:Tween(instance, properties, duration, callback)
+    local tweenInfo = TweenInfo.new(duration or self.Settings.AnimationSpeed, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tween = TweenService:Create(instance, tweenInfo, properties)
+    
+    tween:Play()
+    
+    if callback then
+        tween.Completed:Connect(callback)
+    end
+    
+    return tween
+end
+
+function NeoUI:MakeDraggable(frame, handle)
+    handle = handle or frame
+    local dragging = false
+    local dragInput, startPos, startTime
+
+    handle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            startPos = input.Position
+            startTime = tick()
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
         end
-    end
-    return instance
-end
+    end)
 
-local function AddChildren(instance, children)
-    if children then
-        for _, child in pairs(children) do
-            child.Parent = instance
+    handle.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
         end
-    end
-    return instance
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            local delta = input.Position - startPos
+            self:Tween(frame, {Position = UDim2.new(
+                frame.Position.X.Scale, 
+                frame.Position.X.Offset + delta.X,
+                frame.Position.Y.Scale, 
+                frame.Position.Y.Offset + delta.Y
+            )}, 0.1)
+        end
+    end)
 end
 
-local function TrackInstance(instance, instanceType)
-    table.insert(SpeedHubX.Instances, {Instance = instance, Type = instanceType})
-    return instance
-end
-
--- File Operations
-local function VerifyTheme(themeName)
-    return SpeedHubX.Themes[themeName] ~= nil
-end
-
-local function SaveToFile(filename, data)
-    if writefile then
-        local encoded = HttpService:JSONEncode(data)
-        writefile(filename, encoded)
-    end
-end
-
-local function LoadFromFile(filename)
-    if readfile and isfile and isfile(filename) then
-        local success, data = pcall(function()
-            return HttpService:JSONDecode(readfile(filename))
+-- إنشاء النوافذ
+function NeoUI:CreateWindow(options)
+    options = options or {}
+    local windowName = options.Name or "NeoUI Window"
+    local theme = self.Themes[self.Settings.Theme]
+    
+    local screenGui = self:Create("ScreenGui", {
+        Name = windowName,
+        Parent = PlayerGui
+    })
+    
+    local mainFrame = self:Create("Frame", {
+        Name = "MainFrame",
+        Parent = screenGui,
+        Size = UDim2.new(0, 500, 0, 400),
+        Position = UDim2.new(0.5, -250, 0.5, -200),
+        BackgroundColor3 = theme.Main,
+        ClipsDescendants = true
+    }, {
+        self:Create("UICorner", {CornerRadius = UDim.new(0, 8)}),
+        self:Create("UIStroke", {
+            Color = theme.Stroke,
+            Thickness = 2
+        })
+    })
+    
+    local titleBar = self:Create("Frame", {
+        Name = "TitleBar",
+        Parent = mainFrame,
+        Size = UDim2.new(1, 0, 0, 30),
+        BackgroundColor3 = theme.Secondary,
+        BorderSizePixel = 0
+    }, {
+        self:Create("UICorner", {
+            CornerRadius = UDim.new(0, 8),
+            Name = "TopCorner"
+        }),
+        self:Create("TextLabel", {
+            Name = "Title",
+            Size = UDim2.new(1, -60, 1, 0),
+            Position = UDim2.new(0, 10, 0, 0),
+            BackgroundTransparency = 1,
+            Text = windowName,
+            TextColor3 = theme.Text,
+            Font = Enum.Font.GothamBold,
+            TextSize = 14,
+            TextXAlignment = Enum.TextXAlignment.Left
+        }),
+        self:Create("TextButton", {
+            Name = "CloseButton",
+            Size = UDim2.new(0, 30, 0, 30),
+            Position = UDim2.new(1, -30, 0, 0),
+            BackgroundTransparency = 1,
+            Text = "X",
+            TextColor3 = theme.Text,
+            Font = Enum.Font.GothamBold,
+            TextSize = 14
+        })
+    })
+    
+    -- جعل النافذة قابلة للسحب
+    self:MakeDraggable(mainFrame, titleBar)
+    
+    -- زر الإغلاق
+    titleBar.CloseButton.MouseButton1Click:Connect(function()
+        self:Tween(mainFrame, {Size = UDim2.new(0, 0, 0, 0)}, 0.3, function()
+            screenGui:Destroy()
+        end)
+    end)
+    
+    -- تأثيرات عند المرور بالفأرة
+    titleBar.CloseButton.MouseEnter:Connect(function()
+        self:Tween(titleBar.CloseButton, {TextColor3 = Color3.fromRGB(255, 80, 80)})
+    end)
+    
+    titleBar.CloseButton.MouseLeave:Connect(function()
+        self:Tween(titleBar.CloseButton, {TextColor3 = theme.Text})
+    end)
+    
+    local tabContainer = self:Create("Frame", {
+        Name = "TabContainer",
+        Parent = mainFrame,
+        Size = UDim2.new(1, 0, 0, 40),
+        Position = UDim2.new(0, 0, 0, 30),
+        BackgroundTransparency = 1
+    })
+    
+    local contentContainer = self:Create("ScrollingFrame", {
+        Name = "ContentContainer",
+        Parent = mainFrame,
+        Size = UDim2.new(1, -20, 1, -80),
+        Position = UDim2.new(0, 10, 0, 70),
+        BackgroundTransparency = 1,
+        ScrollBarThickness = 4,
+        ScrollBarImageColor3 = theme.Accent,
+        CanvasSize = UDim2.new(0, 0, 0, 0),
+        AutomaticCanvasSize = Enum.AutomaticSize.Y
+    }, {
+        self:Create("UIListLayout", {
+            SortOrder = Enum.SortOrder.LayoutOrder,
+            Padding = UDim.new(0, 10)
+        })
+    })
+    
+    local window = {
+        GUI = screenGui,
+        Tabs = {},
+        CurrentTab = nil
+    }
+    
+    function window:AddTab(tabName)
+        local tabButton = self:Create("TextButton", {
+            Name = tabName .. "Tab",
+            Parent = tabContainer,
+            Size = UDim2.new(0, 100, 1, 0),
+            BackgroundColor3 = theme.Secondary,
+            Text = tabName,
+            TextColor3 = theme.Text,
+            Font = Enum.Font.Gotham,
+            TextSize = 12,
+            AutoButtonColor = false
+        }, {
+            self:Create("UICorner", {CornerRadius = UDim.new(0, 6)})
+        })
+        
+        local tabContent = self:Create("Frame", {
+            Name = tabName .. "Content",
+            Parent = contentContainer,
+            Size = UDim2.new(1, 0, 0, 0),
+            BackgroundTransparency = 1,
+            Visible = false
+        }, {
+            self:Create("UIListLayout", {
+                SortOrder = Enum.SortOrder.LayoutOrder,
+                Padding = UDim.new(0, 10)
+            })
+        })
+        
+        local tab = {
+            Name = tabName,
+            Button = tabButton,
+            Content = tabContent
+        }
+        
+        tabButton.MouseButton1Click:Connect(function()
+            window:SwitchTab(tabName)
         end)
         
-        if success and type(data) == "table" then
-            if data.UISize then SpeedHubX.Save.UISize = data.UISize end
-            if data.TabSize then SpeedHubX.Save.TabSize = data.TabSize end
-            if data.Theme and VerifyTheme(data.Theme) then SpeedHubX.Save.Theme = data.Theme end
+        table.insert(self.Tabs, tab)
+        
+        if #self.Tabs == 1 then
+            window:SwitchTab(tabName)
         end
+        
+        return tab
     end
-end
-
--- Load saved settings
-LoadFromFile("Speed Hub X V3.lua")
-
--- UI Creation
-local MainUI = CreateInstance("ScreenGui", {
-    Name = "Speed Hub X Lib V3",
-    Parent = CoreGui
-}, {
-    CreateInstance("UIScale", {Scale = Scale, Name = "Scale"})
-})
-
--- Remove duplicate UI if exists
-local existingUI = CoreGui:FindFirstChild(MainUI.Name)
-if existingUI and existingUI ~= MainUI then
-    existingUI:Destroy()
-end
-
--- Element Creation Functions
-SpeedHubX.Elements.Corner = function(parent, cornerRadius)
-    return TrackInstance(CreateInstance("UICorner", {
-        Parent = parent,
-        CornerRadius = cornerRadius or UDim.new(0, 7)
-    }), "Corner")
-end
-
-SpeedHubX.Elements.Stroke = function(parent, color, thickness)
-    return TrackInstance(CreateInstance("UIStroke", {
-        Parent = parent,
-        Color = color or SpeedHubX.Themes[SpeedHubX.Save.Theme]["Color Stroke"],
-        Thickness = thickness or 1,
-        ApplyStrokeMode = "Border"
-    }), "Stroke")
-end
-
-SpeedHubX.Elements.Button = function(parent, properties, callback)
-    local button = TrackInstance(CreateInstance("TextButton", {
-        Parent = parent,
-        Text = "",
-        Size = UDim2.fromScale(1, 1),
-        BackgroundColor3 = SpeedHubX.Themes[SpeedHubX.Save.Theme]["Color Hub 2"],
-        AutoButtonColor = false
-    }), "Frame")
     
-    ApplyProperties(button, properties)
+    function window:SwitchTab(tabName)
+        for _, tab in pairs(self.Tabs) do
+            tab.Content.Visible = (tab.Name == tabName)
+            self:Tween(tab.Button, {
+                BackgroundColor3 = (tab.Name == tabName) and theme.Accent or theme.Secondary
+            })
+        end
+        self.CurrentTab = tabName
+    end
+    
+    table.insert(self.Windows, window)
+    return window
+end
+
+-- إضافة العناصر إلى التبويبات
+function NeoUI:AddButton(tab, options)
+    options = options or {}
+    local theme = self.Themes[self.Settings.Theme]
+    
+    local button = self:Create("TextButton", {
+        Name = options.Name or "Button",
+        Parent = tab.Content,
+        Size = UDim2.new(1, 0, 0, 40),
+        BackgroundColor3 = theme.Secondary,
+        Text = options.Text or "Button",
+        TextColor3 = theme.Text,
+        Font = Enum.Font.Gotham,
+        TextSize = 12,
+        AutoButtonColor = false
+    }, {
+        self:Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
+        self:Create("UIStroke", {
+            Color = theme.Stroke,
+            Thickness = 1
+        })
+    })
     
     button.MouseEnter:Connect(function()
-        button.BackgroundTransparency = 0.4
+        self:Tween(button, {BackgroundColor3 = theme.Accent})
     end)
     
     button.MouseLeave:Connect(function()
-        button.BackgroundTransparency = 0
+        self:Tween(button, {BackgroundColor3 = theme.Secondary})
     end)
     
-    if callback then
-        button.Activated:Connect(callback)
+    if options.Callback then
+        button.MouseButton1Click:Connect(options.Callback)
     end
     
     return button
 end
 
-SpeedHubX.Elements.Gradient = function(parent, properties)
-    return TrackInstance(CreateInstance("UIGradient", {
-        Parent = parent,
-        Color = SpeedHubX.Themes[SpeedHubX.Save.Theme]["Color Hub 1"]
-    }), "Gradient")
-end
-
--- Additional UI creation functions would follow the same pattern...
-
--- Main Library Functions
-function SpeedHubX:GetIcon(iconName)
-    if iconName:find("rbxassetid://") or iconName:len() < 1 then
-        return iconName
-    end
+function NeoUI:AddToggle(tab, options)
+    options = options or {}
+    local theme = self.Themes[self.Settings.Theme]
     
-    iconName = iconName:lower():gsub("lucide", ""):gsub("-", "")
+    local toggleFrame = self:Create("Frame", {
+        Name = options.Name or "Toggle",
+        Parent = tab.Content,
+        Size = UDim2.new(1, 0, 0, 30),
+        BackgroundTransparency = 1
+    }, {
+        self:Create("UIListLayout", {
+            FillDirection = Enum.FillDirection.Horizontal,
+            HorizontalAlignment = Enum.HorizontalAlignment.Left,
+            VerticalAlignment = Enum.VerticalAlignment.Center,
+            SortOrder = Enum.SortOrder.LayoutOrder,
+            Padding = UDim.new(0, 10)
+        })
+    })
     
-    for name, icon in pairs(self.Icons) do
-        name = name:gsub("lucide", ""):gsub("-", "")
-        if name == iconName then
-            return icon
+    local label = self:Create("TextLabel", {
+        Name = "Label",
+        Parent = toggleFrame,
+        Size = UDim2.new(0.7, 0, 1, 0),
+        BackgroundTransparency = 1,
+        Text = options.Text or "Toggle",
+        TextColor3 = theme.Text,
+        Font = Enum.Font.Gotham,
+        TextSize = 12,
+        TextXAlignment = Enum.TextXAlignment.Left
+    })
+    
+    local toggleButton = self:Create("TextButton", {
+        Name = "ToggleButton",
+        Parent = toggleFrame,
+        Size = UDim2.new(0, 50, 0, 25),
+        BackgroundColor3 = theme.Secondary,
+        Text = "",
+        AutoButtonColor = false
+    }, {
+        self:Create("UICorner", {CornerRadius = UDim.new(0, 12)}),
+        self:Create("UIStroke", {
+            Color = theme.Stroke,
+            Thickness = 1
+        })
+    })
+    
+    local toggleCircle = self:Create("Frame", {
+        Name = "ToggleCircle",
+        Parent = toggleButton,
+        Size = UDim2.new(0, 20, 0, 20),
+        Position = UDim2.new(0, 3, 0.5, -10),
+        BackgroundColor3 = theme.Text,
+        AnchorPoint = Vector2.new(0, 0.5)
+    }, {
+        self:Create("UICorner", {CornerRadius = UDim.new(0, 10)})
+    })
+    
+    local isToggled = options.Default or false
+    
+    local function updateToggle()
+        if isToggled then
+            self:Tween(toggleButton, {BackgroundColor3 = theme.Accent})
+            self:Tween(toggleCircle, {Position = UDim2.new(1, -23, 0.5, -10)})
+        else
+            self:Tween(toggleButton, {BackgroundColor3 = theme.Secondary})
+            self:Tween(toggleCircle, {Position = UDim2.new(0, 3, 0.5, -10)})
         end
     end
     
-    for name, icon in pairs(self.Icons) do
-        name = name:gsub("lucide", ""):gsub("-", "")
-        if name:find(iconName) then
-            return icon
+    toggleButton.MouseButton1Click:Connect(function()
+        isToggled = not isToggled
+        updateToggle()
+        if options.Callback then
+            options.Callback(isToggled)
         end
-    end
+    end)
     
-    return iconName
-end
-
-function SpeedHubX:SetTheme(themeName)
-    if not VerifyTheme(themeName) then return end
-    
-    self.Save.Theme = themeName
-    SaveToFile("Speed Hub X V3.lua", self.Save)
-    
-    local theme = self.Themes[themeName]
-    
-    for _, instanceData in pairs(self.Instances) do
-        local instance = instanceData.Instance
-        
-        if instanceData.Type == "Gradient" then
-            instance.Color = theme["Color Hub 1"]
-        elseif instanceData.Type == "Frame" then
-            instance.BackgroundColor3 = theme["Color Hub 2"]
-        elseif instanceData.Type == "Stroke" then
-            instance.Color = theme["Color Stroke"]
-        elseif instanceData.Type == "Theme" then
-            instance.BackgroundColor3 = theme["Color Theme"]
-        elseif instanceData.Type == "Text" then
-            instance.TextColor3 = theme["Color Text"]
-        elseif instanceData.Type == "DarkText" then
-            instance.TextColor3 = theme["Color Dark Text"]
-        elseif instanceData.Type == "ScrollBar" then
-            instance.ScrollBarImageColor3 = theme["Color Theme"]
-        end
-    end
-end
-
-function SpeedHubX:SetScale(newScale)
-    Scale = ViewportSize.Y / math.clamp(newScale, 300, 2000)
-    MainUI.Scale.Scale = Scale
-end
-
-function SpeedHubX:MakeWindow(options)
-    -- Window creation code would follow the same organized pattern
-    -- This is a simplified version for demonstration
-    local windowName = options.Name or options.Title or ""
-    local subTitle = options.SubTitle or ""
-    local saveFolder = options.SaveFolder or false
-    local saveRejoin = options.SaveRejoin or false
-    
-    -- Window creation logic here...
+    updateToggle()
     
     return {
-        CloseBtn = function()
-            -- Close window logic
+        SetState = function(state)
+            isToggled = state
+            updateToggle()
         end,
-        Minimize = function()
-            -- Minimize window logic
-        end,
-        Set = function(title, subtitle)
-            -- Set title logic
-        end,
-        -- Other window methods...
+        GetState = function()
+            return isToggled
+        end
     }
 end
 
-return SpeedHubX
+function NeoUI:AddSlider(tab, options)
+    options = options or {}
+    local theme = self.Themes[self.Settings.Theme]
+    
+    local sliderFrame = self:Create("Frame", {
+        Name = options.Name or "Slider",
+        Parent = tab.Content,
+        Size = UDim2.new(1, 0, 0, 60),
+        BackgroundTransparency = 1
+    }, {
+        self:Create("UIListLayout", {
+            SortOrder = Enum.SortOrder.LayoutOrder,
+            Padding = UDim.new(0, 5)
+        })
+    })
+    
+    local topFrame = self:Create("Frame", {
+        Name = "TopFrame",
+        Parent = sliderFrame,
+        Size = UDim2.new(1, 0, 0, 20),
+        BackgroundTransparency = 1
+    }, {
+        self:Create("UIListLayout", {
+            FillDirection = Enum.FillDirection.Horizontal,
+            HorizontalAlignment = Enum.HorizontalAlignment.Left,
+            VerticalAlignment = Enum.VerticalAlignment.Center,
+            SortOrder = Enum.SortOrder.LayoutOrder,
+            Padding = UDim.new(0, 10)
+        })
+    })
+    
+    local label = self:Create("TextLabel", {
+        Name = "Label",
+        Parent = topFrame,
+        Size = UDim2.new(0.7, 0, 1, 0),
+        BackgroundTransparency = 1,
+        Text = options.Text or "Slider",
+        TextColor3 = theme.Text,
+        Font = Enum.Font.Gotham,
+        TextSize = 12,
+        TextXAlignment = Enum.TextXAlignment.Left
+    })
+    
+    local valueLabel = self:Create("TextLabel", {
+        Name = "ValueLabel",
+        Parent = topFrame,
+        Size = UDim2.new(0.3, 0, 1, 0),
+        BackgroundTransparency = 1,
+        Text = tostring(options.Default or options.Min or 0),
+        TextColor3 = theme.SubText,
+        Font = Enum.Font.Gotham,
+        TextSize = 12,
+        TextXAlignment = Enum.TextXAlignment.Right
+    })
+    
+    local sliderBar = self:Create("Frame", {
+        Name = "SliderBar",
+        Parent = sliderFrame,
+        Size = UDim2.new(1, 0, 0, 10),
+        BackgroundColor3 = theme.Secondary,
+        ClipsDescendants = true
+    }, {
+        self:Create("UICorner", {CornerRadius = UDim.new(0, 5)})
+    })
+    
+    local sliderFill = self:Create("Frame", {
+        Name = "SliderFill",
+        Parent = sliderBar,
+        Size = UDim2.new(0.5, 0, 1, 0),
+        BackgroundColor3 = theme.Accent
+    }, {
+        self:Create("UICorner", {CornerRadius = UDim.new(0, 5)})
+    })
+    
+    local sliderButton = self:Create("TextButton", {
+        Name = "SliderButton",
+        Parent = sliderBar,
+        Size = UDim2.new(0, 16, 0, 16),
+        Position = UDim2.new(0.5, -8, 0.5, -8),
+        BackgroundColor3 = theme.Text,
+        Text = "",
+        AutoButtonColor = false,
+        ZIndex = 2
+    }, {
+        self:Create("UICorner", {CornerRadius = UDim.new(0, 8)})
+    })
+    
+    local minValue = options.Min or 0
+    local maxValue = options.Max or 100
+    local currentValue = options.Default or minValue
+    local isSliding = false
+    
+    local function updateSlider()
+        local percentage = (currentValue - minValue) / (maxValue - minValue)
+        sliderFill.Size = UDim2.new(percentage, 0, 1, 0)
+        sliderButton.Position = UDim2.new(percentage, -8, 0.5, -8)
+        valueLabel.Text = tostring(math.floor(currentValue))
+    end
+    
+    local function setValue(value)
+        currentValue = math.clamp(value, minValue, maxValue)
+        updateSlider()
+        if options.Callback then
+            options.Callback(currentValue)
+        end
+    end
+    
+    sliderButton.MouseButton1Down:Connect(function()
+        isSliding = true
+    end)
+    
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            isSliding = false
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if isSliding and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local mousePos = UserInputService:GetMouseLocation()
+            local sliderPos = sliderBar.AbsolutePosition
+            local sliderSize = sliderBar.AbsoluteSize
+            local relativeX = math.clamp((mousePos.X - sliderPos.X) / sliderSize.X, 0, 1)
+            setValue(minValue + relativeX * (maxValue - minValue))
+        end
+    end)
+    
+    updateSlider()
+    
+    return {
+        SetValue = setValue,
+        GetValue = function() return currentValue end
+    }
+end
+
+return NeoUI
