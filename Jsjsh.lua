@@ -370,26 +370,27 @@ local Containers = SetConfigs(Create("Frame", "Containers", Menu), {
   BackgroundTransparency = 1
 })
 
-function NewTab(Configs)
+function NewTab(config)
     local TabColorText = Configs_HUB.TextColor
     local ContainerVisible = true
     local DefaultSize = 16
+    local isFirstTab = #ScrollTab:GetChildren() <= 2
 
-    for i,v in pairs(ScrollTab:GetChildren()) do
+    for i, v in pairs(ScrollTab:GetChildren()) do
         if v:IsA("TextButton") then
             TabColorText = Configs_HUB.DarkText
             DefaultSize = 15
         end
     end
 
-    for i,v in pairs(Containers:GetChildren()) do
+    for i, v in pairs(Containers:GetChildren()) do
         if v:IsA("ScrollingFrame") then
             ContainerVisible = false
         end
     end
 
     local TextButton = SetConfigs(Create("TextButton", "Tab", ScrollTab), {
-        Size = UDim2.new(1, 0, 0, 25),
+        Size = UDim2.new(0.9, 0, 0, 35),
         BackgroundTransparency = 1,
         Text = "",
         AutoButtonColor = false,
@@ -397,33 +398,46 @@ function NewTab(Configs)
     Corner(TextButton)
     Stroke(TextButton)
 
-    ScrollTab.CanvasSize = ScrollTab.CanvasSize + UDim2.new(0, 0, 0, 35)
+    ScrollTab.CanvasSize = ScrollTab.CanvasSize + UDim2.new(0, 0, 0, 40)
+
+    local TabIcon = Create("ImageLabel", "TabIcon", TextButton)
+    SetConfigs(TabIcon, {
+        Image = config.Icon or "rbxassetid://0",
+        Size = UDim2.new(0, 20, 0, 20),
+        Position = UDim2.new(0, 10, 0.5, -10),
+        AnchorPoint = Vector2.new(0, 0.5),
+        BackgroundTransparency = 1,
+        ImageColor3 = Configs_HUB.TextColor
+    })
 
     local TabName = SetConfigs(Create("TextLabel", "TabName", TextButton), {
         TextColor3 = TabColorText,
-        Size = UDim2.new(1, 0, 1, 0),
-        Text = Configs.Name,
+        Size = UDim2.new(1, -40, 1, 0),
+        Position = UDim2.new(0, 40, 0, 0),
+        Text = config.Name or "Tab",
         TextSize = DefaultSize,
         Font = Enum.Font.SourceSansBold,
-        BackgroundTransparency = 1
+        BackgroundTransparency = 1,
+        TextXAlignment = Enum.TextXAlignment.Left
     })
 
-    local Container = SetConfigs(Create("ScrollingFrame", Configs.Name, Containers), {
+    local Container = SetConfigs(Create("ScrollingFrame", config.Name or "Tab", Containers), {
         Size = UDim2.new(1, 0, 1, -10),
         Position = UDim2.new(0, 0, 0, 0),
         BackgroundTransparency = 1,
         CanvasSize = UDim2.new(0, 0, 0, 10),
         ScrollingDirection = "Y",
-        ScrollBarThickness = 0,
-        AutomaticCanvasSize = "Y",
+        ScrollBarThickness = 3,
+        ScrollBarImageColor3 = Configs_HUB.Accent,
+        AutomaticCanvasSize = Enum.AutomaticSize.Y,
         Visible = ContainerVisible
     })
 
-    local Selector = SetConfigs(Create("Frame", "Selector", TabButton), {
+    local Selector = SetConfigs(Create("Frame", "Selector", TextButton), {
         Size = isFirstTab and UDim2.new(0, 4, 1, -10) or UDim2.new(0, 4, 0, 4),
         Position = UDim2.new(0, 0, 0.5, 0),
         AnchorPoint = Vector2.new(0, 0.5),
-        BackgroundColor3 = Configs_HUB.Stroke,
+        BackgroundColor3 = Configs_HUB.Accent,
         BackgroundTransparency = isFirstTab and 0 or 1
     })
     Corner(Selector, UDim.new(0.5, 0))
@@ -436,34 +450,48 @@ function NewTab(Configs)
     })
 
     local ListLayout = SetConfigs(Create("UIListLayout", "ListLayout", Container), {
-        Padding = UDim.new(0, 5)
+        Padding = UDim.new(0, 5),
+        SortOrder = Enum.SortOrder.LayoutOrder
     })
 
     TextButton.MouseButton1Click:Connect(function()
-        for _,v in pairs(Containers:GetChildren()) do
+        for _, v in pairs(Containers:GetChildren()) do
             if v:IsA("ScrollingFrame") then
                 v.Visible = false
             end
         end
         Container.Visible = true
         
-        for _,v in pairs(ScrollTab:GetChildren()) do
-            if v.Name == TextButton.Name and v:FindFirstChild(TabName.Name) then
-                v[TabName.Name].TextSize = 15
-                TweenService:Create(v[TabName.Name],TweenInfo.new(0.5,Enum.EasingStyle.Linear,Enum.EasingDirection.InOut), {
+        for _, v in pairs(ScrollTab:GetChildren()) do
+            if v:IsA("TextButton") and v:FindFirstChild("TabName") then
+                v.TabName.TextSize = 15
+                TweenService:Create(v.TabName, TweenInfo.new(0.3, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {
                     TextColor3 = Configs_HUB.DarkText
                 }):Play()
+                if v:FindFirstChild("Selector") then
+                    TweenService:Create(v.Selector, TweenInfo.new(0.3, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {
+                        BackgroundTransparency = 1
+                    }):Play()
+                end
+                if v:FindFirstChild("TabIcon") then
+                    TweenService:Create(v.TabIcon, TweenInfo.new(0.3, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {
+                        ImageColor3 = Configs_HUB.DarkText
+                    }):Play()
+                end
             end
         end
         
         TabName.TextSize = 16
-        TweenService:Create(TabName,TweenInfo.new(0.5,Enum.EasingStyle.Linear,Enum.EasingDirection.InOut), {
+        TweenService:Create(TabName, TweenInfo.new(0.3, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {
             TextColor3 = Configs_HUB.TextColor
         }):Play()
+        TweenService:Create(Selector, TweenInfo.new(0.3, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {
+            BackgroundTransparency = 0
+        }):Play()
+        TweenService:Create(TabIcon, TweenInfo.new(0.3, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {
+            ImageColor3 = Configs_HUB.TextColor
+        }):Play()
     end)
-    
-    return Container
-end
 
 function AddToggle(parent, Configs)
   local name = Configs.Name or "Toggle"
