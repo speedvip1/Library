@@ -1048,43 +1048,7 @@ function AddGameImage(parent, Configs)
     return ImageButton
 end
 
-function tabFunctions:AddSection(config)
-    local name = config.Name or "Section"
-    
-    local SectionFrame = SetConfigs(Create("Frame", "SectionFrame", TabContainer), {
-        Size = UDim2.new(1, -20, 0, 25),
-        BackgroundTransparency = 1
-    })
 
-    local Line1 = SetConfigs(Create("Frame", "Line", SectionFrame), {
-        Size = UDim2.new(0.35, 0, 0, 2),
-        Position = UDim2.new(0, 0, 0.5, 0),
-        AnchorPoint = Vector2.new(0, 0.5),
-        BackgroundColor3 = Configs_HUB.Stroke
-    })
-    Corner(Line1)
-
-    local TextLabel = SetConfigs(Create("TextLabel", "Text", SectionFrame), {
-        Size = UDim2.new(0.3, 0, 1, 0),
-        Position = UDim2.new(0.5, 0, 0.5, 0),
-        AnchorPoint = Vector2.new(0.5, 0.5),
-        Text = name,
-        Font = Configs_HUB.Font,
-        TextSize = 14,
-        TextColor3 = Configs_HUB.DarkText,
-        BackgroundTransparency = 1
-    })
-
-    local Line2 = SetConfigs(Create("Frame", "Line", SectionFrame), {
-        Size = UDim2.new(0.35, 0, 0, 2),
-        Position = UDim2.new(1, 0, 0.5, 0),
-        AnchorPoint = Vector2.new(1, 0.5),
-        BackgroundColor3 = Configs_HUB.Stroke
-    })
-    Corner(Line2)
-
-    return SectionFrame
-end
 
 function AddDiscordInvite(parent, Configs)
     local Title = Configs.Title or "Discord Server"
