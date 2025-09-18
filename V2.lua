@@ -1535,28 +1535,37 @@ function MakeWindow(Configs)
     local SectionName = Configs[1] or Configs.Name or "Section!!"
     
     local Frame = Create("Frame", parent, {
-      Size = UDim2.new(1, 0, 0, 25),
-      BackgroundColor3 = Configs_HUB.Cor_Hub,
-      Name = "Frame",
-      Transparency = 1
-    })Corner(Frame)
+        Size = UDim2.new(1, 0, 0, 30), 
+        BackgroundColor3 = Configs_HUB.Cor_Hub,
+        Name = "Frame",
+        Transparency = 1
+    })
+    Corner(Frame)
     
     local TextButton = Create("TextButton", Frame, {
-      TextSize = 12,
-      TextColor3 = Configs_HUB.Cor_DarkText,
-      Text = SectionName,
-      Size = UDim2.new(1, 0, 0, 25),
-      Position = UDim2.new(0, 10, 0, 0),
-      BackgroundTransparency = 1,
-      TextXAlignment = "Left",
-      Font = Configs_HUB.Text_Font
+        TextSize = 12,
+        TextColor3 = Configs_HUB.Cor_DarkText,
+        Text = SectionName,
+        Size = UDim2.new(1, -20, 0, 25),
+        Position = UDim2.new(0, 10, 0, 0),
+        BackgroundTransparency = 1,
+        TextXAlignment = "Left",
+        Font = Configs_HUB.Text_Font
     })
+    
+    local Line = Create("Frame", Frame, {
+        Size = UDim2.new(1, -20, 0, 1),
+        Position = UDim2.new(0, 10, 0, 25),
+        BackgroundColor3 = Configs_HUB.Cor_DarkText,
+        BorderSizePixel = 0
+    })
+    
     return TextButton
-  end
-  
-  function SetSection(Section, NewName)
+end
+
+function SetSection(Section, NewName)
     Section.Text = NewName
-  end
+end
   
 function AddGameImage(parent, Configs)
     local gameUrl = Configs.Url or "https://www.roblox.com/games/920587237/Adopt-Me"
