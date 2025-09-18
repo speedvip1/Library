@@ -1544,19 +1544,19 @@ function MakeWindow(Configs)
     
     local TextButton = Create("TextButton", Frame, {
         TextSize = 12,
-        TextColor3 = Configs_HUB.Cor_Cor_Stroke,
+        TextColor3 = Configs_HUB.Cor_DarkText,
         Text = SectionName,
         Size = UDim2.new(1, -20, 0, 25),
         Position = UDim2.new(0, 10, 0, 0),
         BackgroundTransparency = 1,
         TextXAlignment = "Left",
-        Font = Configs_HUB.Cor_Stroke
+        Font = Configs_HUB.Text_Font
     })
     
     local Line = Create("Frame", Frame, {
         Size = UDim2.new(1, -20, 0, 1),
         Position = UDim2.new(0, 10, 0, 25),
-        BackgroundColor3 = Configs_HUB.Cor_Stroke,
+        BackgroundColor3 = Configs_HUB.Cor_DarkText,
         BorderSizePixel = 0
     })
     
