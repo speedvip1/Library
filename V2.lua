@@ -1424,35 +1424,72 @@ function MakeWindow(Configs)
     end
   end
   
-  function AddTextLabel(parent, Configs)
-    local LabelName = Configs.Name or Configs[1] or "Text Label!!"
+  function AddTextLabel(parent, text, config)
+    local config = config or {}
+    local minHeight = config.minHeight or 25
+    local padding = config.padding or 10
+    local textSize = config.textSize or 12
+    local autoSize = config.autoSize ~= false
     
-    local Frame = Create("Frame", parent, {
-        Size = UDim2.new(1, 0, 0, 25),
-        BackgroundColor3 = Configs_HUB.Cor_Options,
-        Name = "TextLabelFrame"
-    })
-    Corner(Frame)
-    Stroke(Frame)
+    local frame = Instance.new("Frame")
+    frame.Name = "TextLabelFrame"
+    frame.BackgroundColor3 = Configs_HUB.Cor_Options
+    frame.BackgroundTransparency = 0
+    frame.BorderSizePixel = 0
+    frame.Parent = parent
     
-    local TextLabel = Create("TextLabel", Frame, {
-        TextSize = 12,
-        TextColor3 = Configs_HUB.Cor_Text,
-        Text = LabelName,
-        Size = UDim2.new(1, -20, 1, 0),
-        Position = UDim2.new(0, 10, 0, 0),
-        BackgroundTransparency = 1,
-        TextXAlignment = "Left",
-        Font = Configs_HUB.Text_Font
-    })
-    
-    return TextLabel
-end
-
-function SetLabel(label, NewValue)
-    if label and label:IsA("TextLabel") then
-        label.Text = tostring(NewValue)
+    if autoSize then
+        frame.AutomaticSize = Enum.AutomaticSize.Y
+        frame.Size = UDim2.new(1, 0, 0, minHeight)
+    else
+        frame.Size = config.size or UDim2.new(1, 0, 0, minHeight)
     end
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = Configs_HUB.Corner_Radius
+    corner.Parent = frame
+    
+    local stroke = Instance.new("UIStroke")
+    stroke.Color = Configs_HUB.Cor_Stroke
+    stroke.Thickness = 2
+    stroke.Parent = frame
+    
+    local label = Instance.new("TextLabel")
+    label.Name = "ContentLabel"
+    label.Text = text
+    label.TextColor3 = Configs_HUB.Cor_Text
+    label.TextSize = textSize
+    label.Font = Configs_HUB.Text_Font
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.TextYAlignment = Enum.TextYAlignment.Top
+    label.BackgroundTransparency = 1
+    label.TextWrapped = true
+    label.RichText = true
+    label.Parent = frame
+    
+    label.Size = UDim2.new(1, -padding*2, 0, 0)
+    label.Position = UDim2.new(0, padding, 0, padding)
+    
+    if autoSize then
+        label.AutomaticSize = Enum.AutomaticSize.Y
+        label:GetPropertyChangedSignal("TextBounds"):Connect(function()
+            local requiredHeight = label.TextBounds.Y + padding*2
+            frame.Size = UDim2.new(1, 0, 0, math.max(minHeight, requiredHeight))
+        end)
+    else
+        label.Size = UDim2.new(1, -padding*2, 1, -padding*2)
+    end
+    
+    return {
+        Update = function(newText) label.Text = newText end,
+        SetTextSize = function(size) label.TextSize = size end,
+        GetLabel = function() return label end,
+        GetFrame = function() return frame end
+    }
+end
+  
+  function SetLabel(label, NewValue)
+    label.Text = NewValue
   end
   
   function AddImageLabel(parent, Configs)
