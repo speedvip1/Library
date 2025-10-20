@@ -1482,6 +1482,137 @@ function Kavo.CreateLib(kavName, themeList)
                     end
                 end)        
             end
+            function Tab:AddDiscordInvite(Configs)
+    local Title = Configs[1] or Configs.Name or Configs.Title or "Discord"
+    local Desc = Configs.Desc or Configs.Description or ""
+    local Logo = Configs[2] or Configs.Logo or ""
+    local Invite = Configs[3] or Configs.Invite or ""
+    
+    local InviteHolder = Instance.new("Frame")
+    local InviteLabel = Instance.new("TextLabel")
+    local FrameHolder = Instance.new("Frame")
+    local ImageLabel = Instance.new("ImageLabel")
+    local LTitle = Instance.new("TextLabel")
+    local LDesc = Instance.new("TextLabel")
+    local JoinButton = Instance.new("TextButton")
+    local UICorner = Instance.new("UICorner")
+    local UICorner2 = Instance.new("UICorner")
+    local UICorner3 = Instance.new("UICorner")
+    local UIStroke = Instance.new("UIStroke")
+
+    InviteHolder.Name = "DiscordInvite"
+    InviteHolder.Parent = Container
+    InviteHolder.Size = UDim2.new(1, 0, 0, 80)
+    InviteHolder.BackgroundTransparency = 1
+
+    InviteLabel.Name = "InviteLabel"
+    InviteLabel.Parent = InviteHolder
+    InviteLabel.Size = UDim2.new(1, 0, 0, 15)
+    InviteLabel.Position = UDim2.new(0, 5, 0, 0)
+    InviteLabel.TextColor3 = Color3.fromRGB(40, 150, 255)
+    InviteLabel.Font = Enum.Font.GothamBold
+    InviteLabel.TextXAlignment = Enum.TextXAlignment.Left
+    InviteLabel.BackgroundTransparency = 1
+    InviteLabel.TextSize = 10
+    InviteLabel.Text = Invite
+
+    FrameHolder.Name = "FrameHolder"
+    FrameHolder.Parent = InviteHolder
+    FrameHolder.Size = UDim2.new(1, 0, 0, 65)
+    FrameHolder.AnchorPoint = Vector2.new(0, 1)
+    FrameHolder.Position = UDim2.new(0, 0, 1, 0)
+    FrameHolder.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+
+    UICorner.Parent = FrameHolder
+    UICorner.CornerRadius = UDim.new(0, 8)
+
+    ImageLabel.Name = "ImageLabel"
+    ImageLabel.Parent = FrameHolder
+    ImageLabel.Size = UDim2.new(0, 30, 0, 30)
+    ImageLabel.Position = UDim2.new(0, 7, 0, 7)
+    ImageLabel.Image = Logo
+    ImageLabel.BackgroundTransparency = 1
+
+    UICorner2.Parent = ImageLabel
+    UICorner2.CornerRadius = UDim.new(0, 4)
+
+    UIStroke.Parent = ImageLabel
+    UIStroke.Color = Color3.fromRGB(100, 100, 100)
+    UIStroke.Thickness = 1
+
+    LTitle.Name = "LTitle"
+    LTitle.Parent = FrameHolder
+    LTitle.Size = UDim2.new(1, -52, 0, 15)
+    LTitle.Position = UDim2.new(0, 44, 0, 7)
+    LTitle.Font = Enum.Font.GothamBold
+    LTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    LTitle.TextXAlignment = Enum.TextXAlignment.Left
+    LTitle.BackgroundTransparency = 1
+    LTitle.TextSize = 10
+    LTitle.Text = Title
+
+    LDesc.Name = "LDesc"
+    LDesc.Parent = FrameHolder
+    LDesc.Size = UDim2.new(1, -52, 0, 0)
+    LDesc.Position = UDim2.new(0, 44, 0, 22)
+    LDesc.TextWrapped = true
+    LDesc.AutomaticSize = Enum.AutomaticSize.Y
+    LDesc.Font = Enum.Font.Gotham
+    LDesc.TextColor3 = Color3.fromRGB(200, 200, 200)
+    LDesc.TextXAlignment = Enum.TextXAlignment.Left
+    LDesc.BackgroundTransparency = 1
+    LDesc.TextSize = 8
+    LDesc.Text = Desc
+
+    JoinButton.Name = "JoinButton"
+    JoinButton.Parent = FrameHolder
+    JoinButton.Size = UDim2.new(1, -14, 0, 16)
+    JoinButton.AnchorPoint = Vector2.new(0.5, 1)
+    JoinButton.Position = UDim2.new(0.5, 0, 1, -7)
+    JoinButton.Text = "Join"
+    JoinButton.Font = Enum.Font.GothamBold
+    JoinButton.TextSize = 12
+    JoinButton.TextColor3 = Color3.fromRGB(220, 220, 220)
+    JoinButton.BackgroundColor3 = Color3.fromRGB(50, 150, 50)
+
+    UICorner3.Parent = JoinButton
+    UICorner3.CornerRadius = UDim.new(0, 5)
+
+    local ClickDelay = false
+    JoinButton.MouseButton1Click:Connect(function()
+        if ClickDelay then return end
+        
+        setclipboard(Invite)
+        
+        ClickDelay = true
+        JoinButton.Text = "Copied to Clipboard"
+        JoinButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+        JoinButton.TextColor3 = Color3.fromRGB(150, 150, 150)
+        
+        wait(5)
+        
+        JoinButton.Text = "Join"
+        JoinButton.BackgroundColor3 = Color3.fromRGB(50, 150, 50)
+        JoinButton.TextColor3 = Color3.fromRGB(220, 220, 220)
+        ClickDelay = false
+    end)
+    
+    local DiscordInvite = {}
+    
+    function DiscordInvite:Destroy()
+        InviteHolder:Destroy()
+    end
+    
+    function DiscordInvite:Visible(state)
+        if state then
+            InviteHolder.Visible = true
+        else
+            InviteHolder.Visible = false
+        end
+    end
+    
+    return DiscordInvite
+end
             function Elements:NewDropdown(dropname, dropinf, list, callback)
                 local DropFunction = {}
                 dropname = dropname or "Dropdown"
