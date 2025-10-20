@@ -1257,16 +1257,12 @@ function Elements:NewSlider(slidInf, slidTip, maxvalue, minvalue, startVal, call
     local UICorner = Instance.new("UICorner")
     local togName = Instance.new("TextLabel")
     local viewInfo = Instance.new("ImageButton")
-    local sliderBtn = Instance.new("TextButton")
-    local UICorner_2 = Instance.new("UICorner")
-    local UIListLayout = Instance.new("UIListLayout")
-    local sliderDrag = Instance.new("Frame")
-    local UICorner_3 = Instance.new("UICorner")
-    local write = Instance.new("ImageLabel")
+    local sliderHolder = Instance.new("Frame")
+    local sliderBar = Instance.new("Frame")
+    local sliderIndicator = Instance.new("Frame")
+    local sliderIcon = Instance.new("Frame")
     local val = Instance.new("TextLabel")
-    
-    local sliderCircle = Instance.new("Frame")
-    local UICorner_Circle = Instance.new("UICorner")
+    local UIScale = Instance.new("UIScale")
 
     sliderElement.Name = "sliderElement"
     sliderElement.Parent = sectionInners
@@ -1307,69 +1303,67 @@ function Elements:NewSlider(slidInf, slidTip, maxvalue, minvalue, startVal, call
     viewInfo.ImageRectOffset = Vector2.new(764, 764)
     viewInfo.ImageRectSize = Vector2.new(36, 36)
 
-    sliderBtn.Name = "sliderBtn"
-    sliderBtn.Parent = sliderElement
-    sliderBtn.BackgroundColor3 = Color3.fromRGB(themeList.ElementColor.r * 255 + 5, themeList.ElementColor.g * 255 + 5, themeList.ElementColor.b * 255 + 5)
-    sliderBtn.BorderSizePixel = 0
-    sliderBtn.Position = UDim2.new(0.488749951, 0, 0.393939406, 0)
-    sliderBtn.Size = UDim2.new(0, 149, 0, 6)
-    sliderBtn.AutoButtonColor = false
-    sliderBtn.Font = Enum.Font.SourceSans
-    sliderBtn.Text = ""
-    sliderBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
-    sliderBtn.TextSize = 14.000
+    sliderHolder.Name = "sliderHolder"
+    sliderHolder.Parent = sliderElement
+    sliderHolder.Size = UDim2.new(0.45, 0, 1, 0)
+    sliderHolder.Position = UDim2.new(1, 0, 0, 0)
+    sliderHolder.AnchorPoint = Vector2.new(1, 0)
+    sliderHolder.BackgroundTransparency = 1
 
-    UICorner_2.CornerRadius = UDim.new(0, 4)
-    UICorner_2.Parent = sliderBtn
+    sliderBar.Name = "sliderBar"
+    sliderBar.Parent = sliderHolder
+    sliderBar.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    sliderBar.Size = UDim2.new(1, -20, 0, 6)
+    sliderBar.Position = UDim2.new(0.5, 0, 0.5, 0)
+    sliderBar.AnchorPoint = Vector2.new(0.5, 0.5)
 
-    UIListLayout.Parent = sliderBtn
-    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+    local sliderBarCorner = Instance.new("UICorner")
+    sliderBarCorner.CornerRadius = UDim.new(1, 0)
+    sliderBarCorner.Parent = sliderBar
 
-    sliderDrag.Name = "sliderDrag"
-    sliderDrag.Parent = sliderBtn
-    sliderDrag.BackgroundColor3 = themeList.SchemeColor
-    sliderDrag.BorderSizePixel = 0
-    sliderDrag.Size = UDim2.new((startVal - minvalue) / (maxvalue - minvalue), 0, 1, 0)
+    sliderIndicator.Name = "sliderIndicator"
+    sliderIndicator.Parent = sliderBar
+    sliderIndicator.BackgroundColor3 = themeList.SchemeColor
+    sliderIndicator.Size = UDim2.new(0.3, 0, 1, 0)
+    sliderIndicator.BorderSizePixel = 0
 
-    UICorner_3.CornerRadius = UDim.new(0, 4)
-    UICorner_3.Parent = sliderDrag
+    local sliderIndicatorCorner = Instance.new("UICorner")
+    sliderIndicatorCorner.CornerRadius = UDim.new(1, 0)
+    sliderIndicatorCorner.Parent = sliderIndicator
 
-    sliderCircle.Name = "sliderCircle"
-    sliderCircle.Parent = sliderDrag
-    sliderCircle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    sliderCircle.BorderSizePixel = 0
-    sliderCircle.Size = UDim2.new(0, 16, 0, 16)
-    sliderCircle.Position = UDim2.new(1, -8, 0.5, -8)
-    sliderCircle.ZIndex = 2
-    sliderCircle.AnchorPoint = Vector2.new(0.5, 0.5)
+    sliderIcon.Name = "sliderIcon"
+    sliderIcon.Parent = sliderBar
+    sliderIcon.Size = UDim2.new(0, 6, 0, 12)
+    sliderIcon.BackgroundColor3 = Color3.fromRGB(220, 220, 220)
+    sliderIcon.Position = UDim2.new(0.3, 0, 0.5, 0)
+    sliderIcon.AnchorPoint = Vector2.new(0.5, 0.5)
+    sliderIcon.BackgroundTransparency = 0.2
 
-    UICorner_Circle.CornerRadius = UDim.new(1, 0)
-    UICorner_Circle.Parent = sliderCircle
-
-    write.Name = "write"
-    write.Parent = sliderElement
-    write.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    write.BackgroundTransparency = 1.000
-    write.Position = UDim2.new(0.0199999996, 0, 0.180000007, 0)
-    write.Size = UDim2.new(0, 21, 0, 21)
-    write.Image = "rbxassetid://3926307971"
-    write.ImageColor3 = themeList.SchemeColor
-    write.ImageRectOffset = Vector2.new(404, 164)
-    write.ImageRectSize = Vector2.new(36, 36)
+    local sliderIconCorner = Instance.new("UICorner")
+    sliderIconCorner.CornerRadius = UDim.new(1, 0)
+    sliderIconCorner.Parent = sliderIcon
 
     val.Name = "val"
-    val.Parent = sliderElement
+    val.Parent = sliderHolder
     val.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     val.BackgroundTransparency = 1.000
-    val.Position = UDim2.new(0.352386296, 0, 0.272727281, 0)
-    val.Size = UDim2.new(0, 41, 0, 14)
+    val.Size = UDim2.new(0, 30, 0, 14)
+    val.AnchorPoint = Vector2.new(1, 0.5)
+    val.Position = UDim2.new(0, 0, 0.5, 0)
     val.Font = Enum.Font.GothamSemibold
     val.Text = tostring(startVal)
     val.TextColor3 = themeList.TextColor
-    val.TextSize = 14.000
-    val.TextTransparency = 0
+    val.TextSize = 12.000
     val.TextXAlignment = Enum.TextXAlignment.Right
+
+    UIScale.Parent = val
+    UIScale.Scale = 1
+
+    local baseMousePos = Instance.new("Frame")
+    baseMousePos.Name = "baseMousePos"
+    baseMousePos.Parent = sliderBar
+    baseMousePos.Position = UDim2.new(0, 0, 0.5, 0)
+    baseMousePos.Visible = false
 
     local moreInfo = Instance.new("TextLabel")
     local UICorner_4 = Instance.new("UICorner")
@@ -1417,7 +1411,8 @@ function Elements:NewSlider(slidInf, slidTip, maxvalue, minvalue, startVal, call
         value = math.clamp(value, minvalue, maxvalue)
         local percentage = (value - minvalue) / (maxvalue - minvalue)
         
-        sliderDrag.Size = UDim2.new(percentage, 0, 1, 0)
+        sliderIcon.Position = UDim2.new(percentage, 0, 0.5, 0)
+        sliderIndicator.Size = UDim2.new(percentage, 0, 1, 0)
         val.Text = tostring(math.floor(value))
         
         pcall(function()
@@ -1426,6 +1421,20 @@ function Elements:NewSlider(slidInf, slidTip, maxvalue, minvalue, startVal, call
     end
 
     UpdateSliderValue(startVal)
+
+    local function ControlPos()
+        local mousePos = game:GetService("Players").LocalPlayer:GetMouse()
+        local aPos = mousePos.X - baseMousePos.AbsolutePosition.X
+        local configureDpiPos = aPos / sliderBar.AbsoluteSize.X
+        
+        sliderIcon.Position = UDim2.new(math.clamp(configureDpiPos, 0, 1), 0, 0.5, 0)
+    end
+
+    local function UpdateValues()
+        local sliderPos = sliderIcon.Position.X.Scale
+        local newValue = math.floor(((sliderPos * maxvalue) / maxvalue) * (maxvalue - minvalue) + minvalue)
+        UpdateSliderValue(newValue)
+    end
 
     btn.MouseEnter:Connect(function()
         if not focusing then
@@ -1445,6 +1454,51 @@ function Elements:NewSlider(slidInf, slidTip, maxvalue, minvalue, startVal, call
         end
     end)
 
+    sliderHolder.MouseButton1Down:Connect(function()
+        game.TweenService:Create(sliderIcon, TweenInfo.new(0.3), {
+            BackgroundTransparency = 0
+        }):Play()
+        
+        if sectionInners and sectionInners.Parent and sectionInners.Parent:FindFirstChildWhichIsA("ScrollingFrame") then
+            sectionInners.Parent.ScrollingEnabled = false
+        end
+        
+        while uis:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do 
+            task.wait()
+            ControlPos()
+        end
+        
+        game.TweenService:Create(sliderIcon, TweenInfo.new(0.3), {
+            BackgroundTransparency = 0.2
+        }):Play()
+        
+        if sectionInners and sectionInners.Parent and sectionInners.Parent:FindFirstChildWhichIsA("ScrollingFrame") then
+            sectionInners.Parent.ScrollingEnabled = true
+        end
+    end)
+
+    val:GetPropertyChangedSignal("Text"):Connect(function()
+        UIScale.Scale = 0.3
+        game.TweenService:Create(UIScale, TweenInfo.new(0.1), {
+            Scale = 1.2
+        }):Play()
+        
+        game.TweenService:Create(val, TweenInfo.new(0.15), {
+            Rotation = math.random(-1, 1) * 5
+        }):Play()
+        
+        game.TweenService:Create(UIScale, TweenInfo.new(0.2), {
+            Scale = 1
+        }):Play()
+        
+        game.TweenService:Create(val, TweenInfo.new(0.1), {
+            Rotation = 0
+        }):Play()
+    end)
+
+    sliderIcon:GetPropertyChangedSignal("Position"):Connect(UpdateValues)
+    UpdateValues()
+
     local updateColors = coroutine.create(function()
         while wait(0.1) do
             if not hovering then
@@ -1453,85 +1507,14 @@ function Elements:NewSlider(slidInf, slidTip, maxvalue, minvalue, startVal, call
             moreInfo.TextColor3 = themeList.TextColor
             moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
             val.TextColor3 = themeList.TextColor
-            write.ImageColor3 = themeList.SchemeColor
             togName.TextColor3 = themeList.TextColor
             viewInfo.ImageColor3 = themeList.SchemeColor
-            sliderBtn.BackgroundColor3 = Color3.fromRGB(themeList.ElementColor.r * 255 + 5, themeList.ElementColor.g * 255 + 5, themeList.ElementColor.b * 255 + 5)
-            sliderDrag.BackgroundColor3 = themeList.SchemeColor
-            sliderCircle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            sliderBar.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            sliderIndicator.BackgroundColor3 = themeList.SchemeColor
+            sliderIcon.BackgroundColor3 = Color3.fromRGB(220, 220, 220)
         end
     end)
     coroutine.resume(updateColors)
-
-    local isDragging = false
-
-    local function StartDrag()
-        isDragging = true
-        
-        game.TweenService:Create(sliderCircle, TweenInfo.new(0.1), {
-            Size = UDim2.new(0, 20, 0, 20)
-        }):Play()
-        
-        local connection
-        connection = RunService.RenderStepped:Connect(function()
-            if not isDragging then
-                connection:Disconnect()
-                return
-            end
-            
-            local sliderAbsolutePos = sliderBtn.AbsolutePosition.X
-            local sliderAbsoluteSize = sliderBtn.AbsoluteSize.X
-            
-            local xOffset = math.clamp(mouse.X - sliderAbsolutePos, 0, sliderAbsoluteSize)
-            local percentage = xOffset / sliderAbsoluteSize
-            local currentValue = math.floor(percentage * (maxvalue - minvalue) + minvalue)
-            
-            UpdateSliderValue(currentValue)
-        end)
-        
-        local releaseConnection
-        releaseConnection = uis.InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                isDragging = false
-                
-                game.TweenService:Create(sliderCircle, TweenInfo.new(0.1), {
-                    Size = UDim2.new(0, 16, 0, 16)
-                }):Play()
-                
-                if connection then
-                    connection:Disconnect()
-                end
-                if releaseConnection then
-                    releaseConnection:Disconnect()
-                end
-            end
-        end)
-    end
-
-    sliderCircle.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            StartDrag()
-        end
-    end)
-
-    sliderDrag.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            StartDrag()
-        end
-    end)
-
-    sliderBtn.MouseButton1Down:Connect(function()
-        if not isDragging then
-            local sliderAbsolutePos = sliderBtn.AbsolutePosition.X
-            local sliderAbsoluteSize = sliderBtn.AbsoluteSize.X
-            
-            local xOffset = math.clamp(mouse.X - sliderAbsolutePos, 0, sliderAbsoluteSize)
-            local percentage = xOffset / sliderAbsoluteSize
-            local currentValue = math.floor(percentage * (maxvalue - minvalue) + minvalue)
-            
-            UpdateSliderValue(currentValue)
-        end
-    end)
 
     viewInfo.MouseButton1Click:Connect(function()
         if not viewDe then
