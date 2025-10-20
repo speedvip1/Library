@@ -448,38 +448,30 @@ function Kavo.CreateLib(kavName, themeList)
     page.ChildRemoved:Connect(UpdateSize)
 
     tabButton.MouseButton1Click:Connect(function()
-        UpdateSize()
-        for i,v in next, Pages:GetChildren() do
-            v.Visible = false
-        end
-        page.Visible = true
-        for i,v in next, tabFrames:GetChildren() do
-            if v:IsA("TextButton") then
-                if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
-                    Utility:TweenObject(v, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
-                end
-                if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
-                    Utility:TweenObject(v, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
-                end 
-                Utility:TweenObject(v, {BackgroundTransparency = 1}, 0.2)
-                
-                local image = v:FindFirstChild("TabImage")
-                if image then
-                    Utility:TweenObject(image, {ImageColor3 = themeList.TextColor}, 0.2)
+            UpdateSize()
+            for i,v in next, Pages:GetChildren() do
+                v.Visible = false
+            end
+            page.Visible = true
+            for i,v in next, tabFrames:GetChildren() do
+                if v:IsA("TextButton") then
+                    if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
+                        Utility:TweenObject(v, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
+                    end 
+                    if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
+                        Utility:TweenObject(v, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
+                    end 
+                    Utility:TweenObject(v, {BackgroundTransparency = 1}, 0.2)
                 end
             end
-        end
-        
-        if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
-            Utility:TweenObject(tabButton, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
-            Utility:TweenObject(tabImageLabel, {ImageColor3 = Color3.fromRGB(0,0,0)}, 0.2)
-        end 
-        if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
-            Utility:TweenObject(tabButton, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
-            Utility:TweenObject(tabImageLabel, {ImageColor3 = Color3.fromRGB(255,255,255)}, 0.2)
-        end 
-        Utility:TweenObject(tabButton, {BackgroundTransparency = 0}, 0.2)
-    end)
+            if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
+                Utility:TweenObject(tabButton, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
+            end 
+            if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
+                Utility:TweenObject(tabButton, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
+            end 
+            Utility:TweenObject(tabButton, {BackgroundTransparency = 0}, 0.2)
+        end)
     
     local Sections = {}
     local focusing = false
