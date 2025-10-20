@@ -1482,7 +1482,6 @@ function Kavo.CreateLib(kavName, themeList)
                     end
                 end)        
             end
-            
             function Elements:NewDropdown(dropname, dropinf, list, callback)
                 local DropFunction = {}
                 dropname = dropname or "Dropdown"
