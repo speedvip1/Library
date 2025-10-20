@@ -1484,7 +1484,7 @@ function Kavo.CreateLib(kavName, themeList)
             end
     local DiscordInvite = {}
 
-function Elements:DiscordInvite(config)
+function DiscordInvite:Create(config)
     local inviteFrame = Instance.new("Frame")
     local UICorner = Instance.new("UICorner")
     local UIStroke = Instance.new("UIStroke")
