@@ -1482,7 +1482,7 @@ function Kavo.CreateLib(kavName, themeList)
                     end
                 end)        
             end
-    function Elements:AddDiscordInvite(Configs)
+    function Elements:NewDiscord(Configs)
     local Title = Configs[1] or Configs.Name or Configs.Title or "Discord"
     local Desc = Configs.Desc or Configs.Description or ""
     local Logo = Configs[2] or Configs.Logo or ""
