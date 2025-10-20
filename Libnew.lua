@@ -1282,8 +1282,8 @@ function Elements:NewSlider(slidInf, slidTip, maxvalue, minvalue, startVal, call
     togName.Parent = sliderElement
     togName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     togName.BackgroundTransparency = 1.000
-    togName.Position = UDim2.new(0.030, 0, 0.272727281, 0)
-    togName.Size = UDim2.new(0, 200, 0, 14)
+    togName.Position = UDim2.new(0.096704483, 0, 0.272727281, 0)
+    togName.Size = UDim2.new(0, 138, 0, 14)
     togName.Font = Enum.Font.GothamSemibold
     togName.Text = slidInf
     togName.RichText = true
@@ -1292,29 +1292,28 @@ function Elements:NewSlider(slidInf, slidTip, maxvalue, minvalue, startVal, call
     togName.TextXAlignment = Enum.TextXAlignment.Left
 
     viewInfo.Name = "viewInfo"
-    viewInfo.Parent = sliderElement
-    viewInfo.BackgroundTransparency = 1.000
-    viewInfo.LayoutOrder = 9
-    viewInfo.Position = UDim2.new(0.95, -23, 0.15, 0)
-    viewInfo.Size = UDim2.new(0, 23, 0, 23)
-    viewInfo.ZIndex = 2
-    viewInfo.Image = "rbxassetid://3926305904"
-    viewInfo.ImageColor3 = themeList.SchemeColor
-    viewInfo.ImageRectOffset = Vector2.new(764, 764)
-    viewInfo.ImageRectSize = Vector2.new(36, 36)
-    viewInfo.AnchorPoint = Vector2.new(1, 0)
+                    viewInfo.Parent = toggleElement
+                    viewInfo.BackgroundTransparency = 1.000
+                    viewInfo.LayoutOrder = 9
+                    viewInfo.Position = UDim2.new(0.930000007, 0, 0.151999995, 0)
+                    viewInfo.Size = UDim2.new(0, 23, 0, 23)
+                    viewInfo.ZIndex = 2
+                    viewInfo.Image = "rbxassetid://3926305904"
+                    viewInfo.ImageColor3 = themeList.SchemeColor
+                    viewInfo.ImageRectOffset = Vector2.new(764, 764)
+                    viewInfo.ImageRectSize = Vector2.new(36, 36)
 
     sliderHolder.Name = "sliderHolder"
     sliderHolder.Parent = sliderElement
     sliderHolder.Size = UDim2.new(0.45, 0, 1, 0)
-    sliderHolder.Position = UDim2.new(0.95, -50, 0, 0)
+    sliderHolder.Position = UDim2.new(1, 0, 0, 0)
     sliderHolder.AnchorPoint = Vector2.new(1, 0)
     sliderHolder.BackgroundTransparency = 1
 
     sliderBar.Name = "sliderBar"
     sliderBar.Parent = sliderHolder
     sliderBar.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    sliderBar.Size = UDim2.new(1, -35, 0, 6)
+    sliderBar.Size = UDim2.new(1, -20, 0, 6)
     sliderBar.Position = UDim2.new(0.5, 0, 0.5, 0)
     sliderBar.AnchorPoint = Vector2.new(0.5, 0.5)
 
@@ -1349,13 +1348,13 @@ function Elements:NewSlider(slidInf, slidTip, maxvalue, minvalue, startVal, call
     val.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     val.BackgroundTransparency = 1.000
     val.Size = UDim2.new(0, 30, 0, 14)
-    val.AnchorPoint = Vector2.new(0, 0.5)
-    val.Position = UDim2.new(1, 5, 0.5, 0)
+    val.AnchorPoint = Vector2.new(1, 0.5)
+    val.Position = UDim2.new(0, 0, 0.5, 0)
     val.Font = Enum.Font.GothamSemibold
     val.Text = tostring(startVal)
     val.TextColor3 = themeList.TextColor
     val.TextSize = 12.000
-    val.TextXAlignment = Enum.TextXAlignment.Left
+    val.TextXAlignment = Enum.TextXAlignment.Right
 
     UIScale.Parent = val
     UIScale.Scale = 1
@@ -1364,8 +1363,6 @@ function Elements:NewSlider(slidInf, slidTip, maxvalue, minvalue, startVal, call
     baseMousePos.Name = "baseMousePos"
     baseMousePos.Parent = sliderBar
     baseMousePos.Position = UDim2.new(0, 0, 0.5, 0)
-    baseMousePos.Size = UDim2.new(1, 0, 0, 1)
-    baseMousePos.BackgroundTransparency = 1
     baseMousePos.Visible = false
 
     local moreInfo = Instance.new("TextLabel")
@@ -1480,29 +1477,6 @@ function Elements:NewSlider(slidInf, slidTip, maxvalue, minvalue, startVal, call
         end
     end)
 
-    sliderBar.MouseButton1Down:Connect(function()
-        game.TweenService:Create(sliderIcon, TweenInfo.new(0.3), {
-            BackgroundTransparency = 0
-        }):Play()
-        
-        if sectionInners and sectionInners.Parent and sectionInners.Parent:FindFirstChildWhichIsA("ScrollingFrame") then
-            sectionInners.Parent.ScrollingEnabled = false
-        end
-        
-        while uis:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do 
-            task.wait()
-            ControlPos()
-        end
-        
-        game.TweenService:Create(sliderIcon, TweenInfo.new(0.3), {
-            BackgroundTransparency = 0.2
-        }):Play()
-        
-        if sectionInners and sectionInners.Parent and sectionInners.Parent:FindFirstChildWhichIsA("ScrollingFrame") then
-            sectionInners.Parent.ScrollingEnabled = true
-        end
-    end)
-
     val:GetPropertyChangedSignal("Text"):Connect(function()
         UIScale.Scale = 0.3
         game.TweenService:Create(UIScale, TweenInfo.new(0.1), {
@@ -1547,64 +1521,29 @@ function Elements:NewSlider(slidInf, slidTip, maxvalue, minvalue, startVal, call
             viewDe = true
             focusing = true
             
-            for i, v in next, infoContainer:GetChildren() do
-                if v ~= moreInfo then
-                    if Utility and Utility.TweenObject then
-                        Utility:TweenObject(v, {Position = UDim2.new(0, 0, 2, 0)}, 0.2)
-                    else
-                        game.TweenService:Create(v, TweenInfo.new(0.2), {
-                            Position = UDim2.new(0, 0, 2, 0)
-                        }):Play()
-                    end
+            for i,v in next, infoContainer:GetChildren() do
+                if v ~= moreInfo and Utility and Utility.TweenObject then
+                    Utility:TweenObject(v, {Position = UDim2.new(0,0,2,0)}, 0.2)
                 end
             end
             
             if Utility and Utility.TweenObject then
-                Utility:TweenObject(moreInfo, {Position = UDim2.new(0, 0, 0, 0)}, 0.2)
-            else
-                game.TweenService:Create(moreInfo, TweenInfo.new(0.2), {
-                    Position = UDim2.new(0, 0, 0, 0)
-                }):Play()
-            end
-            
-            if blurFrame then
-                if Utility and Utility.TweenObject then
+                Utility:TweenObject(moreInfo, {Position = UDim2.new(0,0,0,0)}, 0.2)
+                if blurFrame then
                     Utility:TweenObject(blurFrame, {BackgroundTransparency = 0.5}, 0.2)
-                else
-                    game.TweenService:Create(blurFrame, TweenInfo.new(0.2), {
-                        BackgroundTransparency = 0.5
-                    }):Play()
                 end
+                Utility:TweenObject(btn, {BackgroundColor3 = themeList.ElementColor}, 0.2)
             end
-            
-            game.TweenService:Create(btn, TweenInfo.new(0.2), {
-                BackgroundColor3 = Color3.fromRGB(themeList.ElementColor.r * 255 + 10, themeList.ElementColor.g * 255 + 10, themeList.ElementColor.b * 255 + 10)
-            }):Play()
             
             wait(1.5)
             focusing = false
             
             if Utility and Utility.TweenObject then
-                Utility:TweenObject(moreInfo, {Position = UDim2.new(0, 0, 2, 0)}, 0.2)
-            else
-                game.TweenService:Create(moreInfo, TweenInfo.new(0.2), {
-                    Position = UDim2.new(0, 0, 2, 0)
-                }):Play()
-            end
-            
-            if blurFrame then
-                if Utility and Utility.TweenObject then
+                Utility:TweenObject(moreInfo, {Position = UDim2.new(0,0,2,0)}, 0.2)
+                if blurFrame then
                     Utility:TweenObject(blurFrame, {BackgroundTransparency = 1}, 0.2)
-                else
-                    game.TweenService:Create(blurFrame, TweenInfo.new(0.2), {
-                        BackgroundTransparency = 1
-                    }):Play()
                 end
             end
-            
-            game.TweenService:Create(btn, TweenInfo.new(0.2), {
-                BackgroundColor3 = themeList.ElementColor
-            }):Play()
             
             wait(0)
             viewDe = false
