@@ -1487,7 +1487,7 @@ function Kavo.CreateLib(kavName, themeList)
     local Desc = Configs.Desc or Configs.Description or ""
     local Logo = Configs[2] or Configs.Logo or ""
     local Invite = Configs[3] or Configs.Invite or ""
-    
+
     local InviteHolder = Instance.new("Frame")
     local InviteLabel = Instance.new("TextLabel")
     local FrameHolder = Instance.new("Frame")
@@ -1514,7 +1514,7 @@ function Kavo.CreateLib(kavName, themeList)
     InviteLabel.TextXAlignment = Enum.TextXAlignment.Left
     InviteLabel.BackgroundTransparency = 1
     InviteLabel.TextSize = 10
-    InviteLabel.Text = Invite
+    InviteLabel.Text = "Discord Server Invite"
 
     FrameHolder.Name = "FrameHolder"
     FrameHolder.Parent = InviteHolder
@@ -1530,7 +1530,7 @@ function Kavo.CreateLib(kavName, themeList)
     ImageLabel.Parent = FrameHolder
     ImageLabel.Size = UDim2.new(0, 30, 0, 30)
     ImageLabel.Position = UDim2.new(0, 7, 0, 7)
-    ImageLabel.Image = Logo
+    ImageLabel.Image = Logo ~= "" and Logo or "rbxassetid://6031280882"
     ImageLabel.BackgroundTransparency = 1
 
     UICorner2.Parent = ImageLabel
@@ -1553,7 +1553,7 @@ function Kavo.CreateLib(kavName, themeList)
 
     LDesc.Name = "LDesc"
     LDesc.Parent = FrameHolder
-    LDesc.Size = UDim2.new(1, -52, 0, 0)
+    LDesc.Size = UDim2.new(1, -52, 1, -40)
     LDesc.Position = UDim2.new(0, 44, 0, 22)
     LDesc.TextWrapped = true
     LDesc.AutomaticSize = Enum.AutomaticSize.Y
@@ -1573,28 +1573,69 @@ function Kavo.CreateLib(kavName, themeList)
     JoinButton.Font = Enum.Font.GothamBold
     JoinButton.TextSize = 12
     JoinButton.TextColor3 = Color3.fromRGB(220, 220, 220)
-    JoinButton.BackgroundColor3 = Color3.fromRGB(50, 150, 50)
+    JoinButton.BackgroundColor3 = Color3.fromRGB(88, 101, 242)
 
     UICorner3.Parent = JoinButton
     UICorner3.CornerRadius = UDim.new(0, 5)
+
+    JoinButton.MouseEnter:Connect(function()
+        if not ClickDelay then
+            game.TweenService:Create(JoinButton, TweenInfo.new(0.2), {
+                BackgroundColor3 = Color3.fromRGB(108, 121, 262)
+            }):Play()
+        end
+    end)
+
+    JoinButton.MouseLeave:Connect(function()
+        if not ClickDelay then
+            game.TweenService:Create(JoinButton, TweenInfo.new(0.2), {
+                BackgroundColor3 = Color3.fromRGB(88, 101, 242)
+            }):Play()
+        end
+    end)
 
     local ClickDelay = false
     JoinButton.MouseButton1Click:Connect(function()
         if ClickDelay then return end
         
-        setclipboard(Invite)
+        local success, result = pcall(function()
+            if setclipboard then
+                setclipboard(Invite)
+                return true
+            else
+                warn("Discord Invite: " .. Invite)
+                return false
+            end
+        end)
         
         ClickDelay = true
-        JoinButton.Text = "Copied to Clipboard"
-        JoinButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-        JoinButton.TextColor3 = Color3.fromRGB(150, 150, 150)
+        JoinButton.Text = success and "Copied!" or "Check Console"
+        JoinButton.BackgroundColor3 = success and Color3.fromRGB(50, 150, 50) or Color3.fromRGB(150, 50, 50)
+        JoinButton.TextColor3 = Color3.fromRGB(255, 255, 255)
         
-        wait(5)
+        if game:GetService("StarterGui"):GetCoreGuiEnabled(Enum.CoreGuiType.PlayerList) then
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Discord",
+                Text = success and "Invite copied to clipboard!" or "Check console for invite link",
+                Duration = 3,
+                Icon = "rbxassetid://6031280882"
+            })
+        end
+        
+        wait(3)
         
         JoinButton.Text = "Join"
-        JoinButton.BackgroundColor3 = Color3.fromRGB(50, 150, 50)
+        JoinButton.BackgroundColor3 = Color3.fromRGB(88, 101, 242)
         JoinButton.TextColor3 = Color3.fromRGB(220, 220, 220)
         ClickDelay = false
+    end)
+    
+    LDesc:GetPropertyChangedSignal("Text"):Connect(function()
+        task.wait(0.1)
+        local textHeight = LDesc.TextBounds.Y
+        local newHeight = math.max(65, 40 + textHeight + 10)
+        FrameHolder.Size = UDim2.new(1, 0, 0, newHeight)
+        InviteHolder.Size = UDim2.new(1, 0, 0, newHeight + 15)
     end)
     
     local DiscordInvite = {}
@@ -1604,12 +1645,40 @@ function Kavo.CreateLib(kavName, themeList)
     end
     
     function DiscordInvite:Visible(state)
-        if state then
-            InviteHolder.Visible = true
-        else
-            InviteHolder.Visible = false
+        InviteHolder.Visible = state
+    end
+    
+    function DiscordInvite:UpdateTitle(newTitle)
+        if type(newTitle) == "string" then
+            LTitle.Text = newTitle
         end
     end
+    
+    function DiscordInvite:UpdateDesc(newDesc)
+        if type(newDesc) == "string" then
+            LDesc.Text = newDesc
+        end
+    end
+    
+    function DiscordInvite:UpdateLogo(newLogo)
+        if type(newLogo) == "string" then
+            ImageLabel.Image = newLogo
+        end
+    end
+    
+    function DiscordInvite:UpdateInvite(newInvite)
+        if type(newInvite) == "string" then
+            Invite = newInvite
+        end
+    end
+    
+    task.spawn(function()
+        task.wait(0.2)
+        local textHeight = LDesc.TextBounds.Y
+        local newHeight = math.max(65, 40 + textHeight + 10)
+        FrameHolder.Size = UDim2.new(1, 0, 0, newHeight)
+        InviteHolder.Size = UDim2.new(1, 0, 0, newHeight + 15)
+    end)
     
     return DiscordInvite
 end
