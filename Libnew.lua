@@ -1239,6 +1239,208 @@ function Kavo.CreateLib(kavName, themeList)
                     return TogFunction
             end
             
+            function Elements:NewDiscordInvite(logoImage, titleText, inviteLink)
+    local DiscordFunction = {}
+    logoImage = logoImage or "rbxassetid://117012230033666"
+    titleText = titleText or "Join Our Discord"
+    inviteLink = inviteLink or "https://discord.gg/example"
+
+    local DESIGN = {
+        Colors = {
+            Primary = Color3.fromRGB(54, 57, 63),
+            Secondary = Color3.fromRGB(88, 101, 242),
+            Text = Color3.fromRGB(255, 255, 255),
+            Background = Color3.fromRGB(47, 49, 54)
+        },
+        Animations = {
+            Hover = 0.2,
+            Click = 0.1
+        }
+    }
+
+    local discordElement = Instance.new("Frame")
+    local UICorner = Instance.new("UICorner")
+    local UIStroke = Instance.new("UIStroke")
+    local container = Instance.new("Frame")
+    local logo = Instance.new("ImageLabel")
+    local logoCorner = Instance.new("UICorner")
+    local title = Instance.new("TextLabel")
+    local joinButton = Instance.new("TextButton")
+    local joinCorner = Instance.new("UICorner")
+    local joinStroke = Instance.new("UIStroke")
+    local glowEffect = Instance.new("ImageLabel")
+
+    discordElement.Name = "discordElement"
+    discordElement.Parent = sectionInners
+    discordElement.BackgroundColor3 = DESIGN.Colors.Primary
+    discordElement.Size = UDim2.new(0, 370, 0, 120)
+    discordElement.ClipsDescendants = true
+
+    UICorner.CornerRadius = UDim.new(0, 16)
+    UICorner.Parent = discordElement
+
+    UIStroke.Parent = discordElement
+    UIStroke.Color = DESIGN.Colors.Secondary
+    UIStroke.Thickness = 1.5
+    UIStroke.Transparency = 0.3
+
+    container.Name = "container"
+    container.Parent = discordElement
+    container.BackgroundTransparency = 1
+    container.Size = UDim2.new(1, -30, 1, -20)
+    container.Position = UDim2.new(0, 15, 0, 10)
+
+    logo.Name = "logo"
+    logo.Parent = container
+    logo.BackgroundColor3 = DESIGN.Colors.Background
+    logo.Size = UDim2.new(0, 60, 0, 60)
+    logo.Position = UDim2.new(0, 0, 0, 0)
+    logo.Image = logoImage
+    logo.ScaleType = Enum.ScaleType.Crop
+
+    logoCorner.CornerRadius = UDim.new(0, 12)
+    logoCorner.Parent = logo
+
+    title.Name = "title"
+    title.Parent = container
+    title.BackgroundTransparency = 1
+    title.Size = UDim2.new(1, -80, 0, 30)
+    title.Position = UDim2.new(0, 70, 0, 5)
+    title.Font = Enum.Font.GothamBold
+    title.Text = titleText
+    title.TextColor3 = DESIGN.Colors.Text
+    title.TextSize = 16
+    title.TextXAlignment = Enum.TextXAlignment.Left
+
+    joinButton.Name = "joinButton"
+    joinButton.Parent = container
+    joinButton.BackgroundColor3 = DESIGN.Colors.Secondary
+    joinButton.Size = UDim2.new(0, 100, 0, 35)
+    joinButton.Position = UDim2.new(1, -100, 1, -40)
+    joinButton.Font = Enum.Font.GothamBold
+    joinButton.Text = "JOIN"
+    joinButton.TextColor3 = DESIGN.Colors.Text
+    joinButton.TextSize = 14
+    joinButton.AutoButtonColor = false
+
+    joinCorner.CornerRadius = UDim.new(0, 8)
+    joinCorner.Parent = joinButton
+
+    joinStroke.Parent = joinButton
+    joinStroke.Color = Color3.fromRGB(255, 255, 255)
+    joinStroke.Thickness = 1.2
+    joinStroke.Transparency = 0.5
+
+    glowEffect.Name = "glowEffect"
+    glowEffect.Parent = discordElement
+    glowEffect.BackgroundTransparency = 1
+    glowEffect.Size = UDim2.new(1.1, 0, 1.1, 0)
+    glowEffect.Position = UDim2.new(-0.05, 0, -0.05, 0)
+    glowEffect.ZIndex = -1
+    glowEffect.Image = "rbxassetid://5028857084"
+    glowEffect.ImageColor3 = DESIGN.Colors.Secondary
+    glowEffect.ImageTransparency = 0.9
+    glowEffect.ScaleType = Enum.ScaleType.Slice
+    glowEffect.SliceCenter = Rect.new(24, 24, 276, 276)
+
+    local hovering = false
+
+    joinButton.MouseEnter:Connect(function()
+        hovering = true
+        game.TweenService:Create(joinButton, TweenInfo.new(DESIGN.Animations.Hover, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            BackgroundColor3 = Color3.fromRGB(71, 82, 196),
+            Size = UDim2.new(0, 105, 0, 38)
+        }):Play()
+        
+        game.TweenService:Create(joinStroke, TweenInfo.new(DESIGN.Animations.Hover, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Transparency = 0.2
+        }):Play()
+        
+        game.TweenService:Create(glowEffect, TweenInfo.new(DESIGN.Animations.Hover, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            ImageTransparency = 0.6
+        }):Play()
+    end)
+
+    joinButton.MouseLeave:Connect(function()
+        hovering = false
+        game.TweenService:Create(joinButton, TweenInfo.new(DESIGN.Animations.Hover, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            BackgroundColor3 = DESIGN.Colors.Secondary,
+            Size = UDim2.new(0, 100, 0, 35)
+        }):Play()
+        
+        game.TweenService:Create(joinStroke, TweenInfo.new(DESIGN.Animations.Hover, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Transparency = 0.5
+        }):Play()
+        
+        game.TweenService:Create(glowEffect, TweenInfo.new(DESIGN.Animations.Hover, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            ImageTransparency = 0.9
+        }):Play()
+    end)
+
+    joinButton.MouseButton1Down:Connect(function()
+        game.TweenService:Create(joinButton, TweenInfo.new(DESIGN.Animations.Click, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Size = UDim2.new(0, 95, 0, 33)
+        }):Play()
+    end)
+
+    joinButton.MouseButton1Up:Connect(function()
+        local targetSize = hovering and UDim2.new(0, 105, 0, 38) or UDim2.new(0, 100, 0, 35)
+        game.TweenService:Create(joinButton, TweenInfo.new(DESIGN.Animations.Click, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Size = targetSize
+        }):Play()
+    end)
+
+    joinButton.MouseButton1Click:Connect(function()
+        pcall(function()
+            setclipboard(inviteLink)
+        end)
+        
+        local originalText = joinButton.Text
+        joinButton.Text = "COPIED!"
+        
+        game.TweenService:Create(joinButton, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            BackgroundColor3 = Color3.fromRGB(76, 175, 80)
+        }):Play()
+        
+        wait(1.5)
+        
+        game.TweenService:Create(joinButton, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            BackgroundColor3 = DESIGN.Colors.Secondary
+        }):Play()
+        
+        joinButton.Text = originalText
+    end)
+
+    discordElement.MouseEnter:Connect(function()
+        game.TweenService:Create(UIStroke, TweenInfo.new(DESIGN.Animations.Hover, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Transparency = 0.1
+        }):Play()
+    end)
+
+    discordElement.MouseLeave:Connect(function()
+        game.TweenService:Create(UIStroke, TweenInfo.new(DESIGN.Animations.Hover, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Transparency = 0.3
+        }):Play()
+    end)
+
+    updateSectionFrame()
+    UpdateSize()
+
+    function DiscordFunction:UpdateDiscord(newLogo, newTitle, newLink)
+        if newLogo then
+            logo.Image = newLogo
+        end
+        if newTitle then
+            title.Text = newTitle
+        end
+        if newLink then
+            inviteLink = newLink
+        end
+    end
+
+    return DiscordFunction
+end
+
     function Elements:NewSlider(slidInf, slidTip, maxvalue, minvalue, callback)
                 slidInf = slidInf or "Slider"
                 slidTip = slidTip or "Slider tip here"
