@@ -1249,7 +1249,7 @@ function Kavo.CreateLib(kavName, themeList)
         Colors = {
             Primary = Color3.fromRGB(54, 57, 63),
             Secondary = Color3.fromRGB(255, 5, 5),
-            Text = Color3.fromRGB(255, 5, 5),
+            Text = Color3.fromRGB(255, 255, 255),
             Background = Color3.fromRGB(47, 49, 54)
         },
         Animations = {
