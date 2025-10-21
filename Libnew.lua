@@ -371,123 +371,225 @@ function Kavo.CreateLib(kavName, themeList)
 
     local first = true
 
-    function Tabs:NewTab(tabName, tabImage)
-    tabName = tabName or "Tab"
-    tabImage = tabImage or "rbxassetid://"
+    function Tabs:NewTab(Configs)
+    local tabName = Configs[1] or Configs.Name or Configs.Title or "Tab"
+    local tabImage = Configs[2] or Configs.Icon or Configs.Image or "rbxassetid://"
     
-    local tabButton = Instance.new("TextButton")
+    local TabSelect = Instance.new("TextButton")
     local UICorner = Instance.new("UICorner")
-    local tabImageLabel = Instance.new("ImageLabel")
-    local page = Instance.new("ScrollingFrame")
-    local pageListing = Instance.new("UIListLayout")
+    local LabelTitle = Instance.new("TextLabel")
+    local LabelIcon = Instance.new("ImageLabel")
+    local Selected = Instance.new("Frame")
+    local SelectedCorner = Instance.new("UICorner")
+    local Container = Instance.new("ScrollingFrame")
+    local ContainerPadding = Instance.new("UIPadding")
+    local ContainerLayout = Instance.new("UIListLayout")
 
     local function UpdateSize()
-        local cS = pageListing.AbsoluteContentSize
-
-        game.TweenService:Create(page, TweenInfo.new(0.15, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
-            CanvasSize = UDim2.new(0,cS.X,0,cS.Y)
+        local contentSize = ContainerLayout.AbsoluteContentSize
+        game.TweenService:Create(Container, TweenInfo.new(0.15, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
+            CanvasSize = UDim2.new(0, contentSize.X, 0, contentSize.Y)
         }):Play()
     end
 
-    tabImageLabel.Name = "TabImage"
-    tabImageLabel.Parent = tabButton
-    tabImageLabel.BackgroundTransparency = 1
-    tabImageLabel.Position = UDim2.new(0, 4, 0, 4)
-    tabImageLabel.Size = UDim2.new(0, 20, 0, 20)
-    tabImageLabel.Image = tabImage
-    tabImageLabel.ImageColor3 = themeList.TextColor
-    Objects[tabImageLabel] = "TextColor"
+    TabSelect.Name = tabName.."Tab"
+    TabSelect.Parent = tabFrames
+    TabSelect.BackgroundColor3 = themeList.SchemeColor
+    TabSelect.Size = UDim2.new(1, 0, 0, 28)
+    TabSelect.AutoButtonColor = false
+    TabSelect.Font = Enum.Font.Gotham
+    TabSelect.Text = ""
+    TabSelect.TextColor3 = themeList.TextColor
+    TabSelect.TextSize = 14.000
 
-    page.Name = "Page"
-    page.Parent = Pages
-    page.Active = true
-    page.BackgroundColor3 = themeList.Background
-    page.BorderSizePixel = 0
-    page.Position = UDim2.new(0, 0, -0.00371748208, 0)
-    page.Size = UDim2.new(1, 0, 1, 0)
-    page.ScrollBarThickness = 5
-    page.Visible = false
-    page.ScrollBarImageColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 16, themeList.SchemeColor.g * 255 - 15, themeList.SchemeColor.b * 255 - 28)
+    UICorner.CornerRadius = UDim.new(0, 5)
+    UICorner.Parent = TabSelect
 
-    pageListing.Name = "pageListing"
-    pageListing.Parent = page
-    pageListing.SortOrder = Enum.SortOrder.LayoutOrder
-    pageListing.Padding = UDim.new(0, 5)
+    LabelTitle.Name = "LabelTitle"
+    LabelTitle.Parent = TabSelect
+    LabelTitle.Size = UDim2.new(1, tabImage and -25 or -15, 1, 0)
+    LabelTitle.Position = UDim2.new(0, tabImage and 25 or 15, 0, 0)
+    LabelTitle.BackgroundTransparency = 1
+    LabelTitle.Font = Enum.Font.GothamMedium
+    LabelTitle.Text = tabName
+    LabelTitle.TextColor3 = themeList.TextColor
+    LabelTitle.TextSize = 12
+    LabelTitle.TextXAlignment = Enum.TextXAlignment.Left
+    LabelTitle.TextTruncate = Enum.TextTruncate.AtEnd
 
-    tabButton.Name = tabName.."TabButton"
-    tabButton.Parent = tabFrames
-    tabButton.BackgroundColor3 = themeList.SchemeColor
-    Objects[tabButton] = "SchemeColor"
-    tabButton.Size = UDim2.new(0, 135, 0, 28)
-    tabButton.AutoButtonColor = false
-    tabButton.Font = Enum.Font.Gotham
-    tabButton.Text = "  " .. tabName 
-    tabButton.TextColor3 = themeList.TextColor
-    Objects[tabButton] = "TextColor3"
-    tabButton.TextSize = 14.000
-    tabButton.TextXAlignment = Enum.TextXAlignment.Left 
-    tabButton.BackgroundTransparency = 1
+    if tabImage and tabImage ~= "rbxassetid://" then
+        LabelIcon.Name = "LabelIcon"
+        LabelIcon.Parent = TabSelect
+        LabelIcon.Position = UDim2.new(0, 8, 0.5, 0)
+        LabelIcon.Size = UDim2.new(0, 16, 0, 16)
+        LabelIcon.AnchorPoint = Vector2.new(0, 0.5)
+        LabelIcon.Image = tabImage
+        LabelIcon.BackgroundTransparency = 1
+        LabelIcon.ImageColor3 = themeList.TextColor
+    end
+
+    Selected.Name = "Selected"
+    Selected.Parent = TabSelect
+    Selected.Size = UDim2.new(0, 4, 0, 16)
+    Selected.Position = UDim2.new(0, 2, 0.5, 0)
+    Selected.AnchorPoint = Vector2.new(0, 0.5)
+    Selected.BackgroundColor3 = themeList.SchemeColor
+    Selected.BackgroundTransparency = 1
+
+    SelectedCorner.CornerRadius = UDim.new(0.5, 0)
+    SelectedCorner.Parent = Selected
+
+    Container.Name = "Container"
+    Container.Parent = Pages
+    Container.Size = UDim2.new(1, 0, 1, 0)
+    Container.Position = UDim2.new(0, 0, 1, 0)
+    Container.AnchorPoint = Vector2.new(0, 1)
+    Container.ScrollBarThickness = 3
+    Container.BackgroundTransparency = 1
+    Container.ScrollBarImageColor3 = themeList.SchemeColor
+    Container.ScrollBarImageTransparency = 0.2
+    Container.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    Container.ScrollingDirection = Enum.ScrollingDirection.Y
+    Container.BorderSizePixel = 0
+    Container.CanvasSize = UDim2.new()
+    Container.Visible = false
+
+    ContainerPadding.Parent = Container
+    ContainerPadding.PaddingLeft = UDim.new(0, 10)
+    ContainerPadding.PaddingRight = UDim.new(0, 10)
+    ContainerPadding.PaddingTop = UDim.new(0, 10)
+    ContainerPadding.PaddingBottom = UDim.new(0, 10)
+
+    ContainerLayout.Parent = Container
+    ContainerLayout.Padding = UDim.new(0, 5)
+    ContainerLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+    table.insert(Tabs, tabName)
 
     if first then
         first = false
-        page.Visible = true
-        tabButton.BackgroundTransparency = 0
+        Container.Visible = true
+        Selected.BackgroundTransparency = 0
+        TabSelect.BackgroundTransparency = 0
         UpdateSize()
     else
-        page.Visible = false
-        tabButton.BackgroundTransparency = 1
+        Container.Visible = false
+        Selected.BackgroundTransparency = 1
+        TabSelect.BackgroundTransparency = 1
     end
 
-    UICorner.CornerRadius = UDim.new(0, 5)
-    UICorner.Parent = tabButton
-    table.insert(Tabs, tabName)
-
     UpdateSize()
-    page.ChildAdded:Connect(UpdateSize)
-    page.ChildRemoved:Connect(UpdateSize)
+    Container.ChildAdded:Connect(UpdateSize)
+    Container.ChildRemoved:Connect(UpdateSize)
 
-    tabButton.MouseButton1Click:Connect(function()
-            UpdateSize()
-            for i,v in next, Pages:GetChildren() do
+    local function SwitchToTab()
+        UpdateSize()
+        
+        for i, v in next, Pages:GetChildren() do
+            if v:IsA("ScrollingFrame") then
                 v.Visible = false
             end
-            page.Visible = true
-            for i,v in next, tabFrames:GetChildren() do
-                if v:IsA("TextButton") then
-                    if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
-                        Utility:TweenObject(v, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
-                    end 
-                    if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
-                        Utility:TweenObject(v, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
-                    end 
-                    Utility:TweenObject(v, {BackgroundTransparency = 1}, 0.2)
+        end
+        Container.Visible = true
+        
+        for i, v in next, tabFrames:GetChildren() do
+            if v:IsA("TextButton") then
+                game.TweenService:Create(v, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                    BackgroundTransparency = 1
+                }):Play()
+                
+                if v:FindFirstChild("Selected") then
+                    game.TweenService:Create(v.Selected, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                        BackgroundTransparency = 1,
+                        Size = UDim2.new(0, 4, 0, 4)
+                    }):Play()
+                end
+                
+                if v:FindFirstChild("LabelTitle") then
+                    game.TweenService:Create(v.LabelTitle, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                        TextColor3 = themeList.TextColor
+                    }):Play()
+                end
+                
+                if v:FindFirstChild("LabelIcon") then
+                    game.TweenService:Create(v.LabelIcon, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                        ImageColor3 = themeList.TextColor
+                    }):Play()
                 end
             end
-            if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
-                Utility:TweenObject(tabButton, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
-            end 
-            if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
-                Utility:TweenObject(tabButton, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
-            end 
-            Utility:TweenObject(tabButton, {BackgroundTransparency = 0}, 0.2)
-        end)
-    
+        end
+        
+        game.TweenService:Create(TabSelect, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            BackgroundTransparency = 0
+        }):Play()
+        
+        game.TweenService:Create(Selected, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            BackgroundTransparency = 0,
+            Size = UDim2.new(0, 4, 0, 16)
+        }):Play()
+        
+        if LabelIcon then
+            game.TweenService:Create(LabelIcon, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                ImageColor3 = Color3.fromRGB(255, 255, 255)
+            }):Play()
+        end
+        
+        game.TweenService:Create(LabelTitle, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            TextColor3 = Color3.fromRGB(255, 255, 255)
+        }):Play()
+    end
+
+    TabSelect.MouseButton1Click:Connect(SwitchToTab)
+
     local Sections = {}
     local focusing = false
     local viewDe = false
 
     coroutine.wrap(function()
         while wait() do
-            page.BackgroundColor3 = themeList.Background
-            page.ScrollBarImageColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 16, themeList.SchemeColor.g * 255 - 15, themeList.SchemeColor.b * 255 - 28)
-            tabButton.TextColor3 = themeList.TextColor
-            tabButton.BackgroundColor3 = themeList.SchemeColor
-
-            if tabButton.BackgroundTransparency == 1 then
-                tabImageLabel.ImageColor3 = themeList.TextColor
+            Container.ScrollBarImageColor3 = themeList.SchemeColor
+            TabSelect.BackgroundColor3 = themeList.SchemeColor
+            Selected.BackgroundColor3 = themeList.SchemeColor
+            
+            if TabSelect.BackgroundTransparency == 1 then
+                LabelTitle.TextColor3 = themeList.TextColor
+                if LabelIcon then
+                    LabelIcon.ImageColor3 = themeList.TextColor
+                end
             end
         end
     end)()
+
+    UpdateSize()
+
+    local Tab = {}
+    Tab.Container = Container
+    
+    function Tab:Disable()
+        Container.Visible = false
+        Selected.BackgroundTransparency = 1
+        TabSelect.BackgroundTransparency = 1
+    end
+    
+    function Tab:Enable()
+        SwitchToTab()
+    end
+    
+    function Tab:Visible(Bool)
+        if Bool == nil then
+            TabSelect.Visible = not TabSelect.Visible
+            return
+        end
+        TabSelect.Visible = Bool
+    end
+    
+    function Tab:Destroy()
+        TabSelect:Destroy()
+        Container:Destroy()
+    end
+
+    return Tab
+end
     
         function Sections:NewSection(secName, hidden)
             secName = secName or "Section"
