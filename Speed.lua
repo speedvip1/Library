@@ -368,127 +368,162 @@ function Kavo.CreateLib(kavName, themeList)
         end
     end
     local Tabs = {}
+local first = true
 
-    local first = true
-
-    function Tabs:NewTab(tabName, tabImage)
+function Tabs:NewTab(tabName, tabImage)
     tabName = tabName or "Tab"
     tabImage = tabImage or "rbxassetid://"
     
     local tabButton = Instance.new("TextButton")
     local UICorner = Instance.new("UICorner")
     local tabImageLabel = Instance.new("ImageLabel")
+    local tabTextLabel = Instance.new("TextLabel")
     local page = Instance.new("ScrollingFrame")
     local pageListing = Instance.new("UIListLayout")
+    local pagePadding = Instance.new("UIPadding")
 
     local function UpdateSize()
         local cS = pageListing.AbsoluteContentSize
-
         game.TweenService:Create(page, TweenInfo.new(0.15, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
-            CanvasSize = UDim2.new(0,cS.X,0,cS.Y)
+            CanvasSize = UDim2.new(0, 0, 0, cS.Y + 10)
         }):Play()
     end
+
+    tabButton.Name = tabName.."TabButton"
+    tabButton.Parent = tabFrames
+    tabButton.BackgroundColor3 = themeList.SchemeColor
+    tabButton.Size = UDim2.new(0, 135, 0, 28)
+    tabButton.AutoButtonColor = false
+    tabButton.Font = Enum.Font.SourceSans
+    tabButton.Text = ""
+    tabButton.TextColor3 = themeList.TextColor
+    tabButton.TextSize = 14.000
+    tabButton.BackgroundTransparency = 1
+
+    UICorner.CornerRadius = UDim.new(0, 5)
+    UICorner.Parent = tabButton
 
     tabImageLabel.Name = "TabImage"
     tabImageLabel.Parent = tabButton
     tabImageLabel.BackgroundTransparency = 1
-    tabImageLabel.Position = UDim2.new(0, 4, 0, 4)
+    tabImageLabel.Position = UDim2.new(0, 8, 0.5, 0)
+    tabImageLabel.AnchorPoint = Vector2.new(0, 0.5)
     tabImageLabel.Size = UDim2.new(0, 20, 0, 20)
     tabImageLabel.Image = tabImage
     tabImageLabel.ImageColor3 = themeList.TextColor
-    Objects[tabImageLabel] = "TextColor"
+
+    tabTextLabel.Name = "TabText"
+    tabTextLabel.Parent = tabButton
+    tabTextLabel.BackgroundTransparency = 1
+    tabTextLabel.Position = UDim2.new(0, 35, 0.5, 0)
+    tabTextLabel.AnchorPoint = Vector2.new(0, 0.5)
+    tabTextLabel.Size = UDim2.new(1, -35, 1, 0)
+    tabTextLabel.Font = Enum.Font.Gotham
+    tabTextLabel.Text = tabName
+    tabTextLabel.TextColor3 = themeList.TextColor
+    tabTextLabel.TextSize = 14.000
+    tabTextLabel.TextXAlignment = Enum.TextXAlignment.Left
 
     page.Name = "Page"
     page.Parent = Pages
     page.Active = true
     page.BackgroundColor3 = themeList.Background
     page.BorderSizePixel = 0
-    page.Position = UDim2.new(0, 0, -0.00371748208, 0)
+    page.Position = UDim2.new(0, 0, 0, 0)
     page.Size = UDim2.new(1, 0, 1, 0)
     page.ScrollBarThickness = 5
     page.Visible = false
-    page.ScrollBarImageColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 16, themeList.SchemeColor.g * 255 - 15, themeList.SchemeColor.b * 255 - 28)
+    page.ScrollBarImageColor3 = Color3.fromRGB(
+        themeList.SchemeColor.r * 255 - 16, 
+        themeList.SchemeColor.g * 255 - 15, 
+        themeList.SchemeColor.b * 255 - 28
+    )
+    page.CanvasSize = UDim2.new(0, 0, 0, 0)
+
+    pagePadding.Name = "PagePadding"
+    pagePadding.Parent = page
+    pagePadding.PaddingLeft = UDim.new(0, 5)
+    pagePadding.PaddingRight = UDim.new(0, 5)
+    pagePadding.PaddingTop = UDim.new(0, 5)
+    pagePadding.PaddingBottom = UDim.new(0, 5)
 
     pageListing.Name = "pageListing"
     pageListing.Parent = page
     pageListing.SortOrder = Enum.SortOrder.LayoutOrder
     pageListing.Padding = UDim.new(0, 5)
-
-    tabButton.Name = tabName.."TabButton"
-    tabButton.Parent = tabFrames
-    tabButton.BackgroundColor3 = themeList.SchemeColor
-    Objects[tabButton] = "SchemeColor"
-    tabButton.Size = UDim2.new(0, 135, 0, 28)
-    tabButton.AutoButtonColor = false
-    tabButton.Font = Enum.Font.Gotham
-    tabButton.Text = "  " .. tabName 
-    tabButton.TextColor3 = themeList.TextColor
-    Objects[tabButton] = "TextColor3"
-    tabButton.TextSize = 14.000
-    tabButton.TextXAlignment = Enum.TextXAlignment.Left 
-    tabButton.BackgroundTransparency = 1
+    pageListing.VerticalAlignment = Enum.VerticalAlignment.Top
 
     if first then
         first = false
         page.Visible = true
         tabButton.BackgroundTransparency = 0
-        UpdateSize()
+        tabTextLabel.TextColor3 = Color3.new(1, 1, 1)
+        tabImageLabel.ImageColor3 = Color3.new(1, 1, 1)
     else
         page.Visible = false
         tabButton.BackgroundTransparency = 1
     end
 
-    UICorner.CornerRadius = UDim.new(0, 5)
-    UICorner.Parent = tabButton
     table.insert(Tabs, tabName)
 
     UpdateSize()
-    page.ChildAdded:Connect(UpdateSize)
-    page.ChildRemoved:Connect(UpdateSize)
+    
+    page.ChildAdded:Connect(function(child)
+        wait()
+        UpdateSize()
+    end)
+    
+    page.ChildRemoved:Connect(function(child)
+        wait()
+        UpdateSize()
+    end)
 
     tabButton.MouseButton1Click:Connect(function()
-            UpdateSize()
-            for i,v in next, Pages:GetChildren() do
+        UpdateSize()
+        
+        for i, v in next, Pages:GetChildren() do
+            if v:IsA("ScrollingFrame") then
                 v.Visible = false
             end
-            page.Visible = true
-            for i,v in next, tabFrames:GetChildren() do
-                if v:IsA("TextButton") then
-                    if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
-                        Utility:TweenObject(v, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
-                    end 
-                    if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
-                        Utility:TweenObject(v, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
-                    end 
-                    Utility:TweenObject(v, {BackgroundTransparency = 1}, 0.2)
+        end
+        
+        page.Visible = true
+        
+        for i, v in next, tabFrames:GetChildren() do
+            if v:IsA("TextButton") then
+                Utility:TweenObject(v, {BackgroundTransparency = 1}, 0.2)
+                local textLabel = v:FindFirstChild("TabText")
+                local imageLabel = v:FindFirstChild("TabImage")
+                if textLabel then
+                    Utility:TweenObject(textLabel, {TextColor3 = themeList.TextColor}, 0.2)
+                end
+                if imageLabel then
+                    Utility:TweenObject(imageLabel, {ImageColor3 = themeList.TextColor}, 0.2)
                 end
             end
-            if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
-                Utility:TweenObject(tabButton, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
-            end 
-            if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
-                Utility:TweenObject(tabButton, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
-            end 
-            Utility:TweenObject(tabButton, {BackgroundTransparency = 0}, 0.2)
-        end)
+        end
+        
+        Utility:TweenObject(tabButton, {BackgroundTransparency = 0}, 0.2)
+        Utility:TweenObject(tabTextLabel, {TextColor3 = Color3.new(1, 1, 1)}, 0.2)
+        Utility:TweenObject(tabImageLabel, {ImageColor3 = Color3.new(1, 1, 1)}, 0.2)
+    end)
     
-    local Sections = {}
-    local focusing = false
-    local viewDe = false
-
     coroutine.wrap(function()
         while wait() do
             page.BackgroundColor3 = themeList.Background
-            page.ScrollBarImageColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 16, themeList.SchemeColor.g * 255 - 15, themeList.SchemeColor.b * 255 - 28)
-            tabButton.TextColor3 = themeList.TextColor
+            page.ScrollBarImageColor3 = Color3.fromRGB(
+                themeList.SchemeColor.r * 255 - 16, 
+                themeList.SchemeColor.g * 255 - 15, 
+                themeList.SchemeColor.b * 255 - 28
+            )
             tabButton.BackgroundColor3 = themeList.SchemeColor
 
             if tabButton.BackgroundTransparency == 1 then
+                tabTextLabel.TextColor3 = themeList.TextColor
                 tabImageLabel.ImageColor3 = themeList.TextColor
             end
         end
     end)()
-    
         function Sections:NewSection(secName, hidden)
             secName = secName or "Section"
             local sectionFunctions = {}
