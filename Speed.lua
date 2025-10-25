@@ -219,7 +219,7 @@ function Kavo.CreateLib(kavName, themeList)
     blurFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     blurFrame.BackgroundTransparency = 1
     blurFrame.BorderSizePixel = 0
-    blurFrame.Position = UDim2.new(-0.0222222228, 0, -0.0371747203, 0)
+    blurFrame.Position = UDim2.new(0.336503863, -132,0.275485456, -96)
     blurFrame.Size = UDim2.new(0, 376, 0, 289)
     blurFrame.ZIndex = 999
 
@@ -795,214 +795,200 @@ function Kavo.CreateLib(kavName, themeList)
             end
 
             function Elements:NewTextBox(tname, tTip, callback)
-    tname = tname or "Textbox"
-    tTip = tTip or "Gets a value of Textbox"
-    callback = callback or function() end
-    
-    local TDefault = ""
-    local TPlaceholderText = "Type here!"
-    local TClearText = false
-    
-    local ButtonFrame = Instance.new("Frame")
-    local UICorner = Instance.new("UICorner")
-    local TextLabel = Instance.new("TextLabel")
-    local InfoButton = Instance.new("ImageButton")
-    local SelectedFrame = Instance.new("Frame")
-    local UICorner_2 = Instance.new("UICorner")
-    local TextBoxInput = Instance.new("TextBox")
-    local Pencil = Instance.new("ImageLabel")
-    
-    ButtonFrame.Name = "textboxElement"
-    ButtonFrame.Parent = sectionInners
-    ButtonFrame.BackgroundColor3 = themeList.ElementColor
-    ButtonFrame.Size = UDim2.new(1, -38, 0, 33)
-    
-    UICorner.CornerRadius = UDim.new(0, 4)
-    UICorner.Parent = ButtonFrame
-    
-    TextLabel.Name = "togName"
-    TextLabel.Parent = ButtonFrame
-    TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    TextLabel.BackgroundTransparency = 1.000
-    TextLabel.Position = UDim2.new(0.02, 0, 0.5, 0)
-    TextLabel.AnchorPoint = Vector2.new(0, 0.5)
-    TextLabel.Size = UDim2.new(0, 138, 0, 14)
-    TextLabel.Font = Enum.Font.GothamSemibold
-    TextLabel.Text = tname
-    TextLabel.RichText = true
-    TextLabel.TextColor3 = themeList.TextColor
-    TextLabel.TextSize = 14.000
-    TextLabel.TextXAlignment = Enum.TextXAlignment.Left
-    
-    InfoButton.Name = "viewInfo"
-    InfoButton.Parent = ButtonFrame
-    InfoButton.BackgroundTransparency = 1.000
-    InfoButton.Position = UDim2.new(0.93, 0, 0.5, 0)
-    InfoButton.AnchorPoint = Vector2.new(1, 0.5)
-    InfoButton.Size = UDim2.new(0, 23, 0, 23)
-    InfoButton.ZIndex = 2
-    InfoButton.Image = "rbxassetid://3926305904"
-    InfoButton.ImageColor3 = themeList.SchemeColor
-    InfoButton.ImageRectOffset = Vector2.new(764, 764)
-    InfoButton.ImageRectSize = Vector2.new(36, 36)
-    
-    SelectedFrame.Parent = ButtonFrame
-    SelectedFrame.BackgroundColor3 = Color3.fromRGB(themeList.ElementColor.r * 255 - 6, themeList.ElementColor.g * 255 - 6, themeList.ElementColor.b * 255 - 7)
-    SelectedFrame.Size = UDim2.new(0, 150, 0, 18)
-    SelectedFrame.Position = UDim2.new(1, -10, 0.5, 0)
-    SelectedFrame.AnchorPoint = Vector2.new(1, 0.5)
-    
-    UICorner_2.CornerRadius = UDim.new(0, 4)
-    UICorner_2.Parent = SelectedFrame
-    
-    TextBoxInput.Parent = SelectedFrame
-    TextBoxInput.Size = UDim2.new(0.85, 0, 0.85, 0)
-    TextBoxInput.AnchorPoint = Vector2.new(0.5, 0.5)
-    TextBoxInput.Position = UDim2.new(0.5, 0, 0.5, 0)
-    TextBoxInput.BackgroundTransparency = 1
-    TextBoxInput.Font = Enum.Font.Gotham
-    TextBoxInput.TextSize = 12.000
-    TextBoxInput.TextColor3 = themeList.SchemeColor
-    TextBoxInput.ClearTextOnFocus = TClearText
-    TextBoxInput.PlaceholderText = TPlaceholderText
-    TextBoxInput.PlaceholderColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 19, themeList.SchemeColor.g * 255 - 26, themeList.SchemeColor.b * 255 - 35)
-    TextBoxInput.Text = ""
-    
-    Pencil.Parent = SelectedFrame
-    Pencil.Size = UDim2.new(0, 12, 0, 12)
-    Pencil.Position = UDim2.new(0, -5, 0.5, 0)
-    Pencil.AnchorPoint = Vector2.new(1, 0.5)
-    Pencil.Image = "rbxassetid://3926305904"
-    Pencil.ImageRectOffset = Vector2.new(324, 604)
-    Pencil.ImageRectSize = Vector2.new(36, 36)
-    Pencil.BackgroundTransparency = 1
-    Pencil.ImageColor3 = themeList.SchemeColor
-    
-    local moreInfo = Instance.new("TextLabel")
-    local UICorner_3 = Instance.new("UICorner")
-    
-    moreInfo.Name = "TipMore"
-    moreInfo.Parent = infoContainer
-    moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
-    moreInfo.Position = UDim2.new(0, 0, 2, 0)
-    moreInfo.Size = UDim2.new(0, 353, 0, 33)
-    moreInfo.ZIndex = 9
-    moreInfo.Font = Enum.Font.GothamSemibold
-    moreInfo.RichText = true
-    moreInfo.Text = "  "..tTip
-    moreInfo.TextColor3 = Color3.fromRGB(255, 255, 255)
-    moreInfo.TextSize = 14.000
-    moreInfo.TextXAlignment = Enum.TextXAlignment.Left
-    
-    if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
-        Utility:TweenObject(moreInfo, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
-    end 
-    if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
-        Utility:TweenObject(moreInfo, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
-    end 
-    
-    UICorner_3.CornerRadius = UDim.new(0, 4)
-    UICorner_3.Parent = moreInfo
-    
-    updateSectionFrame()
-    UpdateSize()
-    
-    local btn = ButtonFrame
-    local infBtn = InfoButton
-    
-    btn.MouseButton1Click:Connect(function()
-        if focusing then
-            for i,v in next, infoContainer:GetChildren() do
-                Utility:TweenObject(v, {Position = UDim2.new(0,0,2,0)}, 0.2)
-                focusing = false
-            end
-            Utility:TweenObject(blurFrame, {BackgroundTransparency = 1}, 0.2)
-        end
-    end)
-    
-    local hovering = false
-    btn.MouseEnter:Connect(function()
-        if not focusing then
-            game.TweenService:Create(btn, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
-                BackgroundColor3 = Color3.fromRGB(themeList.ElementColor.r * 255 + 8, themeList.ElementColor.g * 255 + 9, themeList.ElementColor.b * 255 + 10)
-            }):Play()
-            hovering = true
-        end 
-    end)
+                tname = tname or "Textbox"
+                tTip = tTip or "Gets a value of Textbox"
+                callback = callback or function() end
+                local textboxElement = Instance.new("TextButton")
+                local UICorner = Instance.new("UICorner")
+                local viewInfo = Instance.new("ImageButton")
+                local write = Instance.new("ImageLabel")
+                local TextBox = Instance.new("TextBox")
+                local UICorner_2 = Instance.new("UICorner")
+                local togName = Instance.new("TextLabel")
 
-    btn.MouseLeave:Connect(function()
-        if not focusing then
-            game.TweenService:Create(btn, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
-                BackgroundColor3 = themeList.ElementColor
-            }):Play()
-            hovering = false
-        end
-    end)
+                textboxElement.Name = "textboxElement"
+                textboxElement.Parent = sectionInners
+                textboxElement.BackgroundColor3 = themeList.ElementColor
+                textboxElement.ClipsDescendants = true
+                textboxElement.Size = UDim2.new(0, 352, 0, 33)
+                textboxElement.AutoButtonColor = false
+                textboxElement.Font = Enum.Font.SourceSans
+                textboxElement.Text = ""
+                textboxElement.TextColor3 = Color3.fromRGB(0, 0, 0)
+                textboxElement.TextSize = 14.000
 
-    TextBoxInput.FocusLost:Connect(function(EnterPressed)
-        if focusing then
-            for i,v in next, infoContainer:GetChildren() do
-                Utility:TweenObject(v, {Position = UDim2.new(0,0,2,0)}, 0.2)
-                focusing = false
-            end
-            Utility:TweenObject(blurFrame, {BackgroundTransparency = 1}, 0.2)
-        end
-        if not EnterPressed then 
-            return
-        else
-            callback(TextBoxInput.Text)
-            if TClearText then
-                wait(0.18)
-                TextBoxInput.Text = ""
-            end
-        end
-    end)
+                UICorner.CornerRadius = UDim.new(0, 4)
+                UICorner.Parent = textboxElement
 
-    TextBoxInput.Focused:Connect(function()
-        Utility:TweenObject(Pencil, {ImageColor3 = themeList.SchemeColor}, 0.2)
-    end)
-    
-    TextBoxInput.FocusLost:Connect(function()
-        Utility:TweenObject(Pencil, {ImageColor3 = Color3.fromRGB(255, 255, 255)}, 0.2)
-    end)
+                viewInfo.Name = "viewInfo"
+                viewInfo.Parent = textboxElement
+                viewInfo.BackgroundTransparency = 1.000
+                viewInfo.LayoutOrder = 9
+                viewInfo.Position = UDim2.new(0.930000007, 0, 0.151999995, 0)
+                viewInfo.Size = UDim2.new(0, 23, 0, 23)
+                viewInfo.ZIndex = 2
+                viewInfo.Image = "rbxassetid://3926305904"
+                viewInfo.ImageColor3 = themeList.SchemeColor
+                viewInfo.ImageRectOffset = Vector2.new(764, 764)
+                viewInfo.ImageRectSize = Vector2.new(36, 36)
 
-    InfoButton.MouseButton1Click:Connect(function()
-        if not viewDe then
-            viewDe = true
-            focusing = true
-            for i,v in next, infoContainer:GetChildren() do
-                if v ~= moreInfo then
-                    Utility:TweenObject(v, {Position = UDim2.new(0,0,2,0)}, 0.2)
-                end
-            end
-            Utility:TweenObject(moreInfo, {Position = UDim2.new(0,0,0,0)}, 0.2)
-            Utility:TweenObject(blurFrame, {BackgroundTransparency = 0.5}, 0.2)
-            Utility:TweenObject(btn, {BackgroundColor3 = themeList.ElementColor}, 0.2)
-            wait(1.5)
-            focusing = false
-            Utility:TweenObject(moreInfo, {Position = UDim2.new(0,0,2,0)}, 0.2)
-            Utility:TweenObject(blurFrame, {BackgroundTransparency = 1}, 0.2)
-            wait(0)
-            viewDe = false
-        end
-    end)
-    
-    coroutine.wrap(function()
-        while wait() do
-            if not hovering then
-                ButtonFrame.BackgroundColor3 = themeList.ElementColor
-            end
-            SelectedFrame.BackgroundColor3 = Color3.fromRGB(themeList.ElementColor.r * 255 - 6, themeList.ElementColor.g * 255 - 6, themeList.ElementColor.b * 255 - 7)
-            InfoButton.ImageColor3 = themeList.SchemeColor
-            moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
-            moreInfo.TextColor3 = themeList.TextColor
-            Pencil.ImageColor3 = themeList.SchemeColor
-            TextLabel.TextColor3 = themeList.TextColor
-            TextBoxInput.PlaceholderColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 19, themeList.SchemeColor.g * 255 - 26, themeList.SchemeColor.b * 255 - 35)
-            TextBoxInput.TextColor3 = themeList.SchemeColor
-        end
-    end)()
-end
+                write.Name = "write"
+                write.Parent = textboxElement
+                write.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                write.BackgroundTransparency = 1.000
+                write.BorderColor3 = Color3.fromRGB(27, 42, 53)
+                write.Position = UDim2.new(0.0199999996, 0, 0.180000007, 0)
+                write.Size = UDim2.new(0, 21, 0, 21)
+                write.Image = "rbxassetid://3926305904"
+                write.ImageColor3 = themeList.SchemeColor
+                write.ImageRectOffset = Vector2.new(324, 604)
+                write.ImageRectSize = Vector2.new(36, 36)
+
+                TextBox.Parent = textboxElement
+                TextBox.BackgroundColor3 = Color3.fromRGB(themeList.ElementColor.r * 255 - 6, themeList.ElementColor.g * 255 - 6, themeList.ElementColor.b * 255 - 7)
+                TextBox.BorderSizePixel = 0
+                TextBox.ClipsDescendants = true
+                TextBox.Position = UDim2.new(0.488749921, 0, 0.212121218, 0)
+                TextBox.Size = UDim2.new(0, 150, 0, 18)
+                TextBox.ZIndex = 99
+                TextBox.ClearTextOnFocus = false
+                TextBox.Font = Enum.Font.Gotham
+                TextBox.PlaceholderColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 19, themeList.SchemeColor.g * 255 - 26, themeList.SchemeColor.b * 255 - 35)
+                TextBox.PlaceholderText = "Type here!"
+                TextBox.Text = ""
+                TextBox.TextColor3 = themeList.SchemeColor
+                TextBox.TextSize = 12.000
+
+                UICorner_2.CornerRadius = UDim.new(0, 4)
+                UICorner_2.Parent = TextBox
+
+                togName.Name = "togName"
+                togName.Parent = textboxElement
+                togName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                togName.BackgroundTransparency = 1.000
+                togName.Position = UDim2.new(0.096704483, 0, 0.272727281, 0)
+                togName.Size = UDim2.new(0, 138, 0, 14)
+                togName.Font = Enum.Font.GothamSemibold
+                togName.Text = tname
+                togName.RichText = true
+                togName.TextColor3 = themeList.TextColor
+                togName.TextSize = 14.000
+                togName.TextXAlignment = Enum.TextXAlignment.Left
+
+                local moreInfo = Instance.new("TextLabel")
+                local UICorner = Instance.new("UICorner")
+
+                moreInfo.Name = "TipMore"
+                moreInfo.Parent = infoContainer
+                moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
+                moreInfo.Position = UDim2.new(0, 0, 2, 0)
+                moreInfo.Size = UDim2.new(0, 353, 0, 33)
+                moreInfo.ZIndex = 9
+                moreInfo.Font = Enum.Font.GothamSemibold
+                moreInfo.RichText = true
+                moreInfo.Text = "  "..tTip
+                moreInfo.TextColor3 = Color3.fromRGB(255, 255, 255)
+                moreInfo.TextSize = 14.000
+                moreInfo.TextXAlignment = Enum.TextXAlignment.Left
+
+                if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
+                    Utility:TweenObject(moreInfo, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
+                end 
+                if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
+                    Utility:TweenObject(moreInfo, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
+                end 
+
+                UICorner.CornerRadius = UDim.new(0, 4)
+                UICorner.Parent = moreInfo
+
+
+                updateSectionFrame()
+                                UpdateSize()
+            
+                local btn = textboxElement
+                local infBtn = viewInfo
+
+                btn.MouseButton1Click:Connect(function()
+                    if focusing then
+                        for i,v in next, infoContainer:GetChildren() do
+                            Utility:TweenObject(v, {Position = UDim2.new(0,0,2,0)}, 0.2)
+                            focusing = false
+                        end
+                        Utility:TweenObject(blurFrame, {BackgroundTransparency = 1}, 0.2)
+                    end
+                end)
+                local hovering = false
+                btn.MouseEnter:Connect(function()
+                    if not focusing then
+                        game.TweenService:Create(btn, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
+                            BackgroundColor3 = Color3.fromRGB(themeList.ElementColor.r * 255 + 8, themeList.ElementColor.g * 255 + 9, themeList.ElementColor.b * 255 + 10)
+                        }):Play()
+                        hovering = true
+                    end 
+                end)
+
+                btn.MouseLeave:Connect(function()
+                    if not focusing then
+                        game.TweenService:Create(btn, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
+                            BackgroundColor3 = themeList.ElementColor
+                        }):Play()
+                        hovering = false
+                    end
+                end)
+
+                TextBox.FocusLost:Connect(function(EnterPressed)
+                    if focusing then
+                        for i,v in next, infoContainer:GetChildren() do
+                            Utility:TweenObject(v, {Position = UDim2.new(0,0,2,0)}, 0.2)
+                            focusing = false
+                        end
+                        Utility:TweenObject(blurFrame, {BackgroundTransparency = 1}, 0.2)
+                    end
+                    if not EnterPressed then 
+                        return
+                    else
+                        callback(TextBox.Text)
+                        wait(0.18)
+                        TextBox.Text = ""  
+                    end
+                end)
+
+                viewInfo.MouseButton1Click:Connect(function()
+                    if not viewDe then
+                        viewDe = true
+                        focusing = true
+                        for i,v in next, infoContainer:GetChildren() do
+                            if v ~= moreInfo then
+                                Utility:TweenObject(v, {Position = UDim2.new(0,0,2,0)}, 0.2)
+                            end
+                        end
+                        Utility:TweenObject(moreInfo, {Position = UDim2.new(0,0,0,0)}, 0.2)
+                        Utility:TweenObject(blurFrame, {BackgroundTransparency = 0.5}, 0.2)
+                        Utility:TweenObject(btn, {BackgroundColor3 = themeList.ElementColor}, 0.2)
+                        wait(1.5)
+                        focusing = false
+                        Utility:TweenObject(moreInfo, {Position = UDim2.new(0,0,2,0)}, 0.2)
+                        Utility:TweenObject(blurFrame, {BackgroundTransparency = 1}, 0.2)
+                        wait(0)
+                        viewDe = false
+                    end
+                end)
+                coroutine.wrap(function()
+                    while wait() do
+                        if not hovering then
+                            textboxElement.BackgroundColor3 = themeList.ElementColor
+                        end
+                        TextBox.BackgroundColor3 = Color3.fromRGB(themeList.ElementColor.r * 255 - 6, themeList.ElementColor.g * 255 - 6, themeList.ElementColor.b * 255 - 7)
+                        viewInfo.ImageColor3 = themeList.SchemeColor
+                        moreInfo.BackgroundColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 14, themeList.SchemeColor.g * 255 - 17, themeList.SchemeColor.b * 255 - 13)
+                        moreInfo.TextColor3 = themeList.TextColor
+                        write.ImageColor3 = themeList.SchemeColor
+                        togName.TextColor3 = themeList.TextColor
+                        TextBox.PlaceholderColor3 = Color3.fromRGB(themeList.SchemeColor.r * 255 - 19, themeList.SchemeColor.g * 255 - 26, themeList.SchemeColor.b * 255 - 35)
+                        TextBox.TextColor3 = themeList.SchemeColor
+                    end
+                end)()
+            end 
 
                 function Elements:NewToggle(tname, nTip, callback)
                     local TogFunction = {}
