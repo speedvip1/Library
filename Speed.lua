@@ -385,7 +385,7 @@ function Tabs:NewTab(tabName, tabImage)
     local function UpdateSize()
         local cS = pageListing.AbsoluteContentSize
         game.TweenService:Create(page, TweenInfo.new(0.15, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
-            CanvasSize = UDim2.new(0, 0, 0, cS.Y + 10)
+            CanvasSize = UDim2.new(0, 0, 0, cS.Y + 35)
         }):Play()
     end
 
@@ -439,18 +439,20 @@ function Tabs:NewTab(tabName, tabImage)
         themeList.SchemeColor.b * 255 - 28
     )
     page.CanvasSize = UDim2.new(0, 0, 0, 0)
+    page.ScrollingDirection = Enum.ScrollingDirection.Y
+    page.VerticalScrollBarInset = Enum.ScrollBarInset.Always
 
     pagePadding.Name = "PagePadding"
     pagePadding.Parent = page
-    pagePadding.PaddingLeft = UDim.new(0, 5)
-    pagePadding.PaddingRight = UDim.new(0, 5)
-    pagePadding.PaddingTop = UDim.new(0, 5)
-    pagePadding.PaddingBottom = UDim.new(0, 5)
+    pagePadding.PaddingLeft = UDim.new(0, 10)
+    pagePadding.PaddingRight = UDim.new(0, 10)
+    pagePadding.PaddingTop = UDim.new(0, 10)
+    pagePadding.PaddingBottom = UDim.new(0, 10)
 
     pageListing.Name = "pageListing"
     pageListing.Parent = page
     pageListing.SortOrder = Enum.SortOrder.LayoutOrder
-    pageListing.Padding = UDim.new(0, 5)
+    pageListing.Padding = UDim.new(0, 8)
     pageListing.VerticalAlignment = Enum.VerticalAlignment.Top
 
     if first then
@@ -469,12 +471,16 @@ function Tabs:NewTab(tabName, tabImage)
     UpdateSize()
     
     page.ChildAdded:Connect(function(child)
-        wait()
+        wait(0.1)
         UpdateSize()
     end)
     
     page.ChildRemoved:Connect(function(child)
-        wait()
+        wait(0.1)
+        UpdateSize()
+    end)
+    
+    pageListing:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
         UpdateSize()
     end)
 
@@ -524,110 +530,169 @@ function Tabs:NewTab(tabName, tabImage)
             end
         end
     end)()
-        function Sections:NewSection(secName, hidden)
-            secName = secName or "Section"
-            local sectionFunctions = {}
-            local modules = {}
-	    hidden = hidden or false
-            local sectionFrame = Instance.new("Frame")
-            local sectionlistoknvm = Instance.new("UIListLayout")
-            local sectionHead = Instance.new("Frame")
-            local sHeadCorner = Instance.new("UICorner")
-            local sectionName = Instance.new("TextLabel")
-            local sectionInners = Instance.new("Frame")
-            local sectionElListing = Instance.new("UIListLayout")
-			
-	    if hidden then
-		sectionHead.Visible = false
-	    else
-		sectionHead.Visible = true
-	    end
+    
+    local Sections = {}
+    
+    function Sections:NewSection(secName, hidden)
+        secName = secName or "Section"
+        local sectionFunctions = {}
+        local modules = {}
+        hidden = hidden or false
+        
+        local sectionFrame = Instance.new("Frame")
+        local sectionlistoknvm = Instance.new("UIListLayout")
+        local sectionHead = Instance.new("Frame")
+        local sHeadCorner = Instance.new("UICorner")
+        local sectionName = Instance.new("TextLabel")
+        local sectionInners = Instance.new("Frame")
+        local sectionElListing = Instance.new("UIListLayout")
 
-            sectionFrame.Name = "sectionFrame"
-            sectionFrame.Parent = page
-            sectionFrame.BackgroundColor3 = themeList.Background
-            sectionFrame.BorderSizePixel = 0
-            
-            sectionlistoknvm.Name = "sectionlistoknvm"
-            sectionlistoknvm.Parent = sectionFrame
-            sectionlistoknvm.SortOrder = Enum.SortOrder.LayoutOrder
-            sectionlistoknvm.Padding = UDim.new(0, 5)
+        sectionFrame.Name = "sectionFrame"
+        sectionFrame.Parent = page
+        sectionFrame.BackgroundColor3 = themeList.Background
+        sectionFrame.BorderSizePixel = 0
+        sectionFrame.Size = UDim2.new(1, -20, 0, 0)
 
-            for i,v in pairs(sectionInners:GetChildren()) do
-                while wait() do
-                    if v:IsA("Frame") or v:IsA("TextButton") then
-                        function size(pro)
-                            if pro == "Size" then
-                                UpdateSize()
-                                updateSectionFrame()
-                            end
-                        end
-                        v.Changed:Connect(size)
-                    end
-                end
-            end
-            sectionHead.Name = "sectionHead"
-            sectionHead.Parent = sectionFrame
-            sectionHead.BackgroundColor3 = themeList.SchemeColor
-            Objects[sectionHead] = "BackgroundColor3"
-            sectionHead.Size = UDim2.new(0, 352, 0, 33)
+        sectionlistoknvm.Name = "sectionlistoknvm"
+        sectionlistoknvm.Parent = sectionFrame
+        sectionlistoknvm.SortOrder = Enum.SortOrder.LayoutOrder
+        sectionlistoknvm.Padding = UDim.new(0, 5)
 
-            sHeadCorner.CornerRadius = UDim.new(0, 4)
-            sHeadCorner.Name = "sHeadCorner"
-            sHeadCorner.Parent = sectionHead
+        sectionHead.Name = "sectionHead"
+        sectionHead.Parent = sectionFrame
+        sectionHead.BackgroundColor3 = themeList.SchemeColor
+        sectionHead.Size = UDim2.new(1, 0, 0, 33)
+        sectionHead.Visible = not hidden
 
-            sectionName.Name = "sectionName"
-            sectionName.Parent = sectionHead
-            sectionName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            sectionName.BackgroundTransparency = 1.000
-            sectionName.BorderColor3 = Color3.fromRGB(27, 42, 53)
-            sectionName.Position = UDim2.new(0.0198863633, 0, 0, 0)
-            sectionName.Size = UDim2.new(0.980113626, 0, 1, 0)
-            sectionName.Font = Enum.Font.Gotham
-            sectionName.Text = secName
-            sectionName.RichText = true
-            sectionName.TextColor3 = themeList.TextColor
-            Objects[sectionName] = "TextColor3"
-            sectionName.TextSize = 14.000
-            sectionName.TextXAlignment = Enum.TextXAlignment.Left
-            if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
-                Utility:TweenObject(sectionName, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
-            end 
-            if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
-                Utility:TweenObject(sectionName, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
-            end 
-               
-            sectionInners.Name = "sectionInners"
-            sectionInners.Parent = sectionFrame
-            sectionInners.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            sectionInners.BackgroundTransparency = 1.000
-            sectionInners.Position = UDim2.new(0, 0, 0.190751448, 0)
+        sHeadCorner.CornerRadius = UDim.new(0, 4)
+        sHeadCorner.Name = "sHeadCorner"
+        sHeadCorner.Parent = sectionHead
 
-            sectionElListing.Name = "sectionElListing"
-            sectionElListing.Parent = sectionInners
-            sectionElListing.SortOrder = Enum.SortOrder.LayoutOrder
-            sectionElListing.Padding = UDim.new(0, 3)
+        sectionName.Name = "sectionName"
+        sectionName.Parent = sectionHead
+        sectionName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        sectionName.BackgroundTransparency = 1.000
+        sectionName.Position = UDim2.new(0.02, 0, 0, 0)
+        sectionName.Size = UDim2.new(0.98, 0, 1, 0)
+        sectionName.Font = Enum.Font.Gotham
+        sectionName.Text = secName
+        sectionName.RichText = true
+        sectionName.TextColor3 = themeList.TextColor
+        sectionName.TextSize = 14.000
+        sectionName.TextXAlignment = Enum.TextXAlignment.Left
+        
+        if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
+            Utility:TweenObject(sectionName, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
+        end 
+        if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
+            Utility:TweenObject(sectionName, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
+        end 
 
-            
+        sectionInners.Name = "sectionInners"
+        sectionInners.Parent = sectionFrame
+        sectionInners.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        sectionInners.BackgroundTransparency = 1.000
+        sectionInners.Position = UDim2.new(0, 0, 0, hidden and 0 or 38)
+        sectionInners.Size = UDim2.new(1, 0, 0, 0)
+
+        sectionElListing.Name = "sectionElListing"
+        sectionElListing.Parent = sectionInners
+        sectionElListing.SortOrder = Enum.SortOrder.LayoutOrder
+        sectionElListing.Padding = UDim.new(0, 3)
+
+        local function updateSectionFrame()
+            local innerSc = sectionElListing.AbsoluteContentSize
+            sectionInners.Size = UDim2.new(1, 0, 0, innerSc.Y)
+            local frameSc = sectionlistoknvm.AbsoluteContentSize
+            sectionFrame.Size = UDim2.new(1, -20, 0, frameSc.Y)
+        end
+
+        updateSectionFrame()
+        UpdateSize()
+
+        sectionElListing:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+            updateSectionFrame()
+            UpdateSize()
+        end)
+
+        sectionInners.ChildAdded:Connect(function(child)
+            wait(0.1)
+            updateSectionFrame()
+            UpdateSize()
+        end)
+
+        sectionInners.ChildRemoved:Connect(function(child)
+            wait(0.1)
+            updateSectionFrame()
+            UpdateSize()
+        end)
+
         coroutine.wrap(function()
             while wait() do
                 sectionFrame.BackgroundColor3 = themeList.Background
                 sectionHead.BackgroundColor3 = themeList.SchemeColor
-                tabButton.TextColor3 = themeList.TextColor
-                tabButton.BackgroundColor3 = themeList.SchemeColor
                 sectionName.TextColor3 = themeList.TextColor
             end
         end)()
 
-            local function updateSectionFrame()
-                local innerSc = sectionElListing.AbsoluteContentSize
-                sectionInners.Size = UDim2.new(1, 0, 0, innerSc.Y)
-                local frameSc = sectionlistoknvm.AbsoluteContentSize
-                sectionFrame.Size = UDim2.new(0, 352, 0, frameSc.Y)
-            end
-                updateSectionFrame()
-                UpdateSize()
-            local Elements = {}
+        local Elements = {}
+        
+        function Elements:NewImage(imageUrl, imageText)
+            imageUrl = imageUrl or "rbxassetid://"
+            imageText = imageText or ""
+            
+            local imageElement = Instance.new("Frame")
+            local UICorner = Instance.new("UICorner")
+            local imageLabel = Instance.new("ImageLabel")
+            local textLabel = Instance.new("TextLabel")
+            
+            imageElement.Name = "imageElement"
+            imageElement.Parent = sectionInners
+            imageElement.BackgroundColor3 = themeList.ElementColor
+            imageElement.Size = UDim2.new(1, 0, 0, 150)
+            
+            UICorner.CornerRadius = UDim.new(0, 4)
+            UICorner.Parent = imageElement
+            
+            imageLabel.Name = "imageLabel"
+            imageLabel.Parent = imageElement
+            imageLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            imageLabel.BackgroundTransparency = 1.000
+            imageLabel.Position = UDim2.new(0.5, 0, 0.3, 0)
+            imageLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+            imageLabel.Size = UDim2.new(0.8, 0, 0.6, 0)
+            imageLabel.Image = imageUrl
+            imageLabel.ScaleType = Enum.ScaleType.Fit
+            
+            textLabel.Name = "textLabel"
+            textLabel.Parent = imageElement
+            textLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            textLabel.BackgroundTransparency = 1.000
+            textLabel.Position = UDim2.new(0.5, 0, 0.85, 0)
+            textLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+            textLabel.Size = UDim2.new(0.9, 0, 0.2, 0)
+            textLabel.Font = Enum.Font.Gotham
+            textLabel.Text = imageText
+            textLabel.TextColor3 = themeList.TextColor
+            textLabel.TextSize = 12.000
+            textLabel.TextWrapped = true
+            
+            updateSectionFrame()
+            UpdateSize()
+            
+            coroutine.wrap(function()
+                while wait() do
+                    imageElement.BackgroundColor3 = themeList.ElementColor
+                    textLabel.TextColor3 = themeList.TextColor
+                end
+            end)()
+        end
+
+        return Elements
+    end
+
+    return Sections
+end
             function Elements:NewButton(bname,tipINf, callback)
                 showLogo = showLogo or true
                 local ButtonFunction = {}
