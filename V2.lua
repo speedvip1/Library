@@ -1657,113 +1657,105 @@ function AddGameImage(parent, Configs)
     return ImageButton
 end
 
-  function Tab:AddDiscordInvite(Configs)
-	local Title = Configs[1] or Configs.Name or Configs.Title or "Discord"
-	local Desc = Configs.Desc or Configs.Description or ""
-	local Logo = Configs[2] or Configs.Logo or ""
-	local Invite = Configs[3] or Configs.Invite or ""
-	
-	local InviteHolder = Create("Frame", Container, {
-		Size = UDim2.new(1, 0, 0, 80),
-		Name = "DiscordInvite",
-		BackgroundTransparency = 1
-	})
-	
-	local InviteLabel = Create("TextLabel", InviteHolder, {
-		Size = UDim2.new(1, 0, 0, 15),
-		Position = UDim2.new(0, 5, 0, 0),
-		TextColor3 = Color3.fromRGB(40, 150, 255),
-		Font = Enum.Font.GothamBold,
-		TextXAlignment = "Left",
-		BackgroundTransparency = 1,
-		TextSize = 10,
-		Text = Invite
-	})
-	
-	local FrameHolder = Create("Frame", InviteHolder, {
-		Size = UDim2.new(1, 0, 0, 65),
-		AnchorPoint = Vector2.new(0, 1),
-		Position = UDim2.new(0, 0, 1, 0),
-		BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-	})
-	Make("Corner", FrameHolder)
-	
-	local ImageLabel = Create("ImageLabel", FrameHolder, {
-		Size = UDim2.new(0, 30, 0, 30),
-		Position = UDim2.new(0, 7, 0, 7),
-		Image = Logo,
-		BackgroundTransparency = 1
-	})
-	Make("Corner", ImageLabel, UDim.new(0, 4))
-	Make("Stroke", ImageLabel)
-	
-	local LTitle = Create("TextLabel", FrameHolder, {
-		Size = UDim2.new(1, -52, 0, 15),
-		Position = UDim2.new(0, 44, 0, 7),
-		Font = Enum.Font.GothamBold,
-		TextColor3 = Color3.fromRGB(255, 255, 255),
-		TextXAlignment = "Left",
-		BackgroundTransparency = 1,
-		TextSize = 10,
-		Text = Title
-	})
-	
-	local LDesc = Create("TextLabel", FrameHolder, {
-		Size = UDim2.new(1, -52, 0, 0),
-		Position = UDim2.new(0, 44, 0, 22),
-		TextWrapped = true,
-		AutomaticSize = Enum.AutomaticSize.Y,
-		Font = Enum.Font.Gotham,
-		TextColor3 = Color3.fromRGB(200, 200, 200),
-		TextXAlignment = "Left",
-		BackgroundTransparency = 1,
-		TextSize = 8,
-		Text = Desc
-	})
-	
-	local JoinButton = Create("TextButton", FrameHolder, {
-		Size = UDim2.new(1, -14, 0, 16),
-		AnchorPoint = Vector2.new(0.5, 1),
-		Position = UDim2.new(0.5, 0, 1, -7),
-		Text = "Join",
-		Font = Enum.Font.GothamBold,
-		TextSize = 12,
-		TextColor3 = Color3.fromRGB(220, 220, 220),
-		BackgroundColor3 = Color3.fromRGB(50, 150, 50)
-	})
-	Make("Corner", JoinButton, UDim.new(0, 5))
-	
-	local ClickDelay = false
-	JoinButton.MouseButton1Click:Connect(function()
-		if ClickDelay then return end
-		
-		setclipboard(Invite)
-		ClickDelay = true
-		
-		JoinButton.Text = "Copied to Clipboard"
-		JoinButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-		JoinButton.TextColor3 = Color3.fromRGB(150, 150, 150)
-		
-		task.wait(5)
-		
-		JoinButton.Text = "Join"
-		JoinButton.BackgroundColor3 = Color3.fromRGB(50, 150, 50)
-		JoinButton.TextColor3 = Color3.fromRGB(220, 220, 220)
-		ClickDelay = false
-	end)
-	
-	local DiscordInvite = {}
-	function DiscordInvite:Destroy()
-		InviteHolder:Destroy()
-	end
-	
-	function DiscordInvite:Visible(state)
-		if state == nil then
-			InviteHolder.Visible = not InviteHolder.Visible
-		else
-			InviteHolder.Visible = state
-		end
-	end
-	
-	return DiscordInvite
+function AddDiscord(parent, Configs)
+    local DiscordLink = Configs[1] or Configs.DiscordLink or "https://discord.gg/"
+    local DiscordIcon = Configs[2] or Configs.DiscordIcon or "rbxassetid://"
+    local DiscordTitle = Configs[3] or Configs.DiscordTitle or ""
+    
+    local Frame = Create("Frame", parent, {
+      Size = UDim2.new(1, 0, 0, 110),
+      BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+      Name = "Frame",
+      AutomaticSize = "Y"
+    })
+    
+    local Stroke = Create("UIStroke", Frame, {
+        Color = Cor_Stroke,
+        Thickness = 2,
+        Transparency = 0.7
+    })
+    
+    local LinkLabel = Create("TextLabel", Frame, {
+      Size = UDim2.new(1, 0, 0, 25),
+      Text = DiscordLink,
+      TextXAlignment = "Left",
+      BackgroundTransparency = 1,
+      Position = UDim2.new(0, 12, 0, 0),
+      TextColor3 = Color3.fromRGB(0, 120, 255),
+      Font = Enum.Font.GothamBold,
+      TextSize = 14
+    })
+    
+    local TitleLabel = Create("TextLabel", Frame, {
+      Size = UDim2.new(1, 0, 0, 25),
+      Text = DiscordTitle,
+      TextXAlignment = "Left",
+      BackgroundTransparency = 1,
+      Position = UDim2.new(0, 60, 0, 25),
+      TextColor3 = Color3.fromRGB(200, 200, 200),
+      Font = Enum.Font.GothamBold,
+      TextSize = 14
+    })
+    
+    local IconLabel = Create("ImageLabel", Frame, {
+      Size = UDim2.new(0, 40, 0, 40),
+      AnchorPoint = Vector2.new(0, 0.5),
+      Position = UDim2.new(0, 12, 0.45, 0),
+      Image = DiscordIcon
+    })
+    Corner(IconLabel)
+    
+    local IconStroke = Create("UIStroke", IconLabel, {
+        Color = Cor_Stroke,
+        Thickness = 1.5,
+        Transparency = 0.6
+    })
+    
+    local JoinButton = Create("TextButton", Frame, {
+      Size = UDim2.new(1, -24, 0, 25),
+      AnchorPoint = Vector2.new(0.5, 1),
+      Position = UDim2.new(0.5, 0, 1, -8),
+      Text = "Join",
+      Font = Enum.Font.GothamBold,
+      TextSize = 15,
+      TextColor3 = Color3.fromRGB(220, 220, 220),
+      BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+    })
+    Corner(JoinButton)
+    
+    local ButtonStroke = Create("UIStroke", JoinButton, {
+        Color = Cor_Stroke,
+        Thickness = 1.5,
+        Transparency = 0.8
+    })
+    
+    local time = tick()
+    ClickConter = 0
+    JoinButton.MouseButton1Click:Connect(function()
+      if ClickConter == 0 or tick() - time > 5 then time = tick() setclipboard(DiscordLink) ClickConter = ClickConter + 1
+        JoinButton.Text = "Copied to Clipboard"
+        JoinButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+        JoinButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        ButtonStroke.Color = Color3.fromRGB(255, 100, 100)
+        
+        task.wait(5)
+        
+        JoinButton.Text = "Join"
+        JoinButton.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+        JoinButton.TextColor3 = Color3.fromRGB(220, 220, 220)
+        ButtonStroke.Color = Cor_Stroke
+      end
+    end)
+    
+    JoinButton.MouseEnter:Connect(function()
+        ButtonStroke.Transparency = 0.4
+        Frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    end)
+    
+    JoinButton.MouseLeave:Connect(function()
+        ButtonStroke.Transparency = 0.8
+        Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    end)
+    
+    return Frame
 end
