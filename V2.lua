@@ -607,56 +607,54 @@ function MakeWindow(Configs)
   end)
   
   function MakeTab(Configs)
-    local TabName = Configs.Name or Configs.Title or "Tab"
-    local TabIcon = Configs.Icon or ""
+    local TabName = Configs.Name or "Tab"
     local TabTitle = Configs.TabTitle or false
+    local TabIcon = Configs.Icon or nil
 
-    if redzlib and redzlib.GetIcon then
-        TabIcon = redzlib:GetIcon(TabIcon)
-        if not TabIcon:find("rbxassetid://") or TabIcon:gsub("rbxassetid://", ""):len() < 6 then
-            TabIcon = ""
-        end
-    end
-
-    local TabButton = Create("Frame", ScrollBar, {
+    local Frame = Create("Frame", ScrollBar, {
         Size = UDim2.new(1, 0, 0, 25),
         BackgroundTransparency = 1
-    }) Corner(TabButton)
+    })
+    Corner(Frame)
+    Stroke(Frame)
 
-    local Button = Create("TextButton", TabButton, {
+    local TextButton = Create("TextButton", Frame, {
         Size = UDim2.new(1, 0, 1, 0),
         BackgroundTransparency = 1,
         Text = ""
     })
 
-    local Icon = Create("ImageLabel", TabButton, {
-        Size = UDim2.new(0, 15, 0, 15),
-        Position = UDim2.new(0, 8, 0.5, 0),
-        AnchorPoint = Vector2.new(0, 0.5),
-        BackgroundTransparency = 1,
-        Image = TabIcon,
-        ImageTransparency = firstVisible and 0 or 0.3
-    })
+    local IconOffset = TabIcon and 25 or 0
 
-    local Label = Create("TextLabel", TabButton, {
-        Size = UDim2.new(1, TabIcon ~= "" and -30 or -10, 1, 0),
-        Position = UDim2.new(0, TabIcon ~= "" and 30 or 10, 0, 0),
+    if TabIcon then
+        Create("ImageLabel", Frame, {
+            Size = UDim2.new(0, 20, 0, 20),
+            Position = UDim2.new(0, 0, 0.5, -10),
+            BackgroundTransparency = 1,
+            Image = TabIcon,
+            ImageColor3 = Configs_HUB.Cor_Text
+        })
+    end
+
+    local TextLabel = Create("TextLabel", Frame, {
+        Size = UDim2.new(1, -40, 1, 0),
+        Position = UDim2.new(0, IconOffset, 0, 0),
         BackgroundTransparency = 1,
         Font = Configs_HUB.Text_Font,
-        TextColor3 = Configs_HUB.Cor_Text,
-        TextSize = 13,
-        TextXAlignment = Enum.TextXAlignment.Left,
+        TextColor3 = textcolor,
+        TextSize = textsize,
         Text = TabName,
-        TextTransparency = firstVisible and 0 or 0.3
+        TextXAlignment = Enum.TextXAlignment.Left
     })
 
-    local Selected = Create("Frame", TabButton, {
-        Size = firstVisible and UDim2.new(0, 4, 0, 13) or UDim2.new(0, 4, 0, 4),
-        Position = UDim2.new(0, 1, 0.5, 0),
-        AnchorPoint = Vector2.new(0, 0.5),
-        BackgroundColor3 = Configs_HUB.Cor_Text,
-        BackgroundTransparency = firstVisible and 0 or 1
-    }) Corner(Selected, UDim.new(0.5, 0))
+    local CornerIcon = Create("ImageLabel", Frame, {
+        Size = UDim2.new(0, 18, 0, 18),
+        Position = UDim2.new(1, -20, 0.5, -9),
+        BackgroundTransparency = 1,
+        Image = "rbxassetid://6031094678",
+        ImageColor3 = Configs_HUB.Cor_Text,
+        Visible = false
+    })
 
     local Container = Create("ScrollingFrame", Containers, {
         Size = UDim2.new(1, 0, 1, 0),
@@ -691,31 +689,33 @@ function MakeWindow(Configs)
         })
     end
 
-    local function SelectTab()
+    TextButton.MouseButton1Click:Connect(function()
         for _, container in pairs(Containers:GetChildren()) do
             if container:IsA("ScrollingFrame") then
                 container.Visible = false
             end
         end
         for _, frame in pairs(ScrollBar:GetChildren()) do
-            if frame:IsA("Frame") and frame:FindFirstChild("TextLabel") and frame.TextLabel ~= Label then
-                CreateTween(frame.TextLabel, "TextTransparency", 0.3, 0.3, false)
-                CreateTween(frame.ImageLabel, "ImageTransparency", 0.3, 0.3, false)
-                CreateTween(frame.Frame, "BackgroundTransparency", 1, 0.3, false)
-                frame.TextLabel.TextSize = 13
+            if frame:IsA("Frame") and frame:FindFirstChild("TextLabel") then
+                CreateTween(frame.TextLabel, "TextColor3", Configs_HUB.Cor_DarkText, 0.3, false)
+                frame.TextLabel.TextSize = 14
+                if frame:FindFirstChild("ImageLabel") then
+                    for _, img in pairs(frame:GetChildren()) do
+                        if img:IsA("ImageLabel") and img.Image == "rbxassetid://6031094678" then
+                            img.Visible = false
+                        end
+                    end
+                end
             end
         end
         Container.Visible = true
-        CreateTween(Label, "TextTransparency", 0, 0.3, false)
-        CreateTween(Icon, "ImageTransparency", 0, 0.3, false)
-        CreateTween(Selected, "BackgroundTransparency", 0, 0.3, false)
-        CreateTween(Selected, "Size", UDim2.new(0, 4, 0, 13), 0.3, false)
-        Label.TextSize = 14
-    end
-
-    Button.MouseButton1Click:Connect(SelectTab)
+        CreateTween(TextLabel, "TextColor3", Configs_HUB.Cor_Text, 0.3, false)
+        TextLabel.TextSize = 15
+        CornerIcon.Visible = true
+    end)
 
     firstVisible = false
+    FirstTab = false
     textsize = 14
     textcolor = Configs_HUB.Cor_DarkText
     return Container
