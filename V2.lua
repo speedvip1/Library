@@ -607,80 +607,76 @@ function MakeWindow(Configs)
   end)
   
   function MakeTab(Configs)
-    local TabName = Configs.Name or "Tab"
-    local TabTitle = Configs.TabTitle or false
+    local TabName = Configs.Name or Configs.Title or "Tab"
     local TabIcon = Configs.Icon or ""
-    
-    TabIcon = GetIcon(TabIcon)
-    if not TabIcon:find("rbxassetid://") or TabIcon:gsub("rbxassetid://", ""):len() < 6 then
-        TabIcon = false
+    local TabTitle = Configs.TabTitle or false
+
+    if redzlib and redzlib.GetIcon then
+        TabIcon = redzlib:GetIcon(TabIcon)
+        if not TabIcon:find("rbxassetid://") or TabIcon:gsub("rbxassetid://", ""):len() < 6 then
+            TabIcon = ""
+        end
     end
-    
-    local TabSelect = Create("TextButton", ScrollBar, {
-        Size = UDim2.new(1, 0, 0, 24),
+
+    local TabButton = Create("Frame", ScrollBar, {
+        Size = UDim2.new(1, 0, 0, 25),
+        BackgroundTransparency = 1
+    }) Corner(TabButton)
+
+    local Button = Create("TextButton", TabButton, {
+        Size = UDim2.new(1, 0, 1, 0),
         BackgroundTransparency = 1,
         Text = ""
     })
-    Corner(TabSelect)
-    Stroke(TabSelect)
-    
-    local LabelTitle = Create("TextLabel", TabSelect, {
-        Size = UDim2.new(1, TabIcon and -25 or -15, 1),
-        Position = UDim2.new(0, TabIcon and 25 or 15, 0, 0),
+
+    local Icon = Create("ImageLabel", TabButton, {
+        Size = UDim2.new(0, 15, 0, 15),
+        Position = UDim2.new(0, 8, 0.5, 0),
+        AnchorPoint = Vector2.new(0, 0.5),
+        BackgroundTransparency = 1,
+        Image = TabIcon,
+        ImageTransparency = firstVisible and 0 or 0.3
+    })
+
+    local Label = Create("TextLabel", TabButton, {
+        Size = UDim2.new(1, TabIcon ~= "" and -30 or -10, 1, 0),
+        Position = UDim2.new(0, TabIcon ~= "" and 30 or 10, 0, 0),
         BackgroundTransparency = 1,
         Font = Configs_HUB.Text_Font,
+        TextColor3 = Configs_HUB.Cor_Text,
+        TextSize = 13,
+        TextXAlignment = Enum.TextXAlignment.Left,
         Text = TabName,
-        TextColor3 = Configs_HUB.Cor_DarkText,
-        TextSize = 10,
-        TextXAlignment = "Left",
-        TextTransparency = (FirstTab and 0.3) or 0,
-        TextTruncate = "AtEnd"
+        TextTransparency = firstVisible and 0 or 0.3
     })
-    
-    local LabelIcon = Create("ImageLabel", TabSelect, {
-        Position = UDim2.new(0, 8, 0.5, 0),
-        Size = UDim2.new(0, 13, 0, 13),
-        AnchorPoint = Vector2.new(0, 0.5),
-        Image = TabIcon or "",
-        BackgroundTransparency = 1,
-        ImageTransparency = (FirstTab and 0.3) or 0
-    })
-    
-    local Selected = Create("Frame", TabSelect, {
-        Size = FirstTab and UDim2.new(0, 4, 0, 4) or UDim2.new(0, 4, 0, 13),
+
+    local Selected = Create("Frame", TabButton, {
+        Size = firstVisible and UDim2.new(0, 4, 0, 13) or UDim2.new(0, 4, 0, 4),
         Position = UDim2.new(0, 1, 0.5, 0),
         AnchorPoint = Vector2.new(0, 0.5),
-        BackgroundColor3 = Configs_HUB.Cor_Theme,
-        BackgroundTransparency = FirstTab and 1 or 0
-    })
-    Corner(Selected, UDim.new(0.5, 0))
-    
+        BackgroundColor3 = Configs_HUB.Cor_Text,
+        BackgroundTransparency = firstVisible and 0 or 1
+    }) Corner(Selected, UDim.new(0.5, 0))
+
     local Container = Create("ScrollingFrame", Containers, {
         Size = UDim2.new(1, 0, 1, 0),
-        Position = UDim2.new(0, 0, 1, 0),
-        AnchorPoint = Vector2.new(0, 1),
         ScrollingDirection = "Y",
         AutomaticCanvasSize = "Y",
         CanvasSize = UDim2.new(),
         BackgroundTransparency = 1,
         ScrollBarThickness = 2,
-        ScrollBarImageColor3 = Configs_HUB.Cor_Theme,
-        ScrollBarImageTransparency = 0.2,
-        Visible = firstVisible,
-        Name = ("Container_%s"):format(TabName)
+        Visible = firstVisible
     })
-    
     Create("UIPadding", Container, {
         PaddingLeft = UDim.new(0, 10),
         PaddingRight = UDim.new(0, 10),
         PaddingTop = UDim.new(0, 10),
         PaddingBottom = UDim.new(0, 10)
     })
-    
     Create("UIListLayout", Container, {
         Padding = UDim.new(0, 5)
     })
-    
+
     if TabTitle then
         Create("TextLabel", Container, {
             BackgroundTransparency = 1,
@@ -691,85 +687,40 @@ function MakeWindow(Configs)
             TextColor3 = Configs_HUB.Cor_Text,
             Size = UDim2.new(1, 0, 0, 30),
             Position = UDim2.new(0, 30, 0, 0),
-            Name = "TitleLabel"
+            Name = "Frame"
         })
     end
-    
-    local function Tabs()
+
+    local function SelectTab()
         for _, container in pairs(Containers:GetChildren()) do
             if container:IsA("ScrollingFrame") then
                 container.Visible = false
             end
         end
-        
         for _, frame in pairs(ScrollBar:GetChildren()) do
-            if frame:IsA("TextButton") and frame:FindFirstChild("TextLabel") and frame.TextLabel ~= LabelTitle then
-                CreateTween(frame.TextLabel, "TextColor3", Configs_HUB.Cor_DarkText, 0.3, false)
-                frame.TextLabel.TextSize = 10
-                frame.TextLabel.TextTransparency = 0.3
-                
-                if frame:FindFirstChild("ImageLabel") then
-                    CreateTween(frame.ImageLabel, "ImageTransparency", 0.3, 0.3, false)
-                end
-                
-                if frame:FindFirstChild("Frame") then
-                    local selectedFrame = frame:FindFirstChild("Frame")
-                    CreateTween(selectedFrame, "Size", UDim2.new(0, 4, 0, 4), 0.35, false)
-                    CreateTween(selectedFrame, "BackgroundTransparency", 1, 0.35, false)
-                end
+            if frame:IsA("Frame") and frame:FindFirstChild("TextLabel") and frame.TextLabel ~= Label then
+                CreateTween(frame.TextLabel, "TextTransparency", 0.3, 0.3, false)
+                CreateTween(frame.ImageLabel, "ImageTransparency", 0.3, 0.3, false)
+                CreateTween(frame.Frame, "BackgroundTransparency", 1, 0.3, false)
+                frame.TextLabel.TextSize = 13
             end
         end
-        
         Container.Visible = true
-        Container.Size = UDim2.new(1, 0, 1, 150)
-        
-        CreateTween(LabelTitle, "TextColor3", Configs_HUB.Cor_Text, 0.3, false)
-        CreateTween(LabelTitle, "TextTransparency", 0, 0.35, false)
-        LabelTitle.TextSize = 10
-        
-        if TabIcon then
-            CreateTween(LabelIcon, "ImageTransparency", 0, 0.35, false)
-        end
-        
-        CreateTween(Selected, "Size", UDim2.new(0, 4, 0, 13), 0.35, false)
-        CreateTween(Selected, "BackgroundTransparency", 0, 0.35, false)
-        
-        CreateTween(Container, "Size", UDim2.new(1, 0, 1, 0), 0.3, false)
+        CreateTween(Label, "TextTransparency", 0, 0.3, false)
+        CreateTween(Icon, "ImageTransparency", 0, 0.3, false)
+        CreateTween(Selected, "BackgroundTransparency", 0, 0.3, false)
+        CreateTween(Selected, "Size", UDim2.new(0, 4, 0, 13), 0.3, false)
+        Label.TextSize = 14
     end
-    
-    TabSelect.MouseButton1Click:Connect(Tabs)
-    
+
+    Button.MouseButton1Click:Connect(SelectTab)
+
     firstVisible = false
-    FirstTab = true
-    
-    local Tab = {}
-    Tab.Cont = Container
-    
-    function Tab:Disable()
-        Container.Visible = false
-        CreateTween(LabelTitle, "TextTransparency", 0.3, 0.35, false)
-        if TabIcon then
-            CreateTween(LabelIcon, "ImageTransparency", 0.3, 0.35, false)
-        end
-        CreateTween(Selected, "Size", UDim2.new(0, 4, 0, 4), 0.35, false)
-        CreateTween(Selected, "BackgroundTransparency", 1, 0.35, false)
-    end
-    
-    function Tab:Enable()
-        Tabs()
-    end
-    
-    function Tab:Visible(Bool)
-        TabSelect.Visible = Bool
-        if Bool then
-            Container.Parent = Containers
-        else
-            Container.Parent = nil
-        end
-    end
-    
-    return Tab
+    textsize = 14
+    textcolor = Configs_HUB.Cor_DarkText
+    return Container
 end
+
   
   function AddButton(parent, Configs)
     local ButtonName = Configs.Name or "Button!!"
