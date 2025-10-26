@@ -1657,7 +1657,7 @@ function AddGameImage(parent, Configs)
     return ImageButton
 end
 
-function AddDiscord(parent, Configs)
+  function AddDiscord(parent, Configs)
     local DiscordLink = Configs[1] or Configs.DiscordLink or "https://discord.gg/"
     local DiscordIcon = Configs[2] or Configs.DiscordIcon or "rbxassetid://"
     local DiscordTitle = Configs[3] or Configs.DiscordTitle or ""
@@ -1667,12 +1667,6 @@ function AddDiscord(parent, Configs)
       BackgroundColor3 = Color3.fromRGB(30, 30, 30),
       Name = "Frame",
       AutomaticSize = "Y"
-    })
-    
-    local Stroke = Create("UIStroke", Frame, {
-        Color = Cor_Stroke,
-        Thickness = 2,
-        Transparency = 0.7
     })
     
     local LinkLabel = Create("TextLabel", Frame, {
@@ -1702,14 +1696,7 @@ function AddDiscord(parent, Configs)
       AnchorPoint = Vector2.new(0, 0.5),
       Position = UDim2.new(0, 12, 0.45, 0),
       Image = DiscordIcon
-    })
-    Corner(IconLabel)
-    
-    local IconStroke = Create("UIStroke", IconLabel, {
-        Color = Cor_Stroke,
-        Thickness = 1.5,
-        Transparency = 0.6
-    })
+    })Corner(IconLabel)
     
     local JoinButton = Create("TextButton", Frame, {
       Size = UDim2.new(1, -24, 0, 25),
@@ -1720,42 +1707,21 @@ function AddDiscord(parent, Configs)
       TextSize = 15,
       TextColor3 = Color3.fromRGB(220, 220, 220),
       BackgroundColor3 = Color3.fromRGB(50, 200, 50)
-    })
-    Corner(JoinButton)
-    
-    local ButtonStroke = Create("UIStroke", JoinButton, {
-        Color = Cor_Stroke,
-        Thickness = 1.5,
-        Transparency = 0.8
-    })
+    })Corner(IconLabel)
     
     local time = tick()
     ClickConter = 0
     JoinButton.MouseButton1Click:Connect(function()
       if ClickConter == 0 or tick() - time > 5 then time = tick() setclipboard(DiscordLink) ClickConter = ClickConter + 1
         JoinButton.Text = "Copied to Clipboard"
-        JoinButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
-        JoinButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        ButtonStroke.Color = Color3.fromRGB(255, 100, 100)
-        
+        JoinButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+        JoinButton.TextColor3 = Color3.fromRGB(150, 150, 150)
         task.wait(5)
-        
         JoinButton.Text = "Join"
         JoinButton.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
         JoinButton.TextColor3 = Color3.fromRGB(220, 220, 220)
-        ButtonStroke.Color = Cor_Stroke
       end
     end)
-    
-    JoinButton.MouseEnter:Connect(function()
-        ButtonStroke.Transparency = 0.4
-        Frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    end)
-    
-    JoinButton.MouseLeave:Connect(function()
-        ButtonStroke.Transparency = 0.8
-        Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    end)
-    
-    return Frame
+  end
+  return Menu
 end
