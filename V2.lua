@@ -651,7 +651,7 @@ function MakeWindow(Configs)
         Size = UDim2.new(0, 18, 0, 18),
         Position = UDim2.new(1, -20, 0.5, -9),
         BackgroundTransparency = 1,
-        Image = "rbxassetid://6031094678",
+        Image = TIcon or "",
         ImageColor3 = Configs_HUB.Cor_Text,
         Visible = false
     })
