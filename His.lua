@@ -189,11 +189,11 @@ function MakeNotifi(Configs)
 end
 
 function MakeWindow(Configs)
-  local title = Configs.Hub.Title or "REDz HUB"
-  local Anim_Title = Configs.Hub.Animation or "by : redz9999"
+  local title = Configs.Hub.Title or "Base64 Hub"
+  local Anim_Title = Configs.Hub.Animation or "by : Base64 Hub"
   
   local KeySystem = Configs.Key.KeySystem or false
-  local KeyTitle = Configs.Key.Title or "Key System"
+  local KeyTitle = Configs.Key.Title or " الحصول على المفتاح"
   local KeyDescription = Configs.Key.Description or ".-."
   local KeyKey = Configs.Key.Keys or {"123", "321"}
   local KeyLink = Configs.Key.KeyLink or ""
@@ -229,7 +229,7 @@ function MakeWindow(Configs)
       Text = KeyTitle,
       Font = Configs_HUB.Text_Font,
       TextScaled = true,
-      TextColor3 = Configs_HUB.Cor_Text,
+      TextColor3 = Color3.fromRGB(102, 0, 204),
       TextXAlignment = "Left",
       BackgroundTransparency = 1
     })
@@ -238,7 +238,7 @@ function MakeWindow(Configs)
       Size = UDim2.new(1, -80, 0, 0),
       Text = KeyDescription,
       TextSize = 17,
-      TextColor3 = Configs_HUB.Cor_DarkText,
+      TextColor3 = Color3.fromRGB(102, 0, 204),
       Font = Configs_HUB.Text_Font,
       Position = UDim2.new(0, 20, 0, 25),
       TextXAlignment = "Left",
@@ -248,10 +248,10 @@ function MakeWindow(Configs)
     })
     
     local ConfirmButton = Create("TextButton", KeyMenu, {
-      Text = "Confirm",
+      Text = "تشغيل السكربت",
       Font = Configs_HUB.Text_Font,
       TextSize = 20,
-      TextColor3 = Configs_HUB.Cor_Text,
+      TextColor3 = Color3.fromRGB(102, 0, 204),
       Size = UDim2.new(0, 150, 0, 40),
       AnchorPoint = Vector2.new(1, 0),
       Position = UDim2.new(1, -35, 0, 140),
@@ -259,10 +259,10 @@ function MakeWindow(Configs)
     })Corner(ConfirmButton)
     
     local GetKeyLink = Create("TextButton", KeyMenu, {
-      Text = "Get Key Link",
+      Text = "الحصول على المفتاح",
       Font = Configs_HUB.Text_Font,
       TextSize = 20,
-      TextColor3 = Configs_HUB.Cor_Text,
+      TextColor3 = Color3.fromRGB(102, 0, 204),
       Size = UDim2.new(0, 150, 0, 40),
       Position = UDim2.new(0, 35, 0, 140),
       BackgroundColor3 = Configs_HUB.Cor_Options
@@ -272,7 +272,7 @@ function MakeWindow(Configs)
       Size = UDim2.new(1, -70, 0, 40),
       Position = UDim2.new(0, 35, 0, 90),
       BackgroundColor3 = Configs_HUB.Cor_Options,
-      PlaceholderText = "Put the Key here",
+      PlaceholderText = "دخل كود المفتاح",
       Text = "",
       TextColor3 = Configs_HUB.Cor_Text,
       Font = Configs_HUB.Text_Font,
@@ -1607,7 +1607,7 @@ function MakeWindow(Configs)
       Font = Enum.Font.GothamBold,
       TextSize = 15,
       TextColor3 = Color3.fromRGB(220, 220, 220),
-      BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+      BackgroundColor3 = Color3.fromRGB(102, 0, 204)
     })Corner(IconLabel)
     
     local time = tick()
