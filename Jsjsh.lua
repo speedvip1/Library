@@ -163,7 +163,7 @@ function Base64Hub:Window(text,gamenme,logo,keybind)
 	BindButton.Position = UDim2.new(0.847561002, 0, 0, 0)
 	BindButton.Size = UDim2.new(0, 100, 0, 27)
 	BindButton.Font = Enum.Font.GothamSemibold
-	BindButton.Text = "[RightControl]"
+	BindButton.Text = ""
 	BindButton.TextColor3 = Color3.fromRGB(147,112,219)
 	BindButton.TextSize = 13.000
 	
@@ -175,16 +175,16 @@ CloseButton.BackgroundTransparency = 1.000
 CloseButton.Position = UDim2.new(0.95, 0, 0, 0)
 CloseButton.Size = UDim2.new(0, 27, 0, 27)
 CloseButton.Font = Enum.Font.GothamBold
-CloseButton.Text = "x"
-CloseButton.TextColor3 = Color3.fromRGB(255, 100, 100)
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 5, 5)
 CloseButton.TextSize = 18.000
 
 CloseButton.MouseEnter:Connect(function()
-    CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50)
+    CloseButton.TextColor3 = Color3.fromRGB(255, 5, 5)
 end)
 
 CloseButton.MouseLeave:Connect(function()
-    CloseButton.TextColor3 = Color3.fromRGB(255, 100, 100)
+    CloseButton.TextColor3 = Color3.fromRGB(255, 5, 5)
 end)
 
 CloseButton.MouseButton1Click:Connect(function()
