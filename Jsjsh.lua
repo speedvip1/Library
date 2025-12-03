@@ -167,36 +167,28 @@ function Base64Hub:Window(text,gamenme,logo,keybind)
 	BindButton.TextColor3 = Color3.fromRGB(147,112,219)
 	BindButton.TextSize = 13.000
 	
-	local MinimizeButton = Instance.new("ImageButton")
-MinimizeButton.Name = "MinimizeButton"
-MinimizeButton.Parent = Top
-MinimizeButton.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-MinimizeButton.Position = UDim2.new(0.8, 0, 0, 0)
-MinimizeButton.Size = UDim2.new(0, 53, 0, 50)
-MinimizeButton.Image = "rbxassetid://"
+	local CloseButton = Instance.new("TextButton")
+CloseButton.Name = "CloseButton"
+CloseButton.Parent = Top
+CloseButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.BackgroundTransparency = 1.000
+CloseButton.Position = UDim2.new(0.95, 0, 0, 0)
+CloseButton.Size = UDim2.new(0, 27, 0, 27)
+CloseButton.Font = Enum.Font.GothamBold
+CloseButton.Text = "x"
+CloseButton.TextColor3 = Color3.fromRGB(255, 100, 100)
+CloseButton.TextSize = 18.000
 
-local MinimizeCorner = Instance.new("UICorner")
-MinimizeCorner.Name = "MinimizeCorner"
-MinimizeCorner.Parent = MinimizeButton
+CloseButton.MouseEnter:Connect(function()
+    CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50)
+end)
 
-local MinimizeStroke = Instance.new("UIStroke")
-MinimizeStroke.Name = "MinimizeStroke"
-MinimizeStroke.Parent = MinimizeButton
-MinimizeStroke.Color = Color3.fromRGB(255, 0, 0)
-MinimizeStroke.Thickness = 1
+CloseButton.MouseLeave:Connect(function()
+    CloseButton.TextColor3 = Color3.fromRGB(255, 100, 100)
+end)
 
-local minimize = false
-MinimizeButton.MouseButton1Click:Connect(function()
-    if minimize then
-        minimize = false
-        Main.Visible = true
-        Main:TweenSize(UDim2.new(0, 656, 0, 340), "Out", "Quad", 0.3, true)
-    else
-        minimize = true
-        Main:TweenSize(UDim2.new(0, 656, 0, 0), "Out", "Quad", 0.3, true)
-        wait(0.3)
-        Main.Visible = false
-    end
+CloseButton.MouseButton1Click:Connect(function()
+    Base64Hub:Destroy()
 end)
 
 	local Tab = Instance.new("Frame")
