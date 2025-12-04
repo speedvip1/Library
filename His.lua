@@ -70,7 +70,7 @@ local function TextSetColor(instance)
 end
 
 local ScreenGui = Create("ScreenGui", CoreGui, {
-  Name = "REDz HUB library"
+  Name = "Base64Hubx library"
 })
 
 ScreenFind = CoreGui:FindFirstChild(ScreenGui.Name)
@@ -1558,10 +1558,11 @@ function MakeWindow(Configs)
     Section.Text = NewName
   end
   
-  function AddDiscord(parent, Configs)
+function AddDiscord(parent, Configs)
     local DiscordLink = Configs[1] or Configs.DiscordLink or "https://discord.gg/"
     local DiscordIcon = Configs[2] or Configs.DiscordIcon or "rbxassetid://"
-    local DiscordTitle = Configs[3] or Configs.DiscordTitle or ""
+    local DiscordStroke = Configs[3] or Configs.DiscordStroke or Configs_HUB.Cor_Stroke
+    local DiscordTitle = Configs[4] or Configs.DiscordTitle or ""
     
     local Frame = Create("Frame", parent, {
       Size = UDim2.new(1, 0, 0, 110),
@@ -1597,7 +1598,14 @@ function MakeWindow(Configs)
       AnchorPoint = Vector2.new(0, 0.5),
       Position = UDim2.new(0, 12, 0.45, 0),
       Image = DiscordIcon
-    })Corner(IconLabel)
+    })
+    Corner(IconLabel)
+    
+    local IconStroke = Create("UIStroke", IconLabel, {
+        Color = DiscordStroke,
+        Thickness = 2,
+        ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+    })
     
     local JoinButton = Create("TextButton", Frame, {
       Size = UDim2.new(1, -24, 0, 25),
@@ -1608,21 +1616,25 @@ function MakeWindow(Configs)
       TextSize = 15,
       TextColor3 = Color3.fromRGB(220, 220, 220),
       BackgroundColor3 = Color3.fromRGB(102, 0, 204)
-    })Corner(IconLabel)
+    })
+    Corner(JoinButton)
     
     local time = tick()
-    ClickConter = 0
+    local ClickConter = 0
     JoinButton.MouseButton1Click:Connect(function()
-      if ClickConter == 0 or tick() - time > 5 then time = tick() setclipboard(DiscordLink) ClickConter = ClickConter + 1
-        JoinButton.Text = "Copied to Clipboard"
-        JoinButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-        JoinButton.TextColor3 = Color3.fromRGB(150, 150, 150)
-        task.wait(5)
-        JoinButton.Text = "Join"
-        JoinButton.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
-        JoinButton.TextColor3 = Color3.fromRGB(220, 220, 220)
+      if ClickConter == 0 or tick() - time > 5 then 
+          time = tick() 
+          setclipboard(DiscordLink) 
+          ClickConter = ClickConter + 1
+          JoinButton.Text = "Copied to Clipboard"
+          JoinButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+          JoinButton.TextColor3 = Color3.fromRGB(150, 150, 150)
+          task.wait(5)
+          JoinButton.Text = "Join"
+          JoinButton.BackgroundColor3 = Color3.fromRGB(102, 0, 204)
+          JoinButton.TextColor3 = Color3.fromRGB(220, 220, 220)
       end
     end)
-  end
-  return Menu
+end
+return Menu 
 end
