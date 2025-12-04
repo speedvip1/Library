@@ -1561,7 +1561,7 @@ function MakeWindow(Configs)
 function AddDiscord(parent, Configs)
     local DiscordLink = Configs[1] or Configs.DiscordLink or "https://discord.gg/"
     local DiscordIcon = Configs[2] or Configs.DiscordIcon or "rbxassetid://"
-    local DiscordStroke = Configs[3] or Configs.DiscordStroke or Configs_HUB.Cor_Stroke
+    local DiscordStroke = Configs[3] or Configs.DiscordStroke or Color3.fromRGB(102, 0, 204)
     local DiscordTitle = Configs[4] or Configs.DiscordTitle or ""
     
     local Frame = Create("Frame", parent, {
@@ -1582,16 +1582,18 @@ function AddDiscord(parent, Configs)
       TextSize = 14
     })
     
-    local TitleLabel = Create("TextLabel", Frame, {
-      Size = UDim2.new(1, 0, 0, 25),
-      Text = DiscordTitle,
-      TextXAlignment = "Left",
-      BackgroundTransparency = 1,
-      Position = UDim2.new(0, 60, 0, 25),
-      TextColor3 = Color3.fromRGB(200, 200, 200),
-      Font = Enum.Font.GothamBold,
-      TextSize = 14
-    })
+    if DiscordTitle and DiscordTitle ~= "" then
+        local TitleLabel = Create("TextLabel", Frame, {
+          Size = UDim2.new(1, 0, 0, 25),
+          Text = DiscordTitle,
+          TextXAlignment = "Left",
+          BackgroundTransparency = 1,
+          Position = UDim2.new(0, 60, 0, 25),
+          TextColor3 = Color3.fromRGB(200, 200, 200),
+          Font = Enum.Font.GothamBold,
+          TextSize = 14
+        })
+    end
     
     local IconLabel = Create("ImageLabel", Frame, {
       Size = UDim2.new(0, 40, 0, 40),
@@ -1636,5 +1638,5 @@ function AddDiscord(parent, Configs)
       end
     end)
 end
-return Menu 
+return Menu
 end
