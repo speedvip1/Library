@@ -1561,7 +1561,7 @@ function MakeWindow(Configs)
 function AddDiscord(parent, Configs)
     local DiscordLink = Configs[1] or Configs.DiscordLink or "https://discord.gg/"
     local DiscordIcon = Configs[2] or Configs.DiscordIcon or "rbxassetid://"
-    local DiscordStroke = Configs[3] or Configs.DiscordStroke or Configs_HUB.Cor_Stroke
+    local DiscordStroke = Configs[3] or Configs.DiscordStroke or Color3.fromRGB(102, 0, 204)
     local DiscordTitle = Configs[4] or Configs.DiscordTitle or ""
 
     local Frame = Create("Frame", parent, {
