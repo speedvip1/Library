@@ -1604,10 +1604,9 @@ function AddDiscord(parent, Configs)
     Corner(IconLabel)
     
     local IconStroke = Create("UIStroke", IconLabel, {
-        Color = DiscordStroke,
-        Thickness = 2,
-        ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
-    })
+    Color = DiscordStroke,
+    Thickness = 2
+})
     
     local JoinButton = Create("TextButton", Frame, {
       Size = UDim2.new(1, -24, 0, 25),
