@@ -132,7 +132,7 @@ local function IsPotatoDevice()
 	local fps = 1 / RunService.RenderStepped:Wait()
 	local ping = Stats.Network.ServerStatsItem["Data Ping"]:GetValue()
 
-	if fps < 30 or ping > 250 then
+	if fps < 30 or ping > 1000 then
 		return true
 	end
 	return false or YesHeeConfig['Boot Fps']
@@ -263,7 +263,7 @@ getgenv().Settings = {
 	BackgroundColor = Color3.fromRGB(27,27,27),
 	BackgroundColor2 = Color3.fromRGB(20,20,20),
 	BackgroundColor3 = Color3.fromRGB(25,25,25),
-	Color = Color3.fromRGB(150, 0, 255),
+	Color = Color3.fromRGB(213, 55, 102),
 	ToggleOn = Color3.fromRGB(65, 17, 31),
 	ColorEffect = Color3.fromRGB(4, 23, 38)
 } --[[
@@ -295,7 +295,7 @@ local Library = {
 	Font2 = Font.new("rbxasset://fonts/families/Code.json", Enum.FontWeight.Medium, Enum.FontStyle.Normal),
 	Dropdown = nil,
 	ColorPicker = nil,
-	Blur = loadstring(game:HttpGet('https://raw.githubusercontent.com/speedvip1/Library/refs/heads/main/Glasd.lua'))()
+	Blur = loadstring(game:HttpGet('https://raw.githubusercontent.com/aresZee7/aresLibrary/main/BlurFrame'))()
 }
 
 local IconGen = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/refs/heads/master/src/Icons.lua"))()['assets']
@@ -663,7 +663,7 @@ local function ShowNotify(iconId, text, color, duration)
 			if not Main or not Main:IsDescendantOf(game) then
 				connection:Disconnect()
 			else
-				UIGradient.Rotation = 1
+				UIGradient.Rotation += 1
 			end
 		end)
 	end)
@@ -1075,7 +1075,7 @@ Component.AddToggle = function( Container, Options)
 	assert(Container, "Missing Parent.")
 	assert(Options, "Missing Options.")
 
-	Zindex = 1
+	Zindex -= 1
 	local Toggles = {
 		Title = Options.Title or "Toggle",
 		Value = Options.Default or false,
