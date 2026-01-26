@@ -608,6 +608,7 @@ function MakeWindow(Configs)
   function MakeTab(Configs)
     local TabName = Configs.Name or "Tab"
     local TabTitle = Configs.TabTitle or false
+    local TabIcon = Configs.Icon or "rbxassetid://15155219405"  -- Icon parameter
     
     local Frame = Create("Frame", ScrollBar, {
       Size = UDim2.new(1, 0, 0, 25),
@@ -620,13 +621,25 @@ function MakeWindow(Configs)
       Text = ""
     })
     
+    -- Add Icon Image
+    local IconImage = Create("ImageLabel", Frame, {
+        Size = UDim2.new(0, 20, 0, 20),
+        Position = UDim2.new(0, 5, 0.5, -10),
+        BackgroundTransparency = 1,
+        Image = TabIcon,
+        ImageColor3 = Configs_HUB.Cor_Stroke
+    })
+    
+    -- Adjust TextLabel position to make space for icon
     local TextLabel = Create("TextLabel", Frame, {
-      Size = UDim2.new(1, 0, 1, 0),
+      Size = UDim2.new(1, -30, 1, 0),
+      Position = UDim2.new(0, 30, 0, 0),
       BackgroundTransparency = 1,
       Font = Configs_HUB.Text_Font,
       TextColor3 = textcolor,
       TextSize = textsize,
-      Text = TabName
+      Text = TabName,
+      TextXAlignment = "Left"
     })
     
     local Container = Create("ScrollingFrame", Containers, {
@@ -659,11 +672,13 @@ function MakeWindow(Configs)
       for _,frame in pairs(ScrollBar:GetChildren()) do
         if frame:IsA("Frame") and frame:FindFirstChild("TextLabel") and frame.TextLabel ~= TextLabel then
           CreateTween(frame.TextLabel, "TextColor3", Configs_HUB.Cor_DarkText, 0.3, false)
+          CreateTween(frame:FindFirstChildOfClass("ImageLabel"), "ImageColor3", Configs_HUB.Cor_Stroke, 0.3, false)
           frame.TextLabel.TextSize = 14
         end
       end
       Container.Visible = true
       CreateTween(TextLabel, "TextColor3", Configs_HUB.Cor_Text, 0.3, false)
+      CreateTween(IconImage, "ImageColor3", Configs_HUB.Cor_Text, 0.3, false)
       TextLabel.TextSize = 15
     end)
     
@@ -672,7 +687,7 @@ function MakeWindow(Configs)
     textsize = 14
     textcolor = Configs_HUB.Cor_DarkText
     return Container
-  end
+end
   
   function AddButton(parent, Configs)
     local ButtonName = Configs.Name or "Button!!"
