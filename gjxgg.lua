@@ -69,7 +69,7 @@ local function TextSetColor(instance)
 end
 
 local ScreenGui = Create("ScreenGui", CoreGui, {
-  Name = "REDz HUB library"
+  Name = "Roblox"
 })
 
 ScreenFind = CoreGui:FindFirstChild(ScreenGui.Name)
@@ -85,7 +85,7 @@ local Menu_Notifi = Create("Frame", ScreenGui, {
   Size = UDim2.new(0, 300, 1, 0),
   Position = UDim2.new(1, 0, 0, 0),
   AnchorPoint = Vector2.new(1, 0),
-  BackgroundTransparency = 1
+  BackgroundTransparency = 0.6
 })
 
 local Padding = Create("UIPadding", Menu_Notifi, {
