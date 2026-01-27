@@ -1,9 +1,9 @@
 local Configs_HUB = {
-  Cor_Hub = Color3.fromRGB(30, 20, 25),           -- خلفية بنفسجية داكنة
-  Cor_Options = Color3.fromRGB(50, 35, 45),       -- خيارات أفتح
-  Cor_Stroke = Color3.fromRGB(255, 0, 0),     -- إطار وردي
-  Cor_Text = Color3.fromRGB(255, 220, 230),       -- نص وردي فاتح
-  Cor_DarkText = Color3.fromRGB(200, 170, 180),   -- نص ثانوي
+  Cor_Hub = Color3.fromRGB(30, 20, 25),           
+  Cor_Options = Color3.fromRGB(50, 35, 45),       
+  Cor_Stroke = Color3.fromRGB(255, 0, 0),     
+  Cor_Text = Color3.fromRGB(255, 220, 230),      
+  Cor_DarkText = Color3.fromRGB(200, 170, 180),  
   Corner_Radius = UDim.new(0, 5),
   Text_Font = Enum.Font.SourceSansBold
 }
@@ -713,7 +713,7 @@ end
     })
     
     local ImageLabel = Create("ImageLabel", TextButton, {
-      Image = "rbxassetid://15155219405",
+      Image = "rbxassetid://107150227368485",
       Size = UDim2.new(0, 20, 0, 20),
       Position = UDim2.new(0, 5, 0, 2.5),
       BackgroundTransparency = 1,
@@ -1093,7 +1093,6 @@ end
         BorderSizePixel = 0
     })
     
-    -- وظيفة تأثير الكتابة
     local function TypewriterEffect(text)
         TextBox.Text = ""
         local currentText = ""
@@ -1104,7 +1103,6 @@ end
         end
     end
     
-    -- تطبيق تأثير الكتابة على النص الافتراضي
     if Default ~= "" then
         TypewriterEffect(Default)
     end
