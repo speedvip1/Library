@@ -752,68 +752,88 @@ end
     local ToggleName = Configs.Name or "Toggle!!"
     local Default = Configs.Default or false
     local Callback = Configs.Callback or function() end
+    local Description = Configs.Description or ""
+    
+    local toggleHeight = 25
+    if Description ~= "" then
+        toggleHeight = 40
+    end
     
     local TextButton = Create("TextButton", parent, {
-      Size = UDim2.new(1, 0, 0, 25),
-      BackgroundColor3 = Configs_HUB.Cor_Options,
-      Name = "Frame",
-      Text = "",
-      AutoButtonColor = false
+        Size = UDim2.new(1, 0, 0, toggleHeight),
+        BackgroundColor3 = Configs_HUB.Cor_Options,
+        Name = "Frame",
+        Text = "",
+        AutoButtonColor = false
     })Corner(TextButton)Stroke(TextButton)
     
     local TextLabel = Create("TextLabel", TextButton, {
-      TextSize = 12,
-      TextColor3 = Configs_HUB.Cor_Text,
-      Text = ToggleName,
-      Size = UDim2.new(1, 0, 1, 0),
-      Position = UDim2.new(0, 35, 0, 0),
-      BackgroundTransparency = 1,
-      TextXAlignment = "Left",
-      Font = Configs_HUB.Text_Font
+        TextSize = 12,
+        TextColor3 = Configs_HUB.Cor_Text,
+        Text = ToggleName,
+        Size = Description ~= "" and UDim2.new(1, -35, 0.5, 0) or UDim2.new(1, 0, 1, 0),
+        Position = Description ~= "" and UDim2.new(0, 35, 0, 0) or UDim2.new(0, 35, 0, 0),
+        BackgroundTransparency = 1,
+        TextXAlignment = "Left",
+        Font = Configs_HUB.Text_Font
     })
     
+    if Description ~= "" then
+        local DescriptionLabel = Create("TextLabel", TextButton, {
+            TextSize = 10,
+            TextColor3 = Configs_HUB.Cor_DarkText,
+            Text = Description,
+            Size = UDim2.new(1, -35, 0.5, 0),
+            Position = UDim2.new(0, 35, 0.5, 0),
+            BackgroundTransparency = 1,
+            TextXAlignment = "Left",
+            Font = Configs_HUB.Text_Font,
+            TextTruncate = Enum.TextTruncate.AtEnd
+        })
+        TextSetColor(DescriptionLabel)
+    end
     local Frame1 = Create("Frame", TextButton, {
-      Size = UDim2.new(0, 25, 0, 15),
-      Position = UDim2.new(0, 5, 0, 5),
-      BackgroundTransparency = 1,
+        Size = UDim2.new(0, 25, 0, 15),
+        Position = UDim2.new(0, 5, 0, Description ~= "" and 12.5 or 5),
+        BackgroundTransparency = 1,
     })Corner(Frame1, {CornerRadius = UDim.new(1, 0)})
     local Stroke = Stroke(Frame1, {Thickness = 2})
     
     local Frame2 = Create("Frame", Frame1, {
-      Size = UDim2.new(0, 13, 0, 13),
-      Position = UDim2.new(0, 2, 0.5, 0),
-      AnchorPoint = Vector2.new(0, 0.5),
-      BackgroundColor3 = Configs_HUB.Cor_Stroke
+        Size = UDim2.new(0, 13, 0, 13),
+        Position = UDim2.new(0, 2, 0.5, 0),
+        AnchorPoint = Vector2.new(0, 0.5),
+        BackgroundColor3 = Configs_HUB.Cor_Stroke
     })Corner(Frame2, {CornerRadius = UDim.new(1, 0)})
     
     local OnOff = false
     if Default then
-      OnOff = true
-      CreateTween(Frame2, "Position", UDim2.new(0, 10, 0.5, 0), 0.2, false)
-      CreateTween(Frame2, "BackgroundColor3", Color3.fromRGB(30, 140, 200), 0.2, false)
-      CreateTween(Stroke, "Color", Color3.fromRGB(30, 140, 200), 0.2, false)
-      CreateTween(TextLabel, "TextColor3", Color3.fromRGB(30, 140, 200), 0.2, false)
-    end
-    Callback(OnOff)
-    TextButton.MouseButton1Click:Connect(function()
-      if Frame2.Position.X.Offset < 5 then
         OnOff = true
         CreateTween(Frame2, "Position", UDim2.new(0, 10, 0.5, 0), 0.2, false)
         CreateTween(Frame2, "BackgroundColor3", Color3.fromRGB(30, 140, 200), 0.2, false)
         CreateTween(Stroke, "Color", Color3.fromRGB(30, 140, 200), 0.2, false)
         CreateTween(TextLabel, "TextColor3", Color3.fromRGB(30, 140, 200), 0.2, false)
-        Callback(true)
-      else
-        OnOff = false
-        CreateTween(Frame2, "Position", UDim2.new(0, 2, 0.5, 0), 0.2, false)
-        CreateTween(Frame2, "BackgroundColor3", Configs_HUB.Cor_Stroke, 0.2, false)
-        CreateTween(Stroke, "Color", Configs_HUB.Cor_Stroke, 0.2, false)
-        CreateTween(TextLabel, "TextColor3", Configs_HUB.Cor_Text, 0.2, false)
-        Callback(false)
-      end
+    end
+    Callback(OnOff)
+    TextButton.MouseButton1Click:Connect(function()
+        if Frame2.Position.X.Offset < 5 then
+            OnOff = true
+            CreateTween(Frame2, "Position", UDim2.new(0, 10, 0.5, 0), 0.2, false)
+            CreateTween(Frame2, "BackgroundColor3", Color3.fromRGB(30, 140, 200), 0.2, false)
+            CreateTween(Stroke, "Color", Color3.fromRGB(30, 140, 200), 0.2, false)
+            CreateTween(TextLabel, "TextColor3", Color3.fromRGB(30, 140, 200), 0.2, false)
+            Callback(true)
+        else
+            OnOff = false
+            CreateTween(Frame2, "Position", UDim2.new(0, 2, 0.5, 0), 0.2, false)
+            CreateTween(Frame2, "BackgroundColor3", Configs_HUB.Cor_Stroke, 0.2, false)
+            CreateTween(Stroke, "Color", Configs_HUB.Cor_Stroke, 0.2, false)
+            CreateTween(TextLabel, "TextColor3", Configs_HUB.Cor_Text, 0.2, false)
+            Callback(false)
+        end
     end)
     return {Frame2, Stroke, OnOff, Callback}
-  end
+end
   
   function AddMobileToggle(Configs)
     local name = Configs.Name or "Atalho"
