@@ -690,42 +690,63 @@ end
   function AddButton(parent, Configs)
     local ButtonName = Configs.Name or "Button!!"
     local Callback = Configs.Callback or function() end
+    local Description = Configs.Description or ""
+    
+    local buttonHeight = 25
+    if Description ~= "" then
+        buttonHeight = 40
+    end
     
     local TextButton = Create("TextButton", parent, {
-      Size = UDim2.new(1, 0, 0, 25),
-      BackgroundColor3 = Configs_HUB.Cor_Options,
-      Name = "Frame",
-      Text = "",
-      AutoButtonColor = false
+        Size = UDim2.new(1, 0, 0, buttonHeight),
+        BackgroundColor3 = Configs_HUB.Cor_Options,
+        Name = "Frame",
+        Text = "",
+        AutoButtonColor = false
     })Corner(TextButton)Stroke(TextButton)
     
     local TextLabel = Create("TextLabel", TextButton, {
-      TextSize = 12,
-      TextColor3 = Configs_HUB.Cor_Text,
-      Text = ButtonName,
-      Size = UDim2.new(1, 0, 1, 0),
-      Position = UDim2.new(0, 35, 0, 0),
-      BackgroundTransparency = 1,
-      TextXAlignment = "Left",
-      Font = Configs_HUB.Text_Font
+        TextSize = 12,
+        TextColor3 = Configs_HUB.Cor_Text,
+        Text = ButtonName,
+        Size = Description ~= "" and UDim2.new(1, -35, 0.5, 0) or UDim2.new(1, 0, 1, 0),
+        Position = Description ~= "" and UDim2.new(0, 35, 0, 0) or UDim2.new(0, 35, 0, 0),
+        BackgroundTransparency = 1,
+        TextXAlignment = "Left",
+        Font = Configs_HUB.Text_Font
     })
     
+    if Description ~= "" then
+        local DescriptionLabel = Create("TextLabel", TextButton, {
+            TextSize = 10,
+            TextColor3 = Configs_HUB.Cor_DarkText,
+            Text = Description,
+            Size = UDim2.new(1, -35, 0.5, 0),
+            Position = UDim2.new(0, 35, 0.5, 0),
+            BackgroundTransparency = 1,
+            TextXAlignment = "Left",
+            Font = Configs_HUB.Text_Font,
+            TextTruncate = Enum.TextTruncate.AtEnd
+        })
+        TextSetColor(DescriptionLabel)
+    end
+    
     local ImageLabel = Create("ImageLabel", TextButton, {
-      Image = "rbxassetid://107150227368485",
-      Size = UDim2.new(0, 20, 0, 20),
-      Position = UDim2.new(0, 5, 0, 2.5),
-      BackgroundTransparency = 1,
-      ImageColor3 = Configs_HUB.Cor_Stroke
+        Image = "rbxassetid://107150227368485",
+        Size = UDim2.new(0, 20, 0, 20),
+        Position = UDim2.new(0, 5, 0, Description ~= "" and 10 or 2.5),
+        BackgroundTransparency = 1,
+        ImageColor3 = Configs_HUB.Cor_Stroke
     })
     
     TextButton.MouseButton1Click:Connect(function()
-      Callback("Click!!")
-      CreateTween(ImageLabel, "ImageColor3", Color3.fromRGB(30, 140, 200), 0.2, true)
-      CreateTween(ImageLabel, "ImageColor3", Configs_HUB.Cor_Stroke, 0.2, false)
+        Callback("Click!!")
+        CreateTween(ImageLabel, "ImageColor3", Color3.fromRGB(30, 140, 200), 0.2, true)
+        CreateTween(ImageLabel, "ImageColor3", Configs_HUB.Cor_Stroke, 0.2, false)
     end)
     
     TextSetColor(TextLabel)
-  end
+end
   
   function AddToggle(parent, Configs)
     local ToggleName = Configs.Name or "Toggle!!"
