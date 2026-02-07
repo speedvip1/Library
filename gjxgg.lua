@@ -1,11 +1,11 @@
 local Configs_HUB = {
-  Cor_Hub = Color3.fromRGB(30, 20, 25),           
-  Cor_Options = Color3.fromRGB(50, 35, 45),       
-  Cor_Stroke = Color3.fromRGB(255, 0, 0),     
-  Cor_Text = Color3.fromRGB(255, 220, 230),      
-  Cor_DarkText = Color3.fromRGB(200, 170, 180),  
-  Corner_Radius = UDim.new(0, 5),
-  Text_Font = Enum.Font.SourceSansBold
+  Cor_Hub = Color3.fromRGB(28, 34, 48),           
+  Cor_Options = Color3.fromRGB(40, 46, 60),       
+  Cor_Stroke = Color3.fromRGB(0, 200, 255),     
+  Cor_Text = Color3.fromRGB(240, 248, 255),      
+  Cor_DarkText = Color3.fromRGB(180, 200, 220),  
+  Corner_Radius = UDim.new(0, 8),
+  Text_Font = Enum.Font.GothamSemibold
 }
 local CoreGui = game:GetService("CoreGui")
 local TweenService = game:GetService("TweenService")
