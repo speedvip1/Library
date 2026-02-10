@@ -1156,6 +1156,210 @@ end
     end)
   end
           
+  function AddDropdown(parent, Configs)
+    local DropdownName = Configs.Name or "Dropdown!!"
+    local Default = Configs.Default or "TextBox"
+    local Options = Configs.Options or {"1", "2", "3"}
+    local Default = Configs.Default or "2"
+    local Callback = Configs.Callback or function() end
+    
+    local TextButton = Create("TextButton", parent, {
+        Size = UDim2.new(1, 0, 0, 25),
+        BackgroundColor3 = Configs_HUB.Cor_Options,
+        Name = "Frame",
+        Text = "",
+        AutoButtonColor = false
+    }) 
+    
+    local dropdownStroke = Stroke(TextButton, {
+        Color = Configs_HUB.Cor_Stroke,
+        Thickness = 2
+    })
+    
+    local gradient = Instance.new("UIGradient")
+    gradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Configs_HUB.Cor_Stroke),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 100, 255)),
+        ColorSequenceKeypoint.new(1, Configs_HUB.Cor_Stroke)
+    }
+    gradient.Rotation = 0
+    gradient.Parent = dropdownStroke
+    
+    coroutine.wrap(function()
+        while dropdownStroke.Parent do
+            gradient.Rotation = (gradient.Rotation + 1) % 360
+            RunService.RenderStepped:Wait()
+        end
+    end)()
+    
+    Corner(TextButton)
+    
+    local TextLabel = Create("TextLabel", TextButton, {
+        TextSize = 12,
+        TextColor3 = Configs_HUB.Cor_Text,
+        Text = DropdownName,
+        Size = UDim2.new(1, 0, 0, 25),
+        Position = UDim2.new(0, 35, 0, 0),
+        BackgroundTransparency = 1,
+        TextXAlignment = "Left",
+        Font = Configs_HUB.Text_Font
+    })TextSetColor(TextLabel)
+    
+    local Line = Create("Frame", TextButton, {
+        Size = UDim2.new(1, 0, 0, 1),
+        Position = UDim2.new(0, 0, 0, 25),
+        BorderSizePixel = 0,
+        BackgroundColor3 = Configs_HUB.Cor_Stroke,
+        Visible = false
+    })
+    
+    local Arrow = Create("ImageLabel", TextButton, {
+        Image = "rbxassetid://6031090990",
+        Size = UDim2.new(0, 25, 0, 25),
+        Position = UDim2.new(0, 5, 0, 0),
+        BackgroundTransparency = 1
+    })
+    
+    local DefaultText = Create("TextLabel", TextButton, {
+        BackgroundColor3 = Configs_HUB.Cor_Hub,
+        BackgroundTransparency = 0.1,
+        Position = UDim2.new(1, -20, 0, 2.5),
+        AnchorPoint = Vector2.new(1, 0),
+        Size = UDim2.new(0, 100, 0, 20),
+        TextColor3 = Configs_HUB.Cor_DarkText,
+        TextScaled = true,
+        Font = Configs_HUB.Text_Font,
+        Text = "..."
+    })
+    
+    local defaultTextStroke = Stroke(DefaultText, {
+        Color = Configs_HUB.Cor_Stroke,
+        Thickness = 1
+    })
+    
+    local defaultGradient = Instance.new("UIGradient")
+    defaultGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Configs_HUB.Cor_Stroke),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 100, 255)),
+        ColorSequenceKeypoint.new(1, Configs_HUB.Cor_Stroke)
+    }
+    defaultGradient.Rotation = 0
+    defaultGradient.Parent = defaultTextStroke
+    
+    coroutine.wrap(function()
+        while defaultTextStroke.Parent do
+            defaultGradient.Rotation = (defaultGradient.Rotation + 1) % 360
+            RunService.RenderStepped:Wait()
+        end
+    end)()
+    
+    Corner(DefaultText)
+    
+    local ScrollBar = Create("ScrollingFrame", TextButton, {
+        Size = UDim2.new(1, 0, 1, -25),
+        Position = UDim2.new(0, 0, 0, 25),
+        CanvasSize = UDim2.new(),
+        ScrollingDirection = "Y",
+        AutomaticCanvasSize = "Y",
+        BackgroundTransparency = 1,
+        ScrollBarThickness = 2
+    })Create("UIPadding", ScrollBar, {
+        PaddingLeft = UDim.new(0, 10),
+        PaddingRight = UDim.new(0, 10),
+        PaddingTop = UDim.new(0, 10),
+        PaddingBottom = UDim.new(0, 10)
+    })Create("UIListLayout", ScrollBar, {
+        Padding = UDim.new(0, 5)
+    })
+   
+   
+    
+    local function AddOption(OptionName)
+        local TextButton = Create("TextButton", ScrollBar, {
+            Size = UDim2.new(1, 0, 0, 15),
+            Text = OptionName,
+            Font = Configs_HUB.Text_Font,
+            TextSize = 12,
+            TextColor3 = Color3.fromRGB(180, 180, 180),
+            BackgroundTransparency = 1
+        })
+        
+        local optionStroke = Stroke(TextButton, {
+            Color = Configs_HUB.Cor_Stroke,
+            Thickness = 1,
+            Transparency = 0.7
+        })
+        
+        local optionGradient = Instance.new("UIGradient")
+        optionGradient.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Configs_HUB.Cor_Stroke),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 100, 255)),
+            ColorSequenceKeypoint.new(1, Configs_HUB.Cor_Stroke)
+        }
+        optionGradient.Rotation = 0
+        optionGradient.Parent = optionStroke
+        
+        coroutine.wrap(function()
+            while optionStroke.Parent do
+                optionGradient.Rotation = (optionGradient.Rotation + 1) % 360
+                RunService.RenderStepped:Wait()
+            end
+        end)()
+        
+        Corner(TextButton)
+        
+        local SelectTable = {}
+        local OnOff = false
+        if OptionName == Default then
+            OnOff = true
+            TextButton.BackgroundTransparency = 0.8
+            TextButton.TextColor3 = Configs_HUB.Cor_Text
+            DefaultText.Text = OptionName
+            Callback(OptionName)
+        end
+        
+        TextButton.MouseButton1Click:Connect(function()
+            for _,v in pairs(ScrollBar:GetChildren()) do
+                if v:IsA("TextButton") then
+                    v.BackgroundTransparency = 1
+                    v.TextColor3 = Color3.fromRGB(180, 180, 180)
+                end
+            end
+            DefaultText.Text = OptionName
+            Callback(OptionName)
+            TextButton.BackgroundTransparency = 0.8
+            TextButton.TextColor3 = Configs_HUB.Cor_Text
+        end)
+    end
+    
+    for _,v in pairs(Options) do
+        AddOption(v)
+    end
+    
+    local DropOnOff = false
+    TextButton.MouseButton1Click:Connect(function()
+        local OptionSize, OptionsNumber = 25, 0
+        for _,v in pairs(ScrollBar:GetChildren()) do
+            if v:IsA("TextButton") and OptionsNumber < 5 then
+                OptionsNumber = OptionsNumber + 1
+                OptionSize = OptionSize + tonumber(v.Size.Y.Offset + 10)
+            end
+        end
+        if not DropOnOff then
+            CreateTween(TextButton, "Size", UDim2.new(1, 0, 0, OptionSize), 0.3, false)
+            CreateTween(Arrow, "Rotation", 180, 0.3, false)
+            DropOnOff = true
+            Line.Visible = true
+        else
+            CreateTween(TextButton, "Size", UDim2.new(1, 0, 0, 25), 0.3, false)
+            CreateTween(Arrow, "Rotation", 0, 0.3, true)
+            DropOnOff = false
+            Line.Visible = false
+        end
+    end)
+    return {ScrollBar, Default, Callback, DefaultText}
+end
+  
   function UpdateDropdown(Dropdown, NewOptions)
     local ScrollBar = Dropdown[1]
     local Default = Dropdown[2]
