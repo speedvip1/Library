@@ -1372,7 +1372,7 @@ function AddSearchDropdown(parent, Configs)
     local MainFrame = Create("Frame", parent, {
         Size = UDim2.new(1, 0, 0, 45),
         BackgroundColor3 = Configs_HUB.Cor_Options,
-        BackgroundTransparency = 1,
+        BackgroundTransparency = 0.8,
         Name = "DropdownFrame"
     })
     Corner(MainFrame, {CornerRadius = UDim.new(0, 8)})
@@ -1393,7 +1393,7 @@ function AddSearchDropdown(parent, Configs)
         Size = UDim2.new(1, -20, 0, 25),
         Position = UDim2.new(0, 10, 0, 22),
         BackgroundColor3 = Configs_HUB.Cor_Hub,
-        BackgroundTransparency = 1,
+        BackgroundTransparency = 0.2,
         Text = "",
         AutoButtonColor = false
     })
@@ -1407,7 +1407,8 @@ function AddSearchDropdown(parent, Configs)
         BackgroundTransparency = 1,
         Position = UDim2.new(0, 8, 0, 0),
         Size = UDim2.new(1, -40, 1, 0),
-        TextXAlignment = "Left"
+        TextXAlignment = "Left",
+        TextTruncate = Enum.TextTruncate.AtEnd
     })
     
     local DropArrow = Create("ImageLabel", SelectButton, {
@@ -1418,10 +1419,10 @@ function AddSearchDropdown(parent, Configs)
     })
     
     local DropdownPanel = Create("Frame", parent, {
-        Size = UDim2.new(1, 0, 0, 200),
-        Position = UDim2.new(0, 0, 0, 45),
+        Size = UDim2.new(1, 0, 0, 180),
+        Position = UDim2.new(0, 0, 1, 5),
         BackgroundColor3 = Configs_HUB.Cor_Options,
-        BackgroundTransparency = 0.2,
+        BackgroundTransparency = 0.1,
         Visible = false,
         ZIndex = 10
     })
@@ -1431,8 +1432,9 @@ function AddSearchDropdown(parent, Configs)
         Size = UDim2.new(1, -20, 0, 30),
         Position = UDim2.new(0, 10, 0, 5),
         BackgroundColor3 = Configs_HUB.Cor_Hub,
-        BackgroundTransparency = 1,
-        PlaceholderText = "Search...",
+        BackgroundTransparency = 0.3,
+        PlaceholderText = "بحث...",
+        PlaceholderColor3 = Color3.fromRGB(150, 150, 150),
         Text = "",
         TextColor3 = Configs_HUB.Cor_Text,
         Font = Configs_HUB.Text_Font,
@@ -1449,58 +1451,70 @@ function AddSearchDropdown(parent, Configs)
         BackgroundTransparency = 1,
         ScrollBarThickness = 2
     })
-    Create("UIListLayout", OptionsScroll, {Padding = UDim.new(0, 5)})
+    Create("UIListLayout", OptionsScroll, {Padding = UDim.new(0, 3)})
     
     local function UpdateSelectedText()
         if Multi then
             local text = table.concat(DropdownFuncs.Value, ", ")
-            SelectedText.Text = text ~= "" and text or "Select Options"
+            SelectedText.Text = text ~= "" and text or "اختر خيارات"
         else
-            SelectedText.Text = DropdownFuncs.Value[1] or "Select Option"
+            SelectedText.Text = DropdownFuncs.Value[1] or "اختر خيار"
         end
         Callback(DropdownFuncs.Value)
     end
     
     local function AddOption(optionName)
         local OptionButton = Create("TextButton", OptionsScroll, {
-            Size = UDim2.new(1, 0, 0, 25),
+            Size = UDim2.new(1, 0, 0, 28),
             Text = optionName,
             TextSize = 12,
             TextColor3 = Configs_HUB.Cor_Text,
             BackgroundColor3 = Configs_HUB.Cor_Hub,
-            BackgroundTransparency = 0.3,
-            Font = Configs_HUB.Text_Font
+            BackgroundTransparency = 0.5,
+            Font = Configs_HUB.Text_Font,
+            TextXAlignment = "Left",
+            TextTruncate = Enum.TextTruncate.AtEnd
         })
         Corner(OptionButton, {CornerRadius = UDim.new(0, 5)})
         
-        local isSelected = table.find(DropdownFuncs.Value, optionName)
+        local isSelected = false
+        for _, v in pairs(DropdownFuncs.Value) do
+            if v == optionName then isSelected = true break end
+        end
+        
         if isSelected then
-            OptionButton.BackgroundTransparency = 0
-            OptionButton.TextColor3 = Configs_HUB.Cor_Stroke
+            OptionButton.BackgroundTransparency = 0.2
+            OptionButton.TextColor3 = Color3.fromRGB(100, 200, 255)
         end
         
         OptionButton.MouseButton1Click:Connect(function()
             if Multi then
-                local index = table.find(DropdownFuncs.Value, optionName)
-                if index then
-                    table.remove(DropdownFuncs.Value, index)
-                    OptionButton.BackgroundTransparency = 0.3
-                    OptionButton.TextColor3 = Configs_HUB.Cor_Text
-                else
+                local found = false
+                for i, v in ipairs(DropdownFuncs.Value) do
+                    if v == optionName then
+                        table.remove(DropdownFuncs.Value, i)
+                        found = true
+                        break
+                    end
+                end
+                if not found then
                     table.insert(DropdownFuncs.Value, optionName)
-                    OptionButton.BackgroundTransparency = 0
-                    OptionButton.TextColor3 = Configs_HUB.Cor_Stroke
+                    OptionButton.BackgroundTransparency = 0.2
+                    OptionButton.TextColor3 = Color3.fromRGB(100, 200, 255)
+                else
+                    OptionButton.BackgroundTransparency = 0.5
+                    OptionButton.TextColor3 = Configs_HUB.Cor_Text
                 end
             else
                 DropdownFuncs.Value = {optionName}
                 for _, btn in pairs(OptionsScroll:GetChildren()) do
                     if btn:IsA("TextButton") then
-                        btn.BackgroundTransparency = 0.3
+                        btn.BackgroundTransparency = 0.5
                         btn.TextColor3 = Configs_HUB.Cor_Text
                     end
                 end
-                OptionButton.BackgroundTransparency = 0
-                OptionButton.TextColor3 = Configs_HUB.Cor_Stroke
+                OptionButton.BackgroundTransparency = 0.2
+                OptionButton.TextColor3 = Color3.fromRGB(100, 200, 255)
             end
             UpdateSelectedText()
         end)
@@ -1513,10 +1527,15 @@ function AddSearchDropdown(parent, Configs)
             end
         end
         
+        local filtered = {}
         for _, opt in pairs(Options) do
             if filterText == "" or string.find(string.lower(opt), string.lower(filterText)) then
-                AddOption(opt)
+                table.insert(filtered, opt)
             end
+        end
+        
+        for _, opt in pairs(filtered) do
+            AddOption(opt)
         end
     end
     
@@ -1531,6 +1550,8 @@ function AddSearchDropdown(parent, Configs)
         if isOpen then
             RefreshOptions("")
             CreateTween(DropArrow, "Rotation", 180, 0.2, false)
+            DropdownPanel.Size = UDim2.new(1, 0, 0, 180)
+            DropdownPanel.Position = UDim2.new(0, 0, 1, 5)
         else
             CreateTween(DropArrow, "Rotation", 0, 0.2, false)
         end
