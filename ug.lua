@@ -150,7 +150,7 @@ function MakeNotifi(Configs)
   
   local TextLabel = Create("TextLabel", Frame2, {
     Size = UDim2.new(1, -55, 0, 0),
-    Position = UDim2.new(0, 55, 0, 38),
+    Position = UDim2.new(0, 55, 0, 60),
     TextSize = 15,
     TextColor3 = Configs_HUB.Cor_DarkText,
     TextXAlignment = "Left",
@@ -1431,7 +1431,7 @@ function AddSearchDropdown(parent, Configs)
         Size = UDim2.new(1, -20, 0, 30),
         Position = UDim2.new(0, 10, 0, 5),
         BackgroundColor3 = Configs_HUB.Cor_Hub,
-        BackgroundTransparency = 0.3,
+        BackgroundTransparency = 1,
         PlaceholderText = "Search...",
         Text = "",
         TextColor3 = Configs_HUB.Cor_Text,
