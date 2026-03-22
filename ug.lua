@@ -1356,228 +1356,370 @@ function UpdateDropdown(Dropdown, NewOptions)
         AddOption(v)
     end
 end
-
-function AddSearchDropdown(parent, Configs)
+  
+  function AddDropdown(parent, Configs)
     local DropdownName = Configs.Name or "Dropdown!!"
-    local Default = Configs.Default or ""
-    local Options = Configs.Options or {}
-    local Multi = Configs.Multi or false
+    local Default = Configs.Default or "2"
+    local Options = Configs.Options or {"1", "2", "3"}
     local Callback = Configs.Callback or function() end
+    local Multi = Configs.Multi or false
     
-    local DropdownFuncs = {
-        Value = {Default},
-        Options = Options
-    }
-    
-    local MainFrame = Create("Frame", parent, {
-        Size = UDim2.new(1, 0, 0, 45),
+    local TextButton = Create("TextButton", parent, {
+        Size = UDim2.new(1, 0, 0, 25),
         BackgroundColor3 = Configs_HUB.Cor_Options,
-        BackgroundTransparency = 0.8,
-        Name = "DropdownFrame"
-    })
-    Corner(MainFrame, {CornerRadius = UDim.new(0, 8)})
-    
-    local TitleLabel = Create("TextLabel", MainFrame, {
-        Text = DropdownName,
-        TextSize = 12,
-        TextColor3 = Configs_HUB.Cor_Text,
-        Font = Configs_HUB.Text_Font,
-        BackgroundTransparency = 1,
-        Position = UDim2.new(0, 10, 0, 5),
-        Size = UDim2.new(1, -20, 0, 15),
-        TextXAlignment = "Left"
-    })
-    TextSetColor(TitleLabel)
-    
-    local SelectButton = Create("TextButton", MainFrame, {
-        Size = UDim2.new(1, -20, 0, 25),
-        Position = UDim2.new(0, 10, 0, 22),
-        BackgroundColor3 = Configs_HUB.Cor_Hub,
-        BackgroundTransparency = 0.2,
+        Name = "Frame",
         Text = "",
         AutoButtonColor = false
     })
-    Corner(SelectButton, {CornerRadius = UDim.new(0, 5)})
+    Corner(TextButton)
+    Stroke(TextButton)
     
-    local SelectedText = Create("TextLabel", SelectButton, {
-        Text = Default,
+    local TextLabel = Create("TextLabel", TextButton, {
         TextSize = 12,
         TextColor3 = Configs_HUB.Cor_Text,
-        Font = Configs_HUB.Text_Font,
+        Text = DropdownName,
+        Size = UDim2.new(1, 0, 0, 25),
+        Position = UDim2.new(0, 35, 0, 0),
         BackgroundTransparency = 1,
-        Position = UDim2.new(0, 8, 0, 0),
-        Size = UDim2.new(1, -40, 1, 0),
         TextXAlignment = "Left",
-        TextTruncate = Enum.TextTruncate.AtEnd
+        Font = Configs_HUB.Text_Font
+    })
+    TextSetColor(TextLabel)
+    
+    local Line = Create("Frame", TextButton, {
+        Size = UDim2.new(1, 0, 0, 1),
+        Position = UDim2.new(0, 0, 0, 25),
+        BorderSizePixel = 0,
+        BackgroundColor3 = Configs_HUB.Cor_Stroke,
+        Visible = false
     })
     
-    local DropArrow = Create("ImageLabel", SelectButton, {
+    local Arrow = Create("ImageLabel", TextButton, {
         Image = "rbxassetid://6031090990",
-        Size = UDim2.new(0, 20, 0, 20),
-        Position = UDim2.new(1, -25, 0.5, -10),
+        Size = UDim2.new(0, 25, 0, 25),
+        Position = UDim2.new(0, 5, 0, 0),
         BackgroundTransparency = 1
     })
     
-    local DropdownPanel = Create("Frame", parent, {
-        Size = UDim2.new(1, 0, 0, 180),
-        Position = UDim2.new(0, 0, 1, 5),
-        BackgroundColor3 = Configs_HUB.Cor_Options,
-        BackgroundTransparency = 0.1,
-        Visible = false,
-        ZIndex = 10
-    })
-    Corner(DropdownPanel, {CornerRadius = UDim.new(0, 8)})
-    
-    local SearchBox = Create("TextBox", DropdownPanel, {
-        Size = UDim2.new(1, -20, 0, 30),
-        Position = UDim2.new(0, 10, 0, 5),
+    local DefaultText = Create("TextLabel", TextButton, {
         BackgroundColor3 = Configs_HUB.Cor_Hub,
-        BackgroundTransparency = 0.3,
-        PlaceholderText = "بحث...",
-        PlaceholderColor3 = Color3.fromRGB(150, 150, 150),
-        Text = "",
-        TextColor3 = Configs_HUB.Cor_Text,
+        BackgroundTransparency = 0.1,
+        Position = UDim2.new(1, -20, 0, 2.5),
+        AnchorPoint = Vector2.new(1, 0),
+        Size = UDim2.new(0, 100, 0, 20),
+        TextColor3 = Configs_HUB.Cor_DarkText,
+        TextScaled = true,
         Font = Configs_HUB.Text_Font,
-        TextSize = 12
+        Text = Multi and "اختر" or "..."
     })
-    Corner(SearchBox, {CornerRadius = UDim.new(0, 5)})
+    Corner(DefaultText)
+    Stroke(DefaultText)
     
-    local OptionsScroll = Create("ScrollingFrame", DropdownPanel, {
-        Size = UDim2.new(1, -10, 1, -45),
-        Position = UDim2.new(0, 5, 0, 40),
+    local SearchBox = Create("TextBox", TextButton, {
+        Size = UDim2.new(1, -10, 0, 20),
+        Position = UDim2.new(0, 5, 0, 27),
+        BackgroundColor3 = Color3.fromRGB(40, 40, 40),
+        TextColor3 = Color3.fromRGB(255, 255, 255),
+        Font = Configs_HUB.Text_Font,
+        TextSize = 12,
+        PlaceholderText = "بحث...",
+        Text = "",
+        Visible = false
+    })
+    Corner(SearchBox)
+    
+    local ScrollBar = Create("ScrollingFrame", TextButton, {
+        Size = UDim2.new(1, 0, 1, -55),
+        Position = UDim2.new(0, 0, 0, 50),
         CanvasSize = UDim2.new(),
         ScrollingDirection = "Y",
         AutomaticCanvasSize = "Y",
         BackgroundTransparency = 1,
-        ScrollBarThickness = 2
+        ScrollBarThickness = 2,
+        Visible = false
     })
-    Create("UIListLayout", OptionsScroll, {Padding = UDim.new(0, 3)})
+    Create("UIPadding", ScrollBar, {
+        PaddingLeft = UDim.new(0, 10),
+        PaddingRight = UDim.new(0, 10),
+        PaddingTop = UDim.new(0, 10),
+        PaddingBottom = UDim.new(0, 10)
+    })
+    Create("UIListLayout", ScrollBar, {
+        Padding = UDim.new(0, 5)
+    })
     
-    local function UpdateSelectedText()
-        if Multi then
-            local text = table.concat(DropdownFuncs.Value, ", ")
-            SelectedText.Text = text ~= "" and text or "اختر خيارات"
-        else
-            SelectedText.Text = DropdownFuncs.Value[1] or "اختر خيار"
+    local selectedOptions = {}
+    local selectedText = ""
+    
+    if Multi then
+        if type(Default) == "table" then
+            for _, v in pairs(Default) do
+                selectedOptions[v] = true
+            end
+            selectedText = table.concat(Default, ", ")
+            DefaultText.Text = selectedText
         end
-        Callback(DropdownFuncs.Value)
+    else
+        selectedOptions[Default] = true
+        DefaultText.Text = Default
     end
     
-    local function AddOption(optionName)
-        local OptionButton = Create("TextButton", OptionsScroll, {
-            Size = UDim2.new(1, 0, 0, 28),
-            Text = optionName,
-            TextSize = 12,
-            TextColor3 = Configs_HUB.Cor_Text,
-            BackgroundColor3 = Configs_HUB.Cor_Hub,
-            BackgroundTransparency = 0.5,
+    local DropdownData = {
+        ScrollBar = ScrollBar,
+        Default = Default,
+        Callback = Callback,
+        DefaultText = DefaultText,
+        Options = Options,
+        Multi = Multi,
+        SearchBox = SearchBox,
+        selectedOptions = selectedOptions
+    }
+    
+    local function updateSelectedText()
+        local list = {}
+        for k, v in pairs(selectedOptions) do
+            if v then
+                table.insert(list, k)
+            end
+        end
+        selectedText = table.concat(list, ", ")
+        if selectedText == "" then
+            DefaultText.Text = "اختر"
+        else
+            DefaultText.Text = selectedText
+        end
+        Callback(selectedOptions, selectedText)
+    end
+    
+    local function AddOption(OptionName)
+        local OptionButton = Create("TextButton", ScrollBar, {
+            Size = UDim2.new(1, 0, 0, 20),
+            Text = OptionName,
             Font = Configs_HUB.Text_Font,
-            TextXAlignment = "Left",
-            TextTruncate = Enum.TextTruncate.AtEnd
+            TextSize = 12,
+            TextColor3 = Color3.fromRGB(180, 180, 180),
+            BackgroundTransparency = 1,
+            TextXAlignment = "Left"
         })
-        Corner(OptionButton, {CornerRadius = UDim.new(0, 5)})
+        Corner(OptionButton)
         
-        local isSelected = false
-        for _, v in pairs(DropdownFuncs.Value) do
-            if v == optionName then isSelected = true break end
+        local CheckBox = nil
+        if Multi then
+            CheckBox = Create("ImageLabel", OptionButton, {
+                Size = UDim2.new(0, 15, 0, 15),
+                Position = UDim2.new(1, -20, 0.5, -7.5),
+                Image = selectedOptions[OptionName] and "rbxassetid://6031090990" or "rbxassetid://6031090990",
+                ImageColor3 = selectedOptions[OptionName] and Configs_HUB.Cor_Text or Configs_HUB.Cor_DarkText,
+                BackgroundTransparency = 1
+            })
         end
         
-        if isSelected then
-            OptionButton.BackgroundTransparency = 0.2
-            OptionButton.TextColor3 = Color3.fromRGB(100, 200, 255)
+        if (not Multi and OptionName == Default) or (Multi and selectedOptions[OptionName]) then
+            OptionButton.BackgroundTransparency = 0.8
+            OptionButton.TextColor3 = Configs_HUB.Cor_Text
+            if Multi and CheckBox then
+                CheckBox.ImageColor3 = Configs_HUB.Cor_Text
+            end
         end
         
         OptionButton.MouseButton1Click:Connect(function()
             if Multi then
-                local found = false
-                for i, v in ipairs(DropdownFuncs.Value) do
-                    if v == optionName then
-                        table.remove(DropdownFuncs.Value, i)
-                        found = true
-                        break
+                if selectedOptions[OptionName] then
+                    selectedOptions[OptionName] = nil
+                    OptionButton.BackgroundTransparency = 1
+                    OptionButton.TextColor3 = Color3.fromRGB(180, 180, 180)
+                    if CheckBox then
+                        CheckBox.ImageColor3 = Configs_HUB.Cor_DarkText
                     end
-                end
-                if not found then
-                    table.insert(DropdownFuncs.Value, optionName)
-                    OptionButton.BackgroundTransparency = 0.2
-                    OptionButton.TextColor3 = Color3.fromRGB(100, 200, 255)
                 else
-                    OptionButton.BackgroundTransparency = 0.5
+                    selectedOptions[OptionName] = true
+                    OptionButton.BackgroundTransparency = 0.8
                     OptionButton.TextColor3 = Configs_HUB.Cor_Text
-                end
-            else
-                DropdownFuncs.Value = {optionName}
-                for _, btn in pairs(OptionsScroll:GetChildren()) do
-                    if btn:IsA("TextButton") then
-                        btn.BackgroundTransparency = 0.5
-                        btn.TextColor3 = Configs_HUB.Cor_Text
+                    if CheckBox then
+                        CheckBox.ImageColor3 = Configs_HUB.Cor_Text
                     end
                 end
-                OptionButton.BackgroundTransparency = 0.2
-                OptionButton.TextColor3 = Color3.fromRGB(100, 200, 255)
+                updateSelectedText()
+            else
+                for _, v in pairs(ScrollBar:GetChildren()) do
+                    if v:IsA("TextButton") then
+                        v.BackgroundTransparency = 1
+                        v.TextColor3 = Color3.fromRGB(180, 180, 180)
+                    end
+                end
+                selectedOptions = {}
+                selectedOptions[OptionName] = true
+                DefaultText.Text = OptionName
+                Callback(OptionName)
+                OptionButton.BackgroundTransparency = 0.8
+                OptionButton.TextColor3 = Configs_HUB.Cor_Text
             end
-            UpdateSelectedText()
         end)
     end
     
-    local function RefreshOptions(filterText)
-        for _, v in pairs(OptionsScroll:GetChildren()) do
+    local function filterOptions(searchText)
+        for _, v in pairs(ScrollBar:GetChildren()) do
             if v:IsA("TextButton") then
-                v:Destroy()
+                v.Visible = searchText == "" or string.find(string.lower(v.Text), string.lower(searchText))
             end
-        end
-        
-        local filtered = {}
-        for _, opt in pairs(Options) do
-            if filterText == "" or string.find(string.lower(opt), string.lower(filterText)) then
-                table.insert(filtered, opt)
-            end
-        end
-        
-        for _, opt in pairs(filtered) do
-            AddOption(opt)
         end
     end
+    
+    for _, v in pairs(Options) do
+        AddOption(v)
+    end
+    
+    local DropOnOff = false
+    TextButton.MouseButton1Click:Connect(function()
+        local OptionSize, OptionsNumber = 55, 0
+        for _, v in pairs(ScrollBar:GetChildren()) do
+            if v:IsA("TextButton") and v.Visible and OptionsNumber < 8 then
+                OptionsNumber = OptionsNumber + 1
+                OptionSize = OptionSize + tonumber(v.Size.Y.Offset + 5)
+            end
+        end
+        if not DropOnOff then
+            SearchBox.Visible = true
+            ScrollBar.Visible = true
+            OptionSize = math.min(OptionSize, 300)
+            CreateTween(TextButton, "Size", UDim2.new(1, 0, 0, OptionSize), 0.3, false)
+            CreateTween(Arrow, "Rotation", 180, 0.3, false)
+            DropOnOff = true
+            Line.Visible = true
+        else
+            SearchBox.Visible = false
+            ScrollBar.Visible = false
+            CreateTween(TextButton, "Size", UDim2.new(1, 0, 0, 25), 0.3, false)
+            CreateTween(Arrow, "Rotation", 0, 0.3, true)
+            DropOnOff = false
+            Line.Visible = false
+        end
+    end)
     
     SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
-        RefreshOptions(SearchBox.Text)
-    end)
-    
-    local isOpen = false
-    SelectButton.MouseButton1Click:Connect(function()
-        isOpen = not isOpen
-        DropdownPanel.Visible = isOpen
-        if isOpen then
-            RefreshOptions("")
-            CreateTween(DropArrow, "Rotation", 180, 0.2, false)
-            DropdownPanel.Size = UDim2.new(1, 0, 0, 180)
-            DropdownPanel.Position = UDim2.new(0, 0, 1, 5)
-        else
-            CreateTween(DropArrow, "Rotation", 0, 0.2, false)
+        filterOptions(SearchBox.Text)
+        local newSize = 55
+        local count = 0
+        for _, v in pairs(ScrollBar:GetChildren()) do
+            if v:IsA("TextButton") and v.Visible and count < 8 then
+                count = count + 1
+                newSize = newSize + tonumber(v.Size.Y.Offset + 5)
+            end
+        end
+        if DropOnOff then
+            newSize = math.min(newSize, 300)
+            CreateTween(TextButton, "Size", UDim2.new(1, 0, 0, newSize), 0.2, false)
         end
     end)
     
-    RefreshOptions("")
-    UpdateSelectedText()
+    DropdownData.AddOption = AddOption
+    DropdownData.filterOptions = filterOptions
+    DropdownData.updateSelectedText = updateSelectedText
     
-    DropdownFuncs.Set = function(self, newOptions)
-        Options = newOptions
-        RefreshOptions(SearchBox.Text)
-    end
-    
-    DropdownFuncs.Get = function(self)
-        return DropdownFuncs.Value
-    end
-    
-    DropdownFuncs.Clear = function(self)
-        DropdownFuncs.Value = {}
-        UpdateSelectedText()
-        RefreshOptions(SearchBox.Text)
-    end
-    
-    return DropdownFuncs
+    return DropdownData
 end
-  
+
+function UpdateDropdown(Dropdown, NewOptions)
+    local ScrollBar = Dropdown.ScrollBar
+    local Default = Dropdown.Default
+    local Callback = Dropdown.Callback
+    local DefaultText = Dropdown.DefaultText
+    local Multi = Dropdown.Multi
+    local selectedOptions = Dropdown.selectedOptions
+    
+    for _, v in pairs(ScrollBar:GetChildren()) do
+        if v:IsA("TextButton") then
+            v:Destroy()
+        end
+    end
+    
+    local function AddOption(OptionName)
+        local OptionButton = Create("TextButton", ScrollBar, {
+            Size = UDim2.new(1, 0, 0, 20),
+            Text = OptionName,
+            Font = Configs_HUB.Text_Font,
+            TextSize = 12,
+            TextColor3 = Color3.fromRGB(180, 180, 180),
+            BackgroundTransparency = 1,
+            TextXAlignment = "Left"
+        })
+        Corner(OptionButton)
+        
+        local CheckBox = nil
+        if Multi then
+            CheckBox = Create("ImageLabel", OptionButton, {
+                Size = UDim2.new(0, 15, 0, 15),
+                Position = UDim2.new(1, -20, 0.5, -7.5),
+                Image = "rbxassetid://6031090990",
+                ImageColor3 = selectedOptions[OptionName] and Configs_HUB.Cor_Text or Configs_HUB.Cor_DarkText,
+                BackgroundTransparency = 1
+            })
+        end
+        
+        if (not Multi and OptionName == Default) or (Multi and selectedOptions[OptionName]) then
+            OptionButton.BackgroundTransparency = 0.8
+            OptionButton.TextColor3 = Configs_HUB.Cor_Text
+            if Multi and CheckBox then
+                CheckBox.ImageColor3 = Configs_HUB.Cor_Text
+            end
+        end
+        
+        OptionButton.MouseButton1Click:Connect(function()
+            if Multi then
+                if selectedOptions[OptionName] then
+                    selectedOptions[OptionName] = nil
+                    OptionButton.BackgroundTransparency = 1
+                    OptionButton.TextColor3 = Color3.fromRGB(180, 180, 180)
+                    if CheckBox then
+                        CheckBox.ImageColor3 = Configs_HUB.Cor_DarkText
+                    end
+                else
+                    selectedOptions[OptionName] = true
+                    OptionButton.BackgroundTransparency = 0.8
+                    OptionButton.TextColor3 = Configs_HUB.Cor_Text
+                    if CheckBox then
+                        CheckBox.ImageColor3 = Configs_HUB.Cor_Text
+                    end
+                end
+                local list = {}
+                for k, v in pairs(selectedOptions) do
+                    if v then
+                        table.insert(list, k)
+                    end
+                end
+                local text = table.concat(list, ", ")
+                if text == "" then
+                    DefaultText.Text = "Select"
+                else
+                    DefaultText.Text = text
+                end
+                Callback(selectedOptions, text)
+            else
+                for _, v in pairs(ScrollBar:GetChildren()) do
+                    if v:IsA("TextButton") then
+                        v.BackgroundTransparency = 1
+                        v.TextColor3 = Color3.fromRGB(180, 180, 180)
+                    end
+                end
+                for k, _ in pairs(selectedOptions) do selectedOptions[k] = nil end
+                selectedOptions[OptionName] = true
+                DefaultText.Text = OptionName
+                Callback(OptionName)
+                OptionButton.BackgroundTransparency = 0.8
+                OptionButton.TextColor3 = Configs_HUB.Cor_Text
+            end
+        end)
+    end
+    
+    for _, v in pairs(NewOptions) do
+        AddOption(v)
+    end
+    
+    if Dropdown.filterOptions then
+        Dropdown.filterOptions("")
+    end
+end
+
   function AddTextLabel(parent, Configs)
     local LabelName = Configs[1] or Configs.Name or "Text Label!!"
     
