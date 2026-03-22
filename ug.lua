@@ -1365,7 +1365,7 @@ function AddSearchDropdown(parent, Configs)
     local MainFrame = Create("Frame", parent, {
         Size = UDim2.new(1, 0, 0, 45),
         BackgroundColor3 = Configs_HUB.Cor_Options,
-        BackgroundTransparency = 0.8,
+        BackgroundTransparency = 1,
         Name = "DropdownFrame"
     })
     Corner(MainFrame, {CornerRadius = UDim.new(0, 8)})
@@ -1386,7 +1386,7 @@ function AddSearchDropdown(parent, Configs)
         Size = UDim2.new(1, -20, 0, 25),
         Position = UDim2.new(0, 10, 0, 22),
         BackgroundColor3 = Configs_HUB.Cor_Hub,
-        BackgroundTransparency = 0.2,
+        BackgroundTransparency = 1,
         Text = "",
         AutoButtonColor = false
     })
@@ -1658,31 +1658,130 @@ end
   end
   
   function AddSection(parent, Configs)
-    local SectionName = Configs[1] or Configs.Name or "Section!!"
+    local SectionName = Configs.Name or "Section!!"
+    local OpenSection = Configs.Open or false
     
     local Frame = Create("Frame", parent, {
-      Size = UDim2.new(1, 0, 0, 25),
-      BackgroundColor3 = Configs_HUB.Cor_Hub,
-      Name = "Frame",
-      Transparency = 1
-    })Corner(Frame)
-    
-    local TextButton = Create("TextButton", Frame, {
-      TextSize = 12,
-      TextColor3 = Configs_HUB.Cor_DarkText,
-      Text = SectionName,
-      Size = UDim2.new(1, 0, 0, 25),
-      Position = UDim2.new(0, 10, 0, 0),
-      BackgroundTransparency = 1,
-      TextXAlignment = "Left",
-      Font = Configs_HUB.Text_Font
+        Size = UDim2.new(1, 0, 0, 30),
+        BackgroundColor3 = Configs_HUB.Cor_Hub,
+        BackgroundTransparency = 0,
+        ClipsDescendants = true,
+        Name = "Section"
     })
-    return TextButton
-  end
-  
-  function SetSection(Section, NewName)
-    Section.Text = NewName
-  end
+    Corner(Frame, {CornerRadius = UDim.new(0, 4)})
+    
+    local SectionReal = Create("Frame", Frame, {
+        Size = UDim2.new(1, -2, 0, 30),
+        Position = UDim2.new(0.5, 0, 0, 0),
+        AnchorPoint = Vector2.new(0.5, 0),
+        BackgroundColor3 = Configs_HUB.Cor_Options,
+        BackgroundTransparency = 0.1,
+        Name = "SectionReal"
+    })
+    Corner(SectionReal, {CornerRadius = UDim.new(0, 4)})
+    
+    local SectionButton = Create("TextButton", SectionReal, {
+        Size = UDim2.new(1, 0, 1, 0),
+        BackgroundTransparency = 1,
+        Text = ""
+    })
+    
+    local FeatureFrame = Create("Frame", SectionReal, {
+        Size = UDim2.new(0, 20, 0, 20),
+        Position = UDim2.new(1, -25, 0.5, -10),
+        BackgroundTransparency = 1,
+        Name = "FeatureFrame"
+    })
+    
+    local FeatureImg = Create("ImageLabel", FeatureFrame, {
+        Image = "rbxassetid://6031090990",
+        Size = UDim2.new(1, 0, 1, 0),
+        Position = UDim2.new(0.5, 0, 0.5, 0),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        BackgroundTransparency = 1,
+        Rotation = -90
+    })
+    
+    local SectionTitle = Create("TextLabel", SectionReal, {
+        Text = SectionName,
+        TextSize = 13,
+        TextColor3 = Configs_HUB.Cor_Text,
+        Font = Configs_HUB.Text_Font,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 10, 0.5, -6),
+        Size = UDim2.new(1, -50, 0, 13),
+        TextXAlignment = "Left"
+    })
+    TextSetColor(SectionTitle)
+    
+    local SectionDecide = Create("Frame", Frame, {
+        Size = UDim2.new(1, 0, 0, 2),
+        Position = UDim2.new(0.5, 0, 0, 33),
+        AnchorPoint = Vector2.new(0.5, 0),
+        BackgroundColor3 = Configs_HUB.Cor_Stroke,
+        BackgroundTransparency = 0.5,
+        Name = "SectionDecide"
+    })
+    Corner(SectionDecide, {CornerRadius = UDim.new(1, 0)})
+    
+    local SectionAdd = Create("Frame", Frame, {
+        Size = UDim2.new(1, 0, 0, 100),
+        Position = UDim2.new(0.5, 0, 0, 38),
+        AnchorPoint = Vector2.new(0.5, 0),
+        BackgroundTransparency = 1,
+        ClipsDescendants = true,
+        Name = "SectionAdd"
+    })
+    Create("UIListLayout", SectionAdd, {
+        Padding = UDim.new(0, 5),
+        SortOrder = Enum.SortOrder.LayoutOrder
+    })
+    
+    local function UpdateSize()
+        local totalHeight = 38
+        for _, child in pairs(SectionAdd:GetChildren()) do
+            if child:IsA("Frame") or child:IsA("TextButton") then
+                totalHeight = totalHeight + child.Size.Y.Offset + 5
+            end
+        end
+        Frame.Size = UDim2.new(1, 0, 0, totalHeight)
+        SectionAdd.Size = UDim2.new(1, 0, 0, totalHeight - 38)
+    end
+    
+    local function Toggle()
+        if OpenSection then
+            CreateTween(FeatureImg, "Rotation", -90, 0.2, false)
+            CreateTween(Frame, "Size", UDim2.new(1, 0, 0, 30), 0.2, false)
+            OpenSection = false
+        else
+            CreateTween(FeatureImg, "Rotation", 0, 0.2, false)
+            UpdateSize()
+            OpenSection = true
+        end
+    end
+    
+    SectionButton.MouseButton1Click:Connect(Toggle)
+    SectionAdd.ChildAdded:Connect(UpdateSize)
+    SectionAdd.ChildRemoved:Connect(UpdateSize)
+    
+    if OpenSection then
+        task.wait()
+        Toggle()
+    end
+    
+    return {
+        Add = SectionAdd,
+        SetName = function(self, newName)
+            SectionTitle.Text = newName
+        end
+    }
+end
+
+function UpdateSection(Section, NewName)
+    if Section.SetName then
+        Section:SetName(NewName)
+    end
+end
   
                 
 function AddDiscord(parent, Configs)
