@@ -103,6 +103,7 @@ function MakeNotifi(Configs)
   local Title = Configs.Title or "REDz HUB"
   local text = Configs.Text or "Notificação"
   local timewait = Configs.Time or 5
+  local Icon = Configs.Icon or "rbxassetid://107150227368485"
   
   local Frame1 = Create("Frame", Menu_Notifi, {
     Size = UDim2.new(2, 0, 0, 0),
@@ -118,18 +119,25 @@ function MakeNotifi(Configs)
     AutomaticSize = "Y"
   })Corner(Frame2)
   
-  local TextLabel = Create("TextLabel", Frame2, {
-    Size = UDim2.new(1, 0, 0, 25),
+  local IconImage = Create("ImageLabel", Frame2, {
+    Image = Icon,
+    Size = UDim2.new(0, 30, 0, 30),
+    Position = UDim2.new(0, 15, 0, 10),
+    BackgroundTransparency = 1
+  })
+  
+  local TitleLabel = Create("TextLabel", Frame2, {
+    Size = UDim2.new(1, -70, 0, 25),
     Font = Configs_HUB.Text_Font,
     BackgroundTransparency = 1,
     Text = Title,
     TextSize = 20,
-    Position = UDim2.new(0, 20, 0, 5),
+    Position = UDim2.new(0, 55, 0, 8),
     TextXAlignment = "Left",
     TextColor3 = Configs_HUB.Cor_Text
   })
   
-  local TextButton = Create("TextButton", Frame2, {
+  local CloseButton = Create("TextButton", Frame2, {
     Text = "X",
     Font = Configs_HUB.Text_Font,
     TextSize = 20,
@@ -141,8 +149,8 @@ function MakeNotifi(Configs)
   })
   
   local TextLabel = Create("TextLabel", Frame2, {
-    Size = UDim2.new(1, -30, 0, 0),
-    Position = UDim2.new(0, 20, 0, TextButton.Size.Y.Offset + 10),
+    Size = UDim2.new(1, -55, 0, 0),
+    Position = UDim2.new(0, 55, 0, 38),
     TextSize = 15,
     TextColor3 = Configs_HUB.Cor_DarkText,
     TextXAlignment = "Left",
@@ -151,14 +159,13 @@ function MakeNotifi(Configs)
     Text = text,
     Font = Configs_HUB.Text_Font,
     BackgroundTransparency = 1,
-    AutomaticSize = Enum.AutomaticSize.Y,
     TextWrapped = true
   })
   
   local FrameSize = Create("Frame", Frame2, {
     Size = UDim2.new(1, 0, 0, 2),
     BackgroundColor3 = Configs_HUB.Cor_Stroke,
-    Position = UDim2.new(0, 2, 0, 30),
+    Position = UDim2.new(0, 2, 0, 45),
     BorderSizePixel = 0
   })Corner(FrameSize)Create("Frame", Frame2, {
     Size = UDim2.new(0, 0, 0, 5),
@@ -170,7 +177,7 @@ function MakeNotifi(Configs)
     CreateTween(FrameSize, "Size", UDim2.new(0, 0, 0, 2), timewait, true)
   end)
   
-  TextButton.MouseButton1Click:Connect(function()
+  CloseButton.MouseButton1Click:Connect(function()
     CreateTween(Frame2, "Position", UDim2.new(0, -20, 0, 0), 0.1, true)
     CreateTween(Frame2, "Position", UDim2.new(0, Menu_Notifi.Size.X.Offset, 0, 0), 0.5, true)
     Frame1:Destroy()
@@ -1783,6 +1790,32 @@ function UpdateSection(Section, NewName)
     end
 end
   
+  function AddSection(parent, Configs)
+    local SectionName = Configs[1] or Configs.Name or "Section!!"
+    
+    local Frame = Create("Frame", parent, {
+      Size = UDim2.new(1, 0, 0, 25),
+      BackgroundColor3 = Configs_HUB.Cor_Hub,
+      Name = "Frame",
+      Transparency = 1
+    })Corner(Frame)
+    
+    local TextButton = Create("TextButton", Frame, {
+      TextSize = 12,
+      TextColor3 = Configs_HUB.Cor_DarkText,
+      Text = SectionName,
+      Size = UDim2.new(1, 0, 0, 25),
+      Position = UDim2.new(0, 10, 0, 0),
+      BackgroundTransparency = 1,
+      TextXAlignment = "Left",
+      Font = Configs_HUB.Text_Font
+    })
+    return TextButton
+  end
+  
+  function SetSection(Section, NewName)
+    Section.Text = NewName
+  end
                 
 function AddDiscord(parent, Configs)
     local DiscordLink = Configs[1] or Configs.DiscordLink or "https://discord.gg/"
