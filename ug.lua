@@ -1953,7 +1953,7 @@ function UpdateSection(Section, NewName)
     end
 end
   -- Section New
-  function AddNewSection(parent, Configs)
+  function AddSection(parent, Configs)
     local SectionName = Configs[1] or Configs.Name or "Section!!"
     local SectionIcon = Configs[2] or Configs.Icon or nil
     
@@ -2009,32 +2009,7 @@ function SetSectionIcon(Section, NewIcon)
     end
 end
 
-function AddSection(parent, Configs)
-    local SectionName = Configs[1] or Configs.Name or "Section!!"
-    
-    local Frame = Create("Frame", parent, {
-      Size = UDim2.new(1, 0, 0, 25),
-      BackgroundColor3 = Configs_HUB.Cor_Hub,
-      Name = "Frame",
-      Transparency = 1
-    })Corner(Frame)
-    
-    local TextButton = Create("TextButton", Frame, {
-      TextSize = 12,
-      TextColor3 = Configs_HUB.Cor_DarkText,
-      Text = SectionName,
-      Size = UDim2.new(1, 0, 0, 25),
-      Position = UDim2.new(0, 10, 0, 0),
-      BackgroundTransparency = 1,
-      TextXAlignment = "Left",
-      Font = Configs_HUB.Text_Font
-    })
-    return TextButton
-  end
-  
-  function SetSection(Section, NewName)
-    Section.Text = NewName
-  end
+
 function AddDiscord(parent, Configs)
     local DiscordLink = Configs[1] or Configs.DiscordLink or "https://discord.gg/"
     local DiscordIcon = Configs[2] or Configs.DiscordIcon or "rbxassetid://"
