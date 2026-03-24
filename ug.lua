@@ -1165,7 +1165,7 @@ end
           
   function AddDropdown(parent, Configs)
     local DropdownName = Configs.Name or "Dropdown!!"
-    local Default = Configs.Default or "2"
+    local Default = Configs.Default or ""
     local Options = Configs.Options or {"1", "2", "3"}
     local Callback = Configs.Callback or function() end
     
@@ -1952,8 +1952,64 @@ function UpdateSection(Section, NewName)
         Section:SetName(NewName)
     end
 end
-  
+  -- Section New
   function AddSection(parent, Configs)
+    local SectionName = Configs[1] or Configs.Name or "Section!!"
+    local SectionIcon = Configs[2] or Configs.Icon or nil
+    
+    local Frame = Create("Frame", parent, {
+        Size = UDim2.new(1, 0, 0, 25),
+        BackgroundColor3 = Configs_HUB.Cor_Hub,
+        Name = "Frame",
+        Transparency = 1
+    })Corner(Frame)
+    
+    local IconImage = nil
+    if SectionIcon then
+        IconImage = Create("ImageLabel", Frame, {
+            Size = UDim2.new(0, 16, 0, 16),
+            Position = UDim2.new(0, 10, 0.5, -8),
+            BackgroundTransparency = 1,
+            Image = SectionIcon,
+            ImageColor3 = Configs_HUB.Cor_DarkText
+        })
+    end
+    
+    local TextButton = Create("TextButton", Frame, {
+        TextSize = 12,
+        TextColor3 = Configs_HUB.Cor_DarkText,
+        Text = SectionName,
+        Size = UDim2.new(1, 0, 0, 25),
+        Position = UDim2.new(SectionIcon and 0.1 or 0.05, SectionIcon and 5 or 10, 0, 0),
+        BackgroundTransparency = 1,
+        TextXAlignment = "Left",
+        Font = Configs_HUB.Text_Font
+    })
+    
+    return {
+        Frame = Frame,
+        TextButton = TextButton,
+        Icon = IconImage
+    }
+end
+
+function SetSection(Section, NewName)
+    if type(Section) == "table" then
+        if Section.TextButton then
+            Section.TextButton.Text = NewName
+        end
+    else
+        Section.Text = NewName
+    end
+end
+
+function SetSectionIcon(Section, NewIcon)
+    if type(Section) == "table" and Section.Icon then
+        Section.Icon.Image = NewIcon
+    end
+end
+
+function AddSection(parent, Configs)
     local SectionName = Configs[1] or Configs.Name or "Section!!"
     
     local Frame = Create("Frame", parent, {
@@ -1979,7 +2035,6 @@ end
   function SetSection(Section, NewName)
     Section.Text = NewName
   end
-                
 function AddDiscord(parent, Configs)
     local DiscordLink = Configs[1] or Configs.DiscordLink or "https://discord.gg/"
     local DiscordIcon = Configs[2] or Configs.DiscordIcon or "rbxassetid://"
