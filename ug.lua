@@ -1953,7 +1953,7 @@ function UpdateSection(Section, NewName)
     end
 end
   -- Section New
-  function AddSection(parent, Configs)
+  function AddNewSection(parent, Configs)
     local SectionName = Configs[1] or Configs.Name or "Section!!"
     local SectionIcon = Configs[2] or Configs.Icon or nil
     
