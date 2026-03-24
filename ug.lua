@@ -1968,7 +1968,7 @@ end
     if SectionIcon then
         IconImage = Create("ImageLabel", Frame, {
             Size = UDim2.new(0, 16, 0, 16),
-            Position = UDim2.new(0, 10, 0.5, -8),
+            Position = UDim2.new(0, 25, 0.5, -8),
             BackgroundTransparency = 1,
             Image = SectionIcon,
             ImageColor3 = Configs_HUB.Cor_DarkText
