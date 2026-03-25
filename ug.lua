@@ -1,10 +1,10 @@
 local Configs_HUB = {
   Cor_Hub = Color3.fromRGB(30, 15, 20),           
   Cor_Options = Color3.fromRGB(45, 20, 25),       
-  Cor_Stroke = Color3.fromRGB(255, 50, 50),     
+  Cor_Stroke = Color3.fromRGB(255, 0, 0),     
   Cor_Text = Color3.fromRGB(255, 235, 235),      
   Cor_DarkText = Color3.fromRGB(220, 180, 180),  
-  Corner_Radius = UDim.new(0, 6),
+  Corner_Radius = UDim.new(0, 9),
   Text_Font = Enum.Font.SourceSansBold
 }
 local CoreGui = game:GetService("CoreGui")
@@ -38,6 +38,8 @@ local function Corner(parent, props)
   end
   return new
 end
+
+
 
 local function Stroke(parent, props)
   local new = Create("UIStroke", parent)
@@ -103,7 +105,6 @@ function MakeNotifi(Configs)
   local Title = Configs.Title or "REDz HUB"
   local text = Configs.Text or "Notificação"
   local timewait = Configs.Time or 5
-  local Icon = Configs.Icon or "rbxassetid://107150227368485"
   
   local Frame1 = Create("Frame", Menu_Notifi, {
     Size = UDim2.new(2, 0, 0, 0),
@@ -119,25 +120,18 @@ function MakeNotifi(Configs)
     AutomaticSize = "Y"
   })Corner(Frame2)
   
-  local IconImage = Create("ImageLabel", Frame2, {
-    Image = Icon,
-    Size = UDim2.new(0, 30, 0, 30),
-    Position = UDim2.new(0, 15, 0, 10),
-    BackgroundTransparency = 1
-  })
-  
-  local TitleLabel = Create("TextLabel", Frame2, {
-    Size = UDim2.new(1, -70, 0, 25),
+  local TextLabel = Create("TextLabel", Frame2, {
+    Size = UDim2.new(1, 0, 0, 25),
     Font = Configs_HUB.Text_Font,
     BackgroundTransparency = 1,
     Text = Title,
     TextSize = 20,
-    Position = UDim2.new(0, 55, 0, 8),
+    Position = UDim2.new(0, 20, 0, 5),
     TextXAlignment = "Left",
     TextColor3 = Configs_HUB.Cor_Text
   })
   
-  local CloseButton = Create("TextButton", Frame2, {
+  local TextButton = Create("TextButton", Frame2, {
     Text = "X",
     Font = Configs_HUB.Text_Font,
     TextSize = 20,
@@ -149,8 +143,8 @@ function MakeNotifi(Configs)
   })
   
   local TextLabel = Create("TextLabel", Frame2, {
-    Size = UDim2.new(1, -55, 0, 0),
-    Position = UDim2.new(0, 55, 0, 60),
+    Size = UDim2.new(1, -30, 0, 0),
+    Position = UDim2.new(0, 20, 0, TextButton.Size.Y.Offset + 10),
     TextSize = 15,
     TextColor3 = Configs_HUB.Cor_DarkText,
     TextXAlignment = "Left",
@@ -159,13 +153,14 @@ function MakeNotifi(Configs)
     Text = text,
     Font = Configs_HUB.Text_Font,
     BackgroundTransparency = 1,
+    AutomaticSize = Enum.AutomaticSize.Y,
     TextWrapped = true
   })
   
   local FrameSize = Create("Frame", Frame2, {
     Size = UDim2.new(1, 0, 0, 2),
     BackgroundColor3 = Configs_HUB.Cor_Stroke,
-    Position = UDim2.new(0, 2, 0, 45),
+    Position = UDim2.new(0, 2, 0, 30),
     BorderSizePixel = 0
   })Corner(FrameSize)Create("Frame", Frame2, {
     Size = UDim2.new(0, 0, 0, 5),
@@ -177,7 +172,7 @@ function MakeNotifi(Configs)
     CreateTween(FrameSize, "Size", UDim2.new(0, 0, 0, 2), timewait, true)
   end)
   
-  CloseButton.MouseButton1Click:Connect(function()
+  TextButton.MouseButton1Click:Connect(function()
     CreateTween(Frame2, "Position", UDim2.new(0, -20, 0, 0), 0.1, true)
     CreateTween(Frame2, "Position", UDim2.new(0, Menu_Notifi.Size.X.Offset, 0, 0), 0.5, true)
     Frame1:Destroy()
@@ -195,8 +190,9 @@ function MakeNotifi(Configs)
 end
 
 function MakeWindow(Configs)
-  local title = Configs.Hub.Title or "REDz HUB"
-  local Anim_Title = Configs.Hub.Animation or "by : redz9999"
+  local title = Configs.Hub.Title or "RobloxGui"
+  local credits = Configs.Hub.Credits or "by: يوسف"
+  local Anim_Title = Configs.Hub.Animation or "by : يوسف"
   
   local KeySystem = Configs.Key.KeySystem or false
   local KeyTitle = Configs.Key.Title or "Key System"
@@ -1980,7 +1976,7 @@ end
         TextColor3 = Configs_HUB.Cor_DarkText,
         Text = SectionName,
         Size = UDim2.new(1, 0, 0, 25),
-        Position = UDim2.new(0, 0, 0, 0),
+        Position = UDim2.new(0, 20, 0, 0),
         BackgroundTransparency = 1,
         TextXAlignment = "Left",
         Font = Configs_HUB.Text_Font
