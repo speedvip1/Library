@@ -629,82 +629,122 @@ local AnimMenu = Create("Frame", ScreenGui, {
   function MakeTab(Configs)
     local TabName = Configs.Name or "Tab"
     local TabTitle = Configs.TabTitle or false
-    local TabIcon = Configs.Icon or "rbxassetid://15155219405"  -- Icon parameter
+    local TabIcon = Configs.Icon or "rbxassetid://15155219405"
     
     local Frame = Create("Frame", ScrollBar, {
-      Size = UDim2.new(1, 0, 0, 25),
-      BackgroundTransparency = 1
-    })Corner(Frame)Stroke(Frame)
+        Size = UDim2.new(1, 0, 0, 30),
+        BackgroundTransparency = 1,
+        LayoutOrder = CountTab
+    })
+    Corner(Frame)
+    Stroke(Frame)
     
     local TextButton = Create("TextButton", Frame, {
-      Size = UDim2.new(1, 0, 1, 0),
-      BackgroundTransparency = 1,
-      Text = ""
+        Size = UDim2.new(1, 0, 1, 0),
+        BackgroundTransparency = 1,
+        Text = ""
     })
     
     local IconImage = Create("ImageLabel", Frame, {
         Size = UDim2.new(0, 20, 0, 20),
-        Position = UDim2.new(0, 5, 0.5, -10),
+        Position = UDim2.new(0, 8, 0.5, -10),
         BackgroundTransparency = 1,
         Image = TabIcon,
         ImageColor3 = Configs_HUB.Cor_Stroke
     })
     
     local TextLabel = Create("TextLabel", Frame, {
-      Size = UDim2.new(1, -30, 1, 0),
-      Position = UDim2.new(0, 30, 0, 0),
-      BackgroundTransparency = 1,
-      Font = Configs_HUB.Text_Font,
-      TextColor3 = textcolor,
-      TextSize = textsize,
-      Text = TabName,
-      TextXAlignment = "Left"
+        Size = UDim2.new(1, -35, 1, 0),
+        Position = UDim2.new(0, 35, 0, 0),
+        BackgroundTransparency = 1,
+        Font = Configs_HUB.Text_Font,
+        TextColor3 = Configs_HUB.Cor_DarkText,
+        TextSize = 14,
+        Text = TabName,
+        TextXAlignment = "Left"
     })
     
     local Container = Create("ScrollingFrame", Containers, {
-      Size = UDim2.new(1, 0, 1, 0),
-      ScrollingDirection = "Y",
-      AutomaticCanvasSize = "Y",
-      CanvasSize = UDim2.new(),
-      BackgroundTransparency = 1,
-      ScrollBarThickness = 2,
-      Visible = firstVisible
-    })Create("UIPadding", Container, {
-      PaddingLeft = UDim.new(0, 10),
-      PaddingRight = UDim.new(0, 10),
-      PaddingTop = UDim.new(0, 10),
-      PaddingBottom = UDim.new(0, 10)
-    })Create("UIListLayout", Container, {
-      Padding = UDim.new(0, 5)
+        Size = UDim2.new(1, 0, 1, 0),
+        ScrollingDirection = "Y",
+        AutomaticCanvasSize = "Y",
+        CanvasSize = UDim2.new(),
+        BackgroundTransparency = 1,
+        ScrollBarThickness = 2,
+        Visible = #ScrollBar:GetChildren() == 0
+    })
+    Create("UIPadding", Container, {
+        PaddingLeft = UDim.new(0, 10),
+        PaddingRight = UDim.new(0, 10),
+        PaddingTop = UDim.new(0, 10),
+        PaddingBottom = UDim.new(0, 10)
+    })
+    Create("UIListLayout", Container, {
+        Padding = UDim.new(0, 5)
     })
     
     if TabTitle then
-      Create("TextLabel",Container,{BackgroundTransparency=1,Text="#"..string.gsub(TabName," ","-"),TextSize=25,Font=Configs_HUB.Text_Font,TextXAlignment="Left",TextColor3=Configs_HUB.Cor_Text,Size=UDim2.new(1, 0, 0, 30),Position=UDim2.new(0, 30, 0, 0),Name="Frame"})
+        Create("TextLabel", Container, {
+            BackgroundTransparency = 1,
+            Text = "#" .. string.gsub(TabName, " ", "-"),
+            TextSize = 25,
+            Font = Configs_HUB.Text_Font,
+            TextXAlignment = "Left",
+            TextColor3 = Configs_HUB.Cor_Text,
+            Size = UDim2.new(1, 0, 0, 30),
+            Position = UDim2.new(0, 30, 0, 0)
+        })
+    end
+    
+    local indicator = nil
+    if #ScrollBar:GetChildren() == 0 then
+        indicator = Create("Frame", Frame, {
+            BackgroundColor3 = Configs_HUB.Cor_Text,
+            BorderSizePixel = 0,
+            Position = UDim2.new(0, 2, 0, 8),
+            Size = UDim2.new(0, 2, 0, 14),
+            Name = "Indicator"
+        })
+        Corner(indicator)
     end
     
     TextButton.MouseButton1Click:Connect(function()
-      for _,container in pairs(Containers:GetChildren()) do
-        if container:IsA("ScrollingFrame") then
-          container.Visible = false
+        for _, container in pairs(Containers:GetChildren()) do
+            if container:IsA("ScrollingFrame") then
+                container.Visible = false
+            end
         end
-      end
-      for _,frame in pairs(ScrollBar:GetChildren()) do
-        if frame:IsA("Frame") and frame:FindFirstChild("TextLabel") and frame.TextLabel ~= TextLabel then
-          CreateTween(frame.TextLabel, "TextColor3", Configs_HUB.Cor_DarkText, 0.3, false)
-          CreateTween(frame:FindFirstChildOfClass("ImageLabel"), "ImageColor3", Configs_HUB.Cor_Stroke, 0.3, false)
-          frame.TextLabel.TextSize = 14
+        
+        for _, frame in pairs(ScrollBar:GetChildren()) do
+            if frame:IsA("Frame") and frame:FindFirstChild("TextLabel") then
+                local label = frame.TextLabel
+                local icon = frame:FindFirstChildOfClass("ImageLabel")
+                local ind = frame:FindFirstChild("Indicator")
+                
+                CreateTween(label, "TextColor3", Configs_HUB.Cor_DarkText, 0.3, false)
+                if icon then
+                    CreateTween(icon, "ImageColor3", Configs_HUB.Cor_Stroke, 0.3, false)
+                end
+                label.TextSize = 14
+                
+                if ind then
+                    ind:TweenSize(UDim2.new(0, 2, 0, 8), "Out", "Quad", 0.3, true)
+                end
+            end
         end
-      end
-      Container.Visible = true
-      CreateTween(TextLabel, "TextColor3", Configs_HUB.Cor_Text, 0.3, false)
-      CreateTween(IconImage, "ImageColor3", Configs_HUB.Cor_Text, 0.3, false)
-      TextLabel.TextSize = 15
+        
+        Container.Visible = true
+        CreateTween(TextLabel, "TextColor3", Configs_HUB.Cor_Text, 0.3, false)
+        CreateTween(IconImage, "ImageColor3", Configs_HUB.Cor_Text, 0.3, false)
+        TextLabel.TextSize = 15
+        
+        if indicator then
+            indicator:TweenSize(UDim2.new(0, 2, 0, 14), "Out", "Quad", 0.3, true)
+        end
     end)
     
-    firstVisible = false
-    FirstTab = false
-    textsize = 14
-    textcolor = Configs_HUB.Cor_DarkText
+    CountTab = (CountTab or 0) + 1
+    
     return Container
 end
 
