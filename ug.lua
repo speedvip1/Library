@@ -1967,7 +1967,7 @@ end
     local IconImage = nil
     if SectionIcon then
         IconImage = Create("ImageLabel", Frame, {
-            Size = UDim2.new(0, 16, 0, 16),
+            Size = UDim2.new(1.19999996e-07, 0, 0.5, -8),
             Position = UDim2.new(0, 25, 0.5, -8),
             BackgroundTransparency = 1,
             Image = SectionIcon,
@@ -1980,7 +1980,7 @@ end
         TextColor3 = Configs_HUB.Cor_DarkText,
         Text = SectionName,
         Size = UDim2.new(1, 0, 0, 25),
-        Position = UDim2.new(SectionIcon and 0.1 or 0.05, SectionIcon and 5 or 10, 0, 0),
+        Position = UDim2.new(0.0100000026, 18, 0, 0),
         BackgroundTransparency = 1,
         TextXAlignment = "Left",
         Font = Configs_HUB.Text_Font
