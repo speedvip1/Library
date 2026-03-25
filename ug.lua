@@ -1,12 +1,3 @@
-local Configs_HUB = {
-  Cor_Hub = Color3.fromRGB(30, 15, 20),           
-  Cor_Options = Color3.fromRGB(45, 20, 25),       
-  Cor_Stroke = Color3.fromRGB(255, 0, 0),     
-  Cor_Text = Color3.fromRGB(255, 235, 235),      
-  Cor_DarkText = Color3.fromRGB(220, 180, 180),  
-  Corner_Radius = UDim.new(0, 9),
-  Text_Font = Enum.Font.SourceSansBold
-}
 local CoreGui = game:GetService("CoreGui")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -190,9 +181,9 @@ function MakeNotifi(Configs)
 end
 
 function MakeWindow(Configs)
-  local title = Configs.Hub.Title or "RobloxGui"
-  local credits = Configs.Hub.Credits or "by: يوسف"
-  local Anim_Title = Configs.Hub.Animation or "by : يوسف"
+  local title = Configs.Hub.Title or "REDz HUB"
+  local credits = Configs.Hub.Credits or "by: SCN"
+  local Anim_Title = Configs.Hub.Animation or "by : redz9999"
   
   local KeySystem = Configs.Key.KeySystem or false
   local KeyTitle = Configs.Key.Title or "Key System"
@@ -328,11 +319,14 @@ function MakeWindow(Configs)
   end
   
   local Menu = Create("Frame", ScreenGui, {
-    BackgroundColor3 = Configs_HUB.Cor_Hub,
+    BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+    BackgroundTransparency = 0.3,
     Position = UDim2.new(0.5, -500/2, 0.5, -270/2),
     Active = true,
     Draggable = true
-  })Corner(Menu)
+})
+Corner(Menu)
+Stroke(Menu)
   
   local TopBar = Create("Frame", Menu, {
     BackgroundTransparency = 1,
@@ -356,7 +350,19 @@ function MakeWindow(Configs)
     Text = title,
     TextSize = 20,
     BackgroundTransparency = 1
-  })
+})
+
+local Credit = Create("TextLabel", TopBar, {
+    Size = UDim2.new(0, 100, 1, 0),
+    Position = UDim2.new(0, 97, 0, 0),
+    TextColor3 = Color3.fromRGB(200, 200, 200),
+    Font = Configs_HUB.Text_Font,
+    TextXAlignment = "Left",
+    Text = credits,
+    TextSize = 12,
+    BackgroundTransparency = 1
+})
+Credit.TextTransparency = 0.3
   
   local Minimize_BTN = Create("TextButton", ButtonsFrame, {
     Text = "-",
@@ -395,13 +401,13 @@ function MakeWindow(Configs)
   local function CreateClose()
     IsMinimized = false
     CreateTween(Menu, "Size", UDim2.new(0, 500, 0, 270), 0.3, false)
+
     local CloseGui = Create("TextButton", Menu, {
-      BackgroundTransparency = 0.5,
-      BackgroundColor3 = Configs_HUB.Cor_Hub,
+      BackgroundColor3 = Color3.fromRGB(60, 60, 60),
+      BackgroundTransparency = 0.6,
       Size = UDim2.new(1, 0, 1, 0),
       AutoButtonColor = false,
       Text = "",
-      BackgroundTransparency = 0.5,
       Visible = false
     })Corner(CloseGui)
     
@@ -409,13 +415,13 @@ function MakeWindow(Configs)
       Size = UDim2.new(),
       AnchorPoint = Vector2.new(0.5, 0.5),
       Position = UDim2.new(0.5, 0, 0.5, 0),
-      Transparency = 1,
-      BackgroundColor3 = Configs_HUB.Cor_Hub
+      BackgroundColor3 = Color3.fromRGB(60, 60, 60),
+      BackgroundTransparency = 0.6
     })Corner(CloseMenu)Stroke(CloseMenu)
     
     local Mensage = Create("TextLabel", CloseMenu, {
       Size = UDim2.new(0.8, 0, 0.25, 0),
-      Text = "هل انت تريد تحذف هذا السكربت",
+      Text = "are you sure you want to close this script??",
       Position = UDim2.new(0.1, 0, 0.2),
       TextColor3 = Configs_HUB.Cor_Text,
       Font = Configs_HUB.Text_Font,
@@ -426,8 +432,9 @@ function MakeWindow(Configs)
     local Confirm = Create("TextButton", CloseMenu, {
       Size = UDim2.new(0.35, 0, 0.3, 0),
       Position = UDim2.new(0.1, 0, 0.5, 0),
-      BackgroundColor3 = Configs_HUB.Cor_Hub,
-      Text = "احذف السكربت ✅",
+      BackgroundColor3 = Color3.fromRGB(60, 60, 60),
+      BackgroundTransparency = 0.6,
+      Text = "Close Script",
       Font = Configs_HUB.Text_Font,
       TextColor3 = Color3.fromRGB(240, 0, 0),
       TextSize = 20
@@ -437,8 +444,9 @@ function MakeWindow(Configs)
       Size = UDim2.new(0.35, 0, 0.3, 0),
       Position = UDim2.new(0.9, 0, 0.5, 0),
       AnchorPoint = Vector2.new(1, 0),
-      BackgroundColor3 = Configs_HUB.Cor_Hub,
-      Text = "لا اريد احذف السكربت ❌",
+      BackgroundColor3 = Color3.fromRGB(60, 60, 60),
+      BackgroundTransparency = 0.6,
+      Text = "Cancel",
       Font = Configs_HUB.Text_Font,
       TextColor3 = Color3.fromRGB(0, 240, 0),
       TextSize = 20
@@ -475,16 +483,17 @@ function MakeWindow(Configs)
       CreateTween(CloseMenu, "Size", UDim2.new(), 0.2, true)
       CloseGui:Destroy()
     end)
-  end
-  
-  Close_Button.MouseButton1Click:Connect(CreateClose)
-  
-  local AnimMenu = Create("Frame", ScreenGui, {
+end
+
+Close_Button.MouseButton1Click:Connect(CreateClose)
+
+local AnimMenu = Create("Frame", ScreenGui, {
     Position = UDim2.new(0.5, 0, 0.5, 0),
     AnchorPoint = Vector2.new(0.5, 0.5),
-    BackgroundColor3 = Configs_HUB.Cor_Hub
-  })Corner(AnimMenu, {CornerRadius = UDim.new(0, 6)})
-  
+    BackgroundColor3 = Color3.fromRGB(60, 60, 60),
+    BackgroundTransparency = 0.6
+})Corner(AnimMenu, {CornerRadius = UDim.new(0, 6)})
+
   local Anim_Credits = Create("TextLabel", AnimMenu, {
     Text = Anim_Title,
     BackgroundTransparency = 1,
